@@ -5,7 +5,7 @@
 //  Created by afon.com on 04.09.2025.
 //
 
-import UIKit
+import SwiftUI
 import CoreData
 
 @main
