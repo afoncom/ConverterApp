@@ -11,7 +11,9 @@ struct CurrencyRates {
     static let rates: [String: Double] = [
         "USD": 1.0,   // базовая валюта (доллар)
         "EUR": 0.92,  // евро
-        "RUB": 85.0   // рубль
+        "RUB": 85.0,  // рубль
+        "GBP": 0.74,  // фунт
+        "CNY": 7.2    // юань
     ]
     
     static func convert(amount: Double, from: String, to: String) -> Double {

@@ -22,13 +22,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let initialViewController = storyboard.instantiateInitialViewController() ?? ViewController()
-        
-        let navigationController = UINavigationController(rootViewController: initialViewController)
-        navigationController.navigationBar.prefersLargeTitles = true
-        
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
+        if let initialViewController = storyboard.instantiateInitialViewController() {
+            let navigationController = UINavigationController(rootViewController: initialViewController)
+            navigationController.navigationBar.prefersLargeTitles = true
+            
+            window?.rootViewController = navigationController
+            window?.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

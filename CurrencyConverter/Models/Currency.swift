@@ -1,0 +1,49 @@
+//
+//  Currency.swift
+//  CurrencyConverter
+//
+//  Created by afon.com on 04.09.2025.
+//
+
+import Foundation
+
+// MARK: - Currency Model (Модель валюты)
+struct Currency: Codable, Equatable {
+    let code: String
+    let name: String
+    let symbol: String
+    
+    static let usd = Currency(code: "USD", name: "US Dollar", symbol: "$")
+    static let eur = Currency(code: "EUR", name: "Euro", symbol: "€")
+    static let rub = Currency(code: "RUB", name: "Russian Ruble", symbol: "₽")
+    static let gbp = Currency(code: "GBP", name: "British Pound", symbol: "£")
+    static let cny = Currency(code: "CNY", name: "Chinese Yuan", symbol: "¥")
+    
+    static let allCurrencies: [Currency] = [.usd, .eur, .rub, .gbp, .cny]
+}
+
+// MARK: - Exchange Rate Model (Курс обмена)
+struct ExchangeRate: Codable {
+    let fromCurrency: Currency
+    let toCurrency: Currency
+    let rate: Double
+    let lastUpdated: Date
+    
+    init(from: Currency, to: Currency, rate: Double) {
+        self.fromCurrency = from
+        self.toCurrency = to
+        self.rate = rate
+        self.lastUpdated = Date()
+    }
+}
+
+// MARK: - Currency Conversion Result (Результат конвертации)
+struct ConversionResult {
+    let originalAmount: Double
+    let convertedAmount: Double
+    let fromCurrency: Currency
+    let toCurrency: Currency
+    let exchangeRate: Double
+    let formattedOriginal: String
+    let formattedConverted: String
+}
