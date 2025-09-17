@@ -41,10 +41,10 @@
             </objects>
             <point key="canvasLocation" x="33" y="15"/>
         </scene>
-        <!--Currency Rates Controller-->
+        <!--Currency Converter View Controller-->
         <scene sceneID="8BH-ed-u8P">
             <objects>
-                <viewController storyboardIdentifier="CurrencyRatesController" modalPresentationStyle="fullScreen" id="ZS5-rg-eX4" customClass="CurrencyRatesController" customModule="CurrencyConverter" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CurrencyConverterViewController" modalPresentationStyle="fullScreen" id="ZS5-rg-eX4" customClass="CurrencyConverterViewController" customModule="CurrencyConverter" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="center" id="qeT-Od-kha">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -125,12 +125,12 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Show result"/>
                                 <connections>
-                                    <action selector="resultButtonTapped:" destination="ZS5-rg-eX4" eventType="touchUpInside" id="mqg-66-rDl"/>
+                                    <action selector="selectCurrencyButtonTapped:" destination="ZS5-rg-eX4" eventType="touchUpInside" id="Dp1-nY-lZQ"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Currency Converter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kwr-5L-TwT">
-                                <rect key="frame" x="91" y="81" width="211" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Конвертер валют" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kwr-5L-TwT">
+                                <rect key="frame" x="90" y="81" width="213" height="30"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -152,9 +152,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="ARL-9u-UI4"/>
                     <connections>
-                        <outlet property="currency" destination="7rF-bC-k2M" id="LiB-Bc-Sh5"/>
-                        <outlet property="currencyOutgoing" destination="5mE-21-j4g" id="outgoing-connection-id"/>
-                        <outlet property="usdDefAmount" destination="JM2-sj-iET" id="nAM-HA-4zE"/>
+                        <outlet property="amountTextField" destination="JM2-sj-iET" id="YA6-g6-NFZ"/>
+                        <outlet property="convertedAmountLabel" destination="5mE-21-j4g" id="Wqj-t2-awR"/>
+                        <outlet property="exchangeRateLabel" destination="KEf-iH-BZo" id="ByQ-g5-eAP"/>
+                        <outlet property="selectCurrencyButton" destination="nQv-u2-1Vu" id="GlF-6j-D8e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lrY-SQ-C1N" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -164,7 +165,7 @@
         <!--Exchange RateController-->
         <scene sceneID="ZDz-x3-XVh">
             <objects>
-                <tableViewController storyboardIdentifier="ExchangeRateController" title="Exchange RateController" modalPresentationStyle="fullScreen" id="FAh-07-T3t" customClass="ExchangeRateController" customModule="CurrencyConverter" customModuleProvider="target" propertyAccessControl="all" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ExchangeRateController" title="Exchange RateController" modalPresentationStyle="fullScreen" id="FAh-07-T3t" customClass="ExchangeRateListViewController" customModule="CurrencyConverter" customModuleProvider="target" propertyAccessControl="all" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="eR6-cl-xTb">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

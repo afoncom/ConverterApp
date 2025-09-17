@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class CurrencyConverterViewController: UIViewController {
     
@@ -48,7 +49,6 @@ class CurrencyConverterViewController: UIViewController {
 //    Подписываем контроллер на её события через делегат (CurrencyConverterViewModelDelegate), чтобы обновлять UI при изменении данных.
     
     private func setupUI() {
-        title = "Конвертер валют"
         
         // Настройка текстового поля
         amountTextField.placeholder = "Введите сумму в USD"
@@ -101,12 +101,10 @@ class CurrencyConverterViewController: UIViewController {
 //    Скрываем клавиатуру при тапе вне текстового поля.
     // MARK: - Navigation
     private func navigateToExchangeRateList() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        if let exchangeRateVC = storyboard.instantiateViewController(withIdentifier: "ExchangeRateController") as? ExchangeRateListViewController {
-            exchangeRateVC.delegate = self
-            navigationController?.pushViewController(exchangeRateVC, animated: true)
-        }
+        let exchangeRateView = ExchangeRateListView(delegate: self)
+        let hostingController = UIHostingController(rootView: exchangeRateView)
+        hostingController.title = "Выберите валюту"
+        navigationController?.pushViewController(hostingController, animated: true)
     }
 //    Загружаем экран выбора валют из сториборда и показываем его.
     
@@ -187,6 +185,7 @@ extension CurrencyConverterViewController: CurrencyConverterViewModelDelegate {
 extension CurrencyConverterViewController: ExchangeRateSelectionDelegate {
     func didSelectCurrency(_ currency: Currency) {
         viewModel.selectCurrency(currency)
+        navigationController?.popViewController(animated: true)
     }
 }
 

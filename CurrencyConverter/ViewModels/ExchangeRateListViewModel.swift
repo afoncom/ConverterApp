@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 // MARK: - Exchange Rate Selection Delegate
 protocol ExchangeRateSelectionDelegate: AnyObject {
     func didSelectCurrency(_ currency: Currency)
@@ -131,4 +132,5 @@ class ExchangeRateListViewModel {
     }
 }
 //Позволяют напрямую получить модель валюты или курса по индексу.
+
 

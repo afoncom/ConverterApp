@@ -29,13 +29,13 @@ class ViewController: UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
         // Ищем второй экран по Storyboard ID или создаем программно
-        let converterVC: CurrencyRatesController
+        let converterVC: CurrencyConverterViewController
         
-        if let storyboardVC = storyboard.instantiateViewController(withIdentifier: "CurrencyRatesController") as? CurrencyRatesController {
+        if let storyboardVC = storyboard.instantiateViewController(withIdentifier: "CurrencyConverterViewController") as? CurrencyConverterViewController {
             converterVC = storyboardVC
         } else {
             // Если ID не найден, создаем программно
-            converterVC = CurrencyRatesController()
+            converterVC = CurrencyConverterViewController()
         }
         
         

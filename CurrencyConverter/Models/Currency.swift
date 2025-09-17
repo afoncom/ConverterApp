@@ -18,8 +18,12 @@ struct Currency: Codable, Equatable {
     static let rub = Currency(code: "RUB", name: "Russian Ruble", symbol: "₽")
     static let gbp = Currency(code: "GBP", name: "British Pound", symbol: "£")
     static let cny = Currency(code: "CNY", name: "Chinese Yuan", symbol: "¥")
+    static let jpy = Currency(code: "JPY", name: "Japanese Yen", symbol: "¥")
+    static let chf = Currency(code: "CHF", name: "Swiss Franc", symbol: "CHF")
+    static let cad = Currency(code: "CAD", name: "Canadian Dollar", symbol: "C$")
+    static let aud = Currency(code: "AUD", name: "Australian Dollar", symbol: "A$")
     
-    static let allCurrencies: [Currency] = [.usd, .eur, .rub, .gbp, .cny]
+    static let allCurrencies: [Currency] = [.usd, .eur, .gbp, .jpy, .rub, .chf, .cad, .aud]
 }
 
 // MARK: - Exchange Rate Model (Курс обмена)

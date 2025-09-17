@@ -39,20 +39,6 @@ final class CurrencyCoordinator: Coordinator {
         navigationController.pushViewController(converterVC, animated: false)
     }
     
-//    Создаёт CurrencyConverterViewController (экран конвертации).
-//    Назначает ему свойство coordinator, чтобы экран мог попросить координатора сделать переход.
-//    Показывает экран (push в навигационный стек).
-    
-    
-    func showExchangeRateList(delegate: ExchangeRateSelectionDelegate) {
-        let exchangeRateVC = ExchangeRateListViewController()
-        exchangeRateVC.delegate = delegate
-        navigationController.pushViewController(exchangeRateVC, animated: true)
-    }
-    
-//    Открывает экран со списком курсов валют и передаёт делегата, чтобы выбрать нужный курс.
-
-    
     func dismissCurrentScreen() {
         navigationController.popViewController(animated: true)
     }

@@ -7,29 +7,29 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		0806E6522E6A158500C21A3A /* CurrencyConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CurrencyConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		08576F892E76A746003C1FD6 /* CurrencyConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = CurrencyConverter.app; path = "/Users/afon.com/Desktop/iOS-разработка/Swift для начин. и приложения/CurrencyConverter/build/Debug-iphoneos/CurrencyConverter.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0806E6702E6A159100C21A3A /* Exceptions for "CurrencyConverter" folder in "CurrencyConverter" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 0806E6512E6A158500C21A3A /* CurrencyConverter */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0806E6542E6A158500C21A3A /* CurrencyConverter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0806E6702E6A159100C21A3A /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				0806E6702E6A159100C21A3A /* Exceptions for "CurrencyConverter" folder in "CurrencyConverter" target */,
 			);
 			path = CurrencyConverter;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0806E6702E6A159100C21A3A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Resources/Info.plist",
-			);
-			target = 0806E6512E6A158500C21A3A /* CurrencyConverter */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		0806E64F2E6A158500C21A3A /* Frameworks */ = {
@@ -46,16 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				0806E6542E6A158500C21A3A /* CurrencyConverter */,
-				0806E6532E6A158500C21A3A /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		0806E6532E6A158500C21A3A /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				0806E6522E6A158500C21A3A /* CurrencyConverter.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -80,7 +71,7 @@
 			packageProductDependencies = (
 			);
 			productName = CurrencyConverter;
-			productReference = 0806E6522E6A158500C21A3A /* CurrencyConverter.app */;
+			productReference = 08576F892E76A746003C1FD6 /* CurrencyConverter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -91,7 +82,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					0806E6512E6A158500C21A3A = {
 						CreatedOnToolsVersion = 16.4;
@@ -108,7 +99,7 @@
 			mainGroup = 0806E6492E6A158500C21A3A;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 0806E6532E6A158500C21A3A /* Products */;
+			productRefGroup = 0806E6492E6A158500C21A3A;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -259,6 +250,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -316,6 +308,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
