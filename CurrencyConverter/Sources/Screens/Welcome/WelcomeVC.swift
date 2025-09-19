@@ -35,11 +35,4 @@ struct WelcomeViewController: View {
     WelcomeViewController()
 }
 
-@main
-struct CurrencyConverterApp: App {
-    var body: some Scene {
-        WindowGroup {
-            WelcomeViewController()
-        }
-    }
-}
+
