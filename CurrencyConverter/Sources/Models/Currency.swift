@@ -23,31 +23,5 @@ struct Currency: Codable, Equatable {
     static let cad = Currency(code: "CAD", name: "Canadian Dollar", symbol: "C$")
     static let aud = Currency(code: "AUD", name: "Australian Dollar", symbol: "A$")
     
-    static let allCurrencies: [Currency] = [.usd, .eur, .gbp, .jpy, .rub, .chf, .cad, .aud]
-}
-
-// MARK: - Exchange Rate Model (Курс обмена)
-struct ExchangeRate: Codable {
-    let fromCurrency: Currency
-    let toCurrency: Currency
-    let rate: Double
-    let lastUpdated: Date
-    
-    init(from: Currency, to: Currency, rate: Double) {
-        self.fromCurrency = from
-        self.toCurrency = to
-        self.rate = rate
-        self.lastUpdated = Date()
-    }
-}
-
-// MARK: - Currency Conversion Result (Результат конвертации)
-struct ConversionResult {
-    let originalAmount: Double
-    let convertedAmount: Double
-    let fromCurrency: Currency
-    let toCurrency: Currency
-    let exchangeRate: Double
-    let formattedOriginal: String
-    let formattedConverted: String
+    static let allCurrencies: [Currency] = [.usd, .eur, .gbp, .jpy, .rub, .chf, .cad, .aud, .cny]
 }

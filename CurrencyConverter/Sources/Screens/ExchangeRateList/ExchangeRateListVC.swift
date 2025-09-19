@@ -9,19 +9,21 @@ import SwiftUI
 
 
 struct ExchangeRateListView: View {
-    @StateObject private var observable = ExchangeRateListObservable()
-    weak var delegate: ExchangeRateSelectionDelegate?
+    @StateObject private var viewModel = ExchangeRateListViewModel()
+    @Environment(\.presentationMode) var presentationMode
     
-    init(delegate: ExchangeRateSelectionDelegate? = nil) {
-        self.delegate = delegate
+    var onCurrencySelected: ((Currency) -> Void)?
+    
+    init(onCurrencySelected: ((Currency) -> Void)? = nil) {
+        self.onCurrencySelected = onCurrencySelected
     }
     
     var body: some View {
         NavigationView {
-            List(observable.items.indices, id: \.self) { index in
-                let item = observable.items[index]
+            List(viewModel.items, id: \.currency.code) { item in
                 Button {
-                    observable.selectItem(index)
+                    onCurrencySelected?(item.currency)
+                    presentationMode.wrappedValue.dismiss()
                 } label: {
                     HStack {
                         VStack(alignment: .leading) {
@@ -38,7 +40,8 @@ struct ExchangeRateListView: View {
                     .padding(.vertical, 4)
                 }
             }
-            .navigationTitle(observable.title)
+        }
+            .navigationTitle(viewModel.title)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
@@ -56,14 +59,10 @@ struct ExchangeRateListView: View {
                 }
             }
             .refreshable {
-                    observable.reload()
+                    viewModel.reload()
             }
         }
-        .onAppear {
-            observable.parentDelegate = delegate
-        }
     }
-}
     
     #Preview {
         ExchangeRateListView()

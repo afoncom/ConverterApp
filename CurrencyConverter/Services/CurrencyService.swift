@@ -49,12 +49,16 @@ final class CurrencyService: CurrencyServiceProtocol {
     
     // Статические курсы валют (в будущем можно заменить на API)
         private let staticRates: [String: Double] = [
-    //   "USD": 1.0,   // базовая валюта
-        "EUR": 0.85,  // евро
-        "RUB": 95.50, // рубль
-        "GBP": 0.75,  // фунт
-        "CNY": 7.25   // юань
-    ]
+            "USD": 1.0,   // базовая валюта
+            "EUR": 0.85,  // евро
+            "RUB": 95.50, // рубль
+            "GBP": 0.75,  // фунт
+            "CNY": 7.25,  // юань
+            "JPY": 110.0, // иена
+            "CHF": 0.92,  // швейцарский франк
+            "CAD": 1.25,  // канадский доллар
+            "AUD": 1.35   // австралийский доллар
+        ]
     
     // MARK: - Number Formatters
     private let numberFormatter: NumberFormatter = {
@@ -152,7 +156,6 @@ final class CurrencyService: CurrencyServiceProtocol {
     }
     
 //    Возвращает полный список валют (берётся из Currency.allCurrencies).
-    
     func getCurrenciesForExchange(excluding baseCurrency: Currency = Currency.usd) -> [Currency] {
         return Currency.allCurrencies.filter { $0 != baseCurrency }
     }
