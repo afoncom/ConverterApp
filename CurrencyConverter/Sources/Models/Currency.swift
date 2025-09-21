@@ -1,7 +1,6 @@
 //
 //  Currency.swift
 //  CurrencyConverter
-//
 //  Created by afon.com on 04.09.2025.
 //
 

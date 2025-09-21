@@ -1,7 +1,6 @@
 //
-//  ExchangeRateListView.swift
+//  ExchangeRateListVC.swift
 //  CurrencyConverter
-//
 //  Created by afon.com on 13.09.2025.
 //
 
@@ -10,9 +9,8 @@ import SwiftUI
 
 struct ExchangeRateListView: View {
     @StateObject private var viewModel = ExchangeRateListViewModel()
-    @Environment(\.presentationMode) var presentationMode
-    
-    var onCurrencySelected: ((Currency) -> Void)?
+    @Environment(\.presentationMode) private var presentationMode
+    let onCurrencySelected: ((Currency) -> Void)?
     
     init(onCurrencySelected: ((Currency) -> Void)? = nil) {
         self.onCurrencySelected = onCurrencySelected

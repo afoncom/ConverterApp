@@ -21,11 +21,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0804E5092E7B2186009C48D1 /* OldCode */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = OldCode;
-			sourceTree = "<group>";
-		};
 		0806E6542E6A158500C21A3A /* CurrencyConverter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -51,7 +46,6 @@
 			isa = PBXGroup;
 			children = (
 				0806E6542E6A158500C21A3A /* CurrencyConverter */,
-				0804E5092E7B2186009C48D1 /* OldCode */,
 				0897484F2E7C4699003DB1CF /* CurrencyConverter.app */,
 			);
 			sourceTree = "<group>";
@@ -72,7 +66,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				0804E5092E7B2186009C48D1 /* OldCode */,
 				0806E6542E6A158500C21A3A /* CurrencyConverter */,
 			);
 			name = CurrencyConverter;

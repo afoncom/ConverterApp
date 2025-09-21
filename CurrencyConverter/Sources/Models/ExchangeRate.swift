@@ -1,7 +1,6 @@
 //
 //  ExchangeRate 2.swift
 //  CurrencyConverter
-//
 //  Created by afon.com on 18.09.2025.
 //
 

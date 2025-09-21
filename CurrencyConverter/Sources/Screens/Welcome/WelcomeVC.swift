@@ -1,7 +1,6 @@
 //
 //  WelcomeViewController.swift
 //  CurrencyConverter
-//
 //  Created by afon.com on 18.09.2025.
 //
 
@@ -10,7 +9,6 @@ import SwiftUI
 
 struct WelcomeViewController: View {
     @State private var navigate = false
-    // состояние для перехода
     
     var body: some View {
         if navigate {

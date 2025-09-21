@@ -1,8 +1,7 @@
 //
 //  CurrencyConverterViewControllerUI.swift
 //  CurrencyConverter
-//
-//  Created by afon.com on 18.09.2025.
+//  Created by afon.com on 18.09.2025.>
 //
 
 import SwiftUI
@@ -15,7 +14,7 @@ struct CurrencyConverterView: View {
     @State private var showCurrencyList = false
     
     private let baseCurrency = Currency.usd
-    private let currencyService = CurrencyService.shared
+    private let currencyService = CurrencyService()
     
     var body: some View {
         NavigationStack {
@@ -87,6 +86,7 @@ struct CurrencyConverterView: View {
     }
     
     // MARK: - Методы
+/// Конвертирует введённую сумму из базовой валюты в выбранную.
     private func convertCurrency() {
         guard let value = Double(amount), value > 0 else {
             conversionResult = nil
@@ -95,6 +95,7 @@ struct CurrencyConverterView: View {
         conversionResult = currencyService.convert(amount: value, from: baseCurrency, to: selectedCurrency)
     }
     
+/// Обновляет выбранную валюту и пересчитывает конвертацию
     private func updateSelectedCurrency(_ currency: Currency) {
         selectedCurrency = currency
         if let value = Double(amount), value > 0 {
