@@ -6,11 +6,21 @@
 
 import Foundation
 
-// MARK: - API Response Model
-struct CurrencyInfo: Codable {
-    let uuid: String
-    let name: String
-    let rate: Double
+// MARK: - API Response Models
+
+
+// Новая модель для ExchangeRate-API
+struct ExchangeRateAPIResponse: Codable {
+    let provider: String
+    let base: String
+    let date: String
+    let timeLastUpdated: Int
+    let rates: [String: Double]
+    
+    enum CodingKeys: String, CodingKey {
+        case provider, base, date, rates
+        case timeLastUpdated = "time_last_updated"
+    }
 }
 
 
@@ -19,19 +29,20 @@ final class CurrencyService {
     
     
     // MARK: - Private Properties
-    private let apiURL = "http://localhost:8080/v1/getRates"
+    // Реальный API валютных курсов
+    private let apiURL = "https://api.exchangerate-api.com/v4/latest/USD"
     
     private let staticRates: [String: Double] = [
-            "USD": 1.0,
-            "EUR": 0.85,
-            "RUB": 95.50,
-            "GBP": 0.75,
-            "CNY": 7.25,
-            "JPY": 110.0,
-            "CHF": 0.92,
-            "CAD": 1.25,
-            "AUD": 1.35
-        ]
+        "USD": 1.0,
+        "EUR": 0.85,
+        "RUB": 95.50,
+        "GBP": 0.75,
+        "CNY": 7.25,
+        "JPY": 110.0,
+        "CHF": 0.92,
+        "CAD": 1.25,
+        "AUD": 1.35
+    ]
     
     // MARK: - Number Formatters
     private let numberFormatter: NumberFormatter = {
@@ -43,7 +54,7 @@ final class CurrencyService {
     }()
     
     // MARK: - Public Methods (Получение списка курсов)
-///Получение списка курсов
+    ///Получение списка курсов
     func getExchangeRates(baseCurrency: Currency) -> [ExchangeRate] {
         var rates: [ExchangeRate] = []
         
@@ -64,7 +75,7 @@ final class CurrencyService {
     }
     
     
-/// Конвертация суммы из одной валюты в другую
+    /// Конвертация суммы из одной валюты в другую
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult? {
         guard let fromRate = staticRates[from.code],
               let toRate = staticRates[to.code] else {
@@ -87,7 +98,7 @@ final class CurrencyService {
             formattedConverted: formattedConverted
         )
     }
-
+    
     
     /// Форматировать сумму по валюте
     func getFormattedAmount(_ amount: Double, currency: Currency) -> String {
@@ -98,7 +109,7 @@ final class CurrencyService {
     
     // MARK: - API Methods
     
-/// Метод для загрузки курсов валют с локального API сервера
+    /// Метод для загрузки курсов валют с реального API
     func getExchangeRatesFromAPI(baseCurrency: Currency, completion: @escaping (Result<[ExchangeRate], Error>) -> Void) {
         guard let url = URL(string: apiURL) else {
             completion(.failure(APIError.invalidURL))
@@ -117,8 +128,9 @@ final class CurrencyService {
             }
             
             do {
-                let apiResponses = try JSONDecoder().decode([CurrencyInfo].self, from: data)
-                let exchangeRates = self.convertAPIResponseToExchangeRates(apiResponses, baseCurrency: baseCurrency)
+                // Парсим ответ от ExchangeRate-API
+                let apiResponse = try JSONDecoder().decode(ExchangeRateAPIResponse.self, from: data)
+                let exchangeRates = self.convertExchangeRateAPIResponse(apiResponse, baseCurrency: baseCurrency)
                 completion(.success(exchangeRates))
             } catch {
                 completion(.failure(error))
@@ -128,22 +140,29 @@ final class CurrencyService {
         task.resume()
     }
     
-/// Преобразование данных API в модель курсов
-    private func convertAPIResponseToExchangeRates(_ apiResponses: [CurrencyInfo], baseCurrency: Currency) -> [ExchangeRate] {
+    /// Преобразование данных от ExchangeRate-API в модель курсов
+    private func convertExchangeRateAPIResponse(_ apiResponse: ExchangeRateAPIResponse, baseCurrency: Currency) -> [ExchangeRate] {
         var exchangeRates: [ExchangeRate] = []
         
-        for apiResponse in apiResponses {
-            if let currency = Currency.allCurrencies.first(where: { $0.code == apiResponse.name }) {
-                let exchangeRate = ExchangeRate(
-                    from: baseCurrency,
-                    to: currency,
-                    rate: apiResponse.rate
-                )
-                exchangeRates.append(exchangeRate)
+        // Проходим по всем курсам из API
+        for (currencyCode, rate) in apiResponse.rates {
+            // Находим соответствующую валюту в нашем списке
+            if let currency = Currency.allCurrencies.first(where: { $0.code == currencyCode }) {
+                // Исключаем базовую валюту (она всегда = 1)
+                if currency != baseCurrency {
+                    let exchangeRate = ExchangeRate(
+                        from: baseCurrency,
+                        to: currency,
+                        rate: rate
+                    )
+                    exchangeRates.append(exchangeRate)
+                }
             }
         }
+        
         return exchangeRates
     }
+    
 }
 
 // MARK: - API Errors (Ошибки API)

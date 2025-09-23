@@ -1,5 +1,5 @@
 //
-//  CurrencyConverterViewControllerUI.swift
+//  CurrencyVC.swift
 //  CurrencyConverter
 //  Created by afon.com on 18.09.2025.>
 //
@@ -10,11 +10,10 @@ import SwiftUI
 struct CurrencyConverterView: View {
     @State private var amount: String = ""
     @State private var selectedCurrency: Currency = .eur
-    @State private var conversionResult: ConversionResult?
     @State private var showCurrencyList = false
+    @StateObject private var viewModel = CurrencyConverterViewModel()
     
     private let baseCurrency = Currency.usd
-    private let currencyService = CurrencyService()
     
     var body: some View {
         NavigationStack {
@@ -29,11 +28,22 @@ struct CurrencyConverterView: View {
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(15)
                 
+                if viewModel.isLoading {
+                        ProgressView("Загрузка курсов...")
+                            .frame(maxWidth: .infinity)
+                    }
+                    
+                    if let error = viewModel.errorMessage {
+                        Text("Ошибка: \(error)")
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                
                 Button {
                     showCurrencyList = true
                 } label: {
                     HStack {
-                        Text("Выбрать валюту: \(conversionResult?.toCurrency.code ?? selectedCurrency.code)")
+                        Text("Выбрать валюту: \(viewModel.conversionResult?.toCurrency.code ?? selectedCurrency.code)")
                             .foregroundColor(.primary)
                         Spacer()
                         Image(systemName: "chevron.right") // Стрелка вправо
@@ -43,8 +53,8 @@ struct CurrencyConverterView: View {
                     .background(Color.blue.opacity(0.2))
                     .cornerRadius(15)
                 }
-
-                if let result = conversionResult {
+                
+                if let result = viewModel.conversionResult {
                     Text("Курс: 1 \(result.fromCurrency.code) = \(String(format: "%.4f", result.exchangeRate)) \(result.toCurrency.code)")
                         .font(.subheadline)
                         .foregroundColor(.gray)
@@ -59,7 +69,7 @@ struct CurrencyConverterView: View {
                 .foregroundColor(.white)
                 .cornerRadius(15)
                 
-                if let result = conversionResult {
+                if let result = viewModel.conversionResult {
                     VStack {
                         Text("Результат:")
                             .font(.headline)
@@ -82,28 +92,26 @@ struct CurrencyConverterView: View {
                     updateSelectedCurrency(currency)
                 }
             }
+            .task {
+                viewModel.fetchRates()
+            }
         }
     }
     
     // MARK: - Методы
-/// Конвертирует введённую сумму из базовой валюты в выбранную.
+    /// Конвертирует введённую сумму из базовой валюты в выбранную.
     private func convertCurrency() {
-        guard let value = Double(amount), value > 0 else {
-            conversionResult = nil
-            return
-        }
-        conversionResult = currencyService.convert(amount: value, from: baseCurrency, to: selectedCurrency)
+        guard let value = Double(amount), value > 0 else { return }
+        viewModel.convert(amount: value, to: selectedCurrency)
     }
     
-/// Обновляет выбранную валюту и пересчитывает конвертацию
+    /// Обновляет выбранную валюту и пересчитывает конвертацию
     private func updateSelectedCurrency(_ currency: Currency) {
         selectedCurrency = currency
-        if let value = Double(amount), value > 0 {
-            conversionResult = currencyService.convert(amount: value, from: baseCurrency, to: currency)
-        }
+        guard let value = Double(amount), value > 0 else { return }
+        viewModel.convert(amount: value, to: currency)
     }
 }
-
 
 #Preview {
     CurrencyConverterView()

@@ -15,30 +15,48 @@ struct ExchangeRateListView: View {
     init(onCurrencySelected: ((Currency) -> Void)? = nil) {
         self.onCurrencySelected = onCurrencySelected
     }
-    
+
     var body: some View {
         NavigationView {
-            List(viewModel.items, id: \.currency.code) { item in
-                Button {
-                    onCurrencySelected?(item.currency)
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.displayText)
-                                .font(.headline)
-                            Text(item.rateDisplayText)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+            Group {
+                if viewModel.isLoading {
+                    ProgressView("Загрузка курсов...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = viewModel.errorMessage {
+                    VStack(spacing: 10) {
+                        Text("Ошибка: \(error)")
+                            .foregroundColor(.red)
+                        Button("Повторить") {
+                            viewModel.reload()
                         }
-                        Spacer()
-                        Text(item.currencySymbol)
-                            .font(.title2)
+                        .padding()
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(10)
                     }
-                    .padding(.vertical, 4)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    List(viewModel.items, id: \.currency.code) { item in
+                        Button {
+                            onCurrencySelected?(item.currency)
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(item.displayText)
+                                        .font(.headline)
+                                    Text(item.rateDisplayText)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                Text(item.currencySymbol)
+                                    .font(.title2)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
                 }
             }
-        }
             .navigationTitle(viewModel.title)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -57,11 +75,14 @@ struct ExchangeRateListView: View {
                 }
             }
             .refreshable {
-                    viewModel.reload()
+                viewModel.reload()
             }
         }
     }
-    
-    #Preview {
-        ExchangeRateListView()
 }
+
+#Preview {
+    ExchangeRateListView()
+}
+
+
