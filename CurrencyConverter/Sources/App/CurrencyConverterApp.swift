@@ -10,7 +10,7 @@ import SwiftUI
 struct CurrencyConverterApp: App {
     var body: some Scene {
         WindowGroup {
-            WelcomeViewController()
+            WelcomeScreen()
         }
     }
 }

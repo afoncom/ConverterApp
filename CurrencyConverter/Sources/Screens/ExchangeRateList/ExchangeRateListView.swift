@@ -1,5 +1,5 @@
 //
-//  ExchangeRateListVC.swift
+//  ExchangeRateListView.swift
 //  CurrencyConverter
 //  Created by afon.com on 13.09.2025.
 //
@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ExchangeRateListView: View {
     @StateObject private var viewModel = ExchangeRateListViewModel()
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     let onCurrencySelected: ((Currency) -> Void)?
     
     init(onCurrencySelected: ((Currency) -> Void)? = nil) {
@@ -17,7 +17,7 @@ struct ExchangeRateListView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Group {
                 if viewModel.isLoading {
                     ProgressView("Загрузка курсов...")
@@ -38,7 +38,7 @@ struct ExchangeRateListView: View {
                     List(viewModel.items, id: \.currency.code) { item in
                         Button {
                             onCurrencySelected?(item.currency)
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -59,13 +59,6 @@ struct ExchangeRateListView: View {
             }
             .navigationTitle(viewModel.title)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        print("Настройки нажаты")
-                    } label: {
-                        Image(systemName: "gearshape")
-                    }
-                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         print("Добавить новый курс")

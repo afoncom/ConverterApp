@@ -7,6 +7,7 @@
 import Foundation
 
 // MARK: - Currency Model (Модель валюты)
+
 struct Currency: Codable, Equatable {
     let code: String
     let name: String

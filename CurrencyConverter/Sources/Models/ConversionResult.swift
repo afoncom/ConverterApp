@@ -7,6 +7,7 @@
 import Foundation
 
 // MARK: - Currency Conversion Result (Результат конвертации)
+
 struct ConversionResult {
     let originalAmount: Double
     let convertedAmount: Double

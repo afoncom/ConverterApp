@@ -7,6 +7,7 @@
 import Foundation
 
 // MARK: - Exchange Rate Model (Курс обмена)
+
 struct ExchangeRate: Codable {
     let fromCurrency: Currency
     let toCurrency: Currency

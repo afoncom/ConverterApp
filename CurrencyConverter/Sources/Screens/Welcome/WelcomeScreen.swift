@@ -1,5 +1,5 @@
 //
-//  WelcomeVC.swift
+//  WelcomeScreen.swift
 //  CurrencyConverter
 //  Created by afon.com on 18.09.2025.
 //
@@ -7,7 +7,7 @@
 import SwiftUI
 
 
-struct WelcomeViewController: View {
+struct WelcomeScreen: View {
     @State private var navigate = false
     
     var body: some View {
@@ -30,7 +30,7 @@ struct WelcomeViewController: View {
 }
 
 #Preview {
-    WelcomeViewController()
+    WelcomeScreen()
 }
 
 

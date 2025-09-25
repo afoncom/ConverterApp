@@ -1,5 +1,5 @@
 //
-//  CurrencyVC.swift
+//  CurrencyConverterView.swift
 //  CurrencyConverter
 //  Created by afon.com on 18.09.2025.>
 //
@@ -99,6 +99,7 @@ struct CurrencyConverterView: View {
     }
     
     // MARK: - Методы
+    
     /// Конвертирует введённую сумму из базовой валюты в выбранную.
     private func convertCurrency() {
         guard let value = Double(amount), value > 0 else { return }

@@ -8,8 +8,6 @@ import Foundation
 
 // MARK: - API Response Models
 
-
-// Новая модель для ExchangeRate-API
 struct ExchangeRateAPIResponse: Codable {
     let provider: String
     let base: String
@@ -25,11 +23,11 @@ struct ExchangeRateAPIResponse: Codable {
 
 
 // MARK: - Currency Service Implementation
+
 final class CurrencyService {
     
     
     // MARK: - Private Properties
-    // Реальный API валютных курсов
     private let apiURL = "https://api.exchangerate-api.com/v4/latest/USD"
     
     private let staticRates: [String: Double] = [
@@ -45,6 +43,7 @@ final class CurrencyService {
     ]
     
     // MARK: - Number Formatters
+    
     private let numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -54,7 +53,8 @@ final class CurrencyService {
     }()
     
     // MARK: - Public Methods (Получение списка курсов)
-    ///Получение списка курсов
+    
+    /// Получение списка курсов
     func getExchangeRates(baseCurrency: Currency) -> [ExchangeRate] {
         var rates: [ExchangeRate] = []
         
@@ -144,11 +144,8 @@ final class CurrencyService {
     private func convertExchangeRateAPIResponse(_ apiResponse: ExchangeRateAPIResponse, baseCurrency: Currency) -> [ExchangeRate] {
         var exchangeRates: [ExchangeRate] = []
         
-        // Проходим по всем курсам из API
         for (currencyCode, rate) in apiResponse.rates {
-            // Находим соответствующую валюту в нашем списке
             if let currency = Currency.allCurrencies.first(where: { $0.code == currencyCode }) {
-                // Исключаем базовую валюту (она всегда = 1)
                 if currency != baseCurrency {
                     let exchangeRate = ExchangeRate(
                         from: baseCurrency,
