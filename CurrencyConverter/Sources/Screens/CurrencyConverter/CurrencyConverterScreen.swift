@@ -1,27 +1,25 @@
 //
-//  CurrencyConverterView.swift
+//  CurrencyConverterScreen.swift
 //  CurrencyConverter
 //  Created by afon.com on 18.09.2025.>
 //
 
 import SwiftUI
 
-
-struct CurrencyConverterView: View {
+struct CurrencyConverterScreen: View {
+    
+    // MARK: - Состояния экрана
     @State private var amount: String = ""
-    @State private var selectedCurrency: Currency = .eur
+    @State private var selectedCurrency: Currency = .usd
     @State private var showCurrencyList = false
     @StateObject private var viewModel = CurrencyConverterViewModel()
     
-    private let baseCurrency = Currency.usd
+    private let baseCurrency = Currency.rub
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text("Конвертер валют")
-                    .font(.title2)
-                    .bold()
-                
+    
                 TextField("Введите сумму в \(baseCurrency.name)", text: $amount)
                     .keyboardType(.decimalPad)
                     .padding()
@@ -29,15 +27,15 @@ struct CurrencyConverterView: View {
                     .cornerRadius(15)
                 
                 if viewModel.isLoading {
-                        ProgressView("Загрузка курсов...")
-                            .frame(maxWidth: .infinity)
-                    }
-                    
-                    if let error = viewModel.errorMessage {
-                        Text("Ошибка: \(error)")
-                            .foregroundColor(.red)
-                            .padding()
-                    }
+                    ProgressView("Загрузка курсов...")
+                        .frame(maxWidth: .infinity)
+                }
+                
+                if let error = viewModel.errorMessage {
+                    Text("Ошибка: \(error)")
+                        .foregroundColor(.red)
+                        .padding()
+                }
                 
                 Button {
                     showCurrencyList = true
@@ -46,7 +44,7 @@ struct CurrencyConverterView: View {
                         Text("Выбрать валюту: \(viewModel.conversionResult?.toCurrency.code ?? selectedCurrency.code)")
                             .foregroundColor(.primary)
                         Spacer()
-                        Image(systemName: "chevron.right") // Стрелка вправо
+                        Image(systemName: "chevron.right")
                             .foregroundColor(.gray)
                     }
                     .padding()
@@ -85,13 +83,24 @@ struct CurrencyConverterView: View {
                 Spacer()
             }
             .padding()
-            
-            // Новый способ открытия списка валют
             .navigationDestination(isPresented: $showCurrencyList) {
-                ExchangeRateListView { currency in
+                ExchangeRateListViewScreen { currency in
                     updateSelectedCurrency(currency)
                 }
             }
+            .navigationTitle("Конвертер валют")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        print("Настройки")
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .imageScale(.large)
+                    }
+                }
+            }
+            
             .task {
                 viewModel.fetchRates()
             }
@@ -100,7 +109,7 @@ struct CurrencyConverterView: View {
     
     // MARK: - Методы
     
-    /// Конвертирует введённую сумму из базовой валюты в выбранную.
+    /// Конвертирует введённую сумму из базовой валюты в выбранную
     private func convertCurrency() {
         guard let value = Double(amount), value > 0 else { return }
         viewModel.convert(amount: value, to: selectedCurrency)
@@ -115,5 +124,5 @@ struct CurrencyConverterView: View {
 }
 
 #Preview {
-    CurrencyConverterView()
+    CurrencyConverterScreen()
 }

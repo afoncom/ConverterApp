@@ -6,30 +6,29 @@
 
 import Foundation
 
-// MARK: - Exchange Rate Cell ViewModel
+// MARK: - Расширение ExchangeRate для отображения в UI
+// Упрощает работу с курсами валют и отображением их в интерфейсе
 
-struct ExchangeRateCellViewModel {
-    let exchangeRate: ExchangeRate
+extension ExchangeRate {
     
-    /// Сервис для работы с валютами (например, форматы)
-    private let currencyService = CurrencyService()
+    /// Валюта, в которую конвертируем (целевая)
+    var currency: Currency {
+        toCurrency
+    }
 
-    
-    var currency: Currency { exchangeRate.toCurrency }
-
-    /// Отображаемый текст для валюты    // Текст вида "EUR - Euro"
+    /// Текст для отображения валюты (код + название)
     var displayText: String {
-        "\(currency.code) - \(currency.name)"
+        "\(toCurrency.code) - \(toCurrency.name)"
     }
 
-    /// Отображаем курс через CurrencyService
+    /// Текст для отображения курса относительно рубля
     var rateDisplayText: String {
-        let formattedRate = String(format: "%.4f", exchangeRate.rate)
-        return "1 USD = \(formattedRate) \(currency.code)"
+        "1 RUB = \(String(format: "%.4f", rate)) \(toCurrency.code)"
     }
     
-    
+    /// Символ валюты (например, ₽, $ или €)
     var currencySymbol: String {
-        currency.symbol
+        toCurrency.symbol
     }
 }
+

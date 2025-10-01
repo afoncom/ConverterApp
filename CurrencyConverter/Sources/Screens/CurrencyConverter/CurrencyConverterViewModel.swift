@@ -9,19 +9,42 @@ import SwiftUI
 @MainActor
 final class CurrencyConverterViewModel: ObservableObject {
     
+    // MARK: - Состояния экрана
+    
     @Published var conversionResult: ConversionResult?
+    
     @Published var rates: [ExchangeRate] = []
+    
     @Published var isLoading = false
+    
     @Published var errorMessage: String?
     
-    private let currencyService = CurrencyService()
-    private let baseCurrency = Currency.usd
+    // MARK: - Приватные свойства
     
+    /// Сервис для работы с валютами
+    private let currencyService: CurrencyService
+    
+    private let baseCurrency = Currency.rub
+    
+    // MARK: - Инициализация
+    
+    init(currencyService: CurrencyService) {
+        self.currencyService = currencyService
+    }
+    
+    /// Удобный конструктор по умолчанию
+    convenience init() {
+        self.init(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
+    }
+    
+    // MARK: - Загрузка курсов валют
+    
+    /// Получает курсы валют относительно базовой валюты
     func fetchRates() {
         isLoading = true
         errorMessage = nil
         
-        currencyService.getExchangeRatesFromAPI(baseCurrency: baseCurrency) { [weak self] result in
+        currencyService.getExchangeRates(baseCurrency: baseCurrency, selectedCurrencies: nil) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.isLoading = false
@@ -29,6 +52,7 @@ final class CurrencyConverterViewModel: ObservableObject {
                 switch result {
                 case .success(let rates):
                     self.rates = rates
+                    self.errorMessage = nil
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }
@@ -36,25 +60,12 @@ final class CurrencyConverterViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Конвертация
+    
+    /// Конвертирует сумму из базовой валюты в выбранную
     func convert(amount: Double, to currency: Currency) {
-        guard let rate = rates.first(where: { $0.toCurrency == currency })?.rate else {
-            conversionResult = nil
-            return
-        }
-        
-        let convertedAmount = amount * rate
-        let formattedOriginal = currencyService.getFormattedAmount(amount, currency: baseCurrency)
-        let formattedConverted = currencyService.getFormattedAmount(convertedAmount, currency: currency)
-        
-        conversionResult = ConversionResult(
-            originalAmount: amount,
-            convertedAmount: convertedAmount,
-            fromCurrency: baseCurrency,
-            toCurrency: currency,
-            exchangeRate: rate,
-            formattedOriginal: formattedOriginal,
-            formattedConverted: formattedConverted
-        )
+        conversionResult = currencyService.convert(amount: amount, from: baseCurrency, to: currency)
     }
 }
+
 

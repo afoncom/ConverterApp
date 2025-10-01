@@ -8,23 +8,30 @@ import SwiftUI
 
 
 struct WelcomeScreen: View {
-    @State private var navigate = false
+    @State private var showWelcome = true
     
     var body: some View {
-        if navigate {
-            CurrencyConverterView()
-        } else {
-            Text("Добро пожаловать!")
-                .font(.title)
-                .padding()
-                .background(Color.gray)
-                .cornerRadius(15)
-                .shadow(radius: 5)
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        navigate = true
+        if showWelcome {
+            VStack(spacing: 20) {
+                Text("💱")
+                    .font(.system(size: 60))
+                Text("Конвертер валют")
+                    .font(.title)
+                    .fontWeight(.bold)
+                Text("Добро пожаловать!")
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        showWelcome = false
                     }
                 }
+            }
+        } else {
+            CurrencyConverterScreen()
         }
     }
 }
@@ -32,5 +39,3 @@ struct WelcomeScreen: View {
 #Preview {
     WelcomeScreen()
 }
-
-
