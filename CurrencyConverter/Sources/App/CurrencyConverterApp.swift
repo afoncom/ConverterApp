@@ -8,31 +8,25 @@ import SwiftUI
 
 // MARK: - Service Containerе
 
-// Контейнер для хранения сервисов приложения и их передачи через environmentObject
-// Используется для Dependency Injection (внедрение зависимостей), чтобы не создавать сервисы в каждом View
-@MainActor
-final class ServiceContainer: ObservableObject {
+// Контейнер для хранения сервисов приложения
+final class ServiceContainer {
     let cacheService: CacheServiceProtocol   // Сервис для кэширования данных
     let currencyService: CurrencyService     // Сервис для работы с валютами (API, расчеты и т.д.)
     
     init() {
-        self.cacheService = CacheService()   // Создаём сервис кэша
-        self.currencyService = CurrencyServiceImpl(cacheService: self.cacheService) // Передаем кэш в сервис валют
+        self.cacheService = CacheService()
+        self.currencyService = CurrencyServiceImpl(cacheService: self.cacheService) 
     }
 }
 
 @main
 struct CurrencyConverterApp: App {
-    // Управление выбранными валютами
-    @StateObject private var currencyManager = CurrencyManager()
-    // Контейнер сервисов
-    @StateObject private var serviceContainer = ServiceContainer()
+    private var currencyManager = CurrencyManager()
+    private var serviceContainer = ServiceContainer()
     
     var body: some Scene {
         WindowGroup {
-            WelcomeScreen()
-                .environmentObject(currencyManager)   // Передаем менеджер валют в environment для всех View
-                .environmentObject(serviceContainer)  // Передаем сервисы в environment для всех View
+            WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
         }
     }
 }

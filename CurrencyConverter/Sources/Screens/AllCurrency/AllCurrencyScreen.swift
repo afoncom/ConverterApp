@@ -10,23 +10,30 @@ import SwiftUI
 struct AllCurrencyScreen: View {
     
     // MARK: - State и Environment
+    
     @State private var searchText = ""
     @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
-    @StateObject private var viewModel = AllCurrencyViewModel() // ViewModel экрана
-    @EnvironmentObject var currencyManager: CurrencyManager     // Менеджер выбранных валют
-    @EnvironmentObject var serviceContainer: ServiceContainer   // Контейнер сервисов
+    @StateObject private var viewModel = AllCurrencyViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
     @State private var addedCurrency: String? = nil      // Валюта, которую добавили
     @State private var showAddedAlert = false            // Показывать ли алерт
     @State private var pressedCurrency: String? = nil    // Валюта, на которую нажали
     
+    let currencyManager: CurrencyManager                 // Менеджер выбранных валют
+    let serviceContainer: ServiceContainer               // Контейнер сервисов
     let onCurrencySelected: ((String) -> Void)?          // Callback при выборе валюты
     // MARK: - Инициализация
-    init(onCurrencySelected: ((String) -> Void)? = nil) {
+    
+    init(currencyManager: CurrencyManager,
+        serviceContainer: ServiceContainer,
+        onCurrencySelected: ((String) -> Void)? = nil) {
+        self.currencyManager = currencyManager
+        self.serviceContainer = serviceContainer
         self.onCurrencySelected = onCurrencySelected
     }
     
     // MARK: - Фильтрация валют по поиску
+    
     var filteredCurrencies: [String] {
         let currenciesToShow = viewModel.availableCurrencies
         
@@ -52,9 +59,8 @@ struct AllCurrencyScreen: View {
             .navigationTitle("Все валюты (\(filteredCurrencies.count))")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                // Передаем менеджер валют в ViewModel
-                viewModel.setCurrencyManager(currencyManager)
-                
+                // Передаем менеджер валют и сервис в ViewModel
+                viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService)
                 
                 if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
                     viewModel.loadAllCurrencies()
@@ -195,5 +201,5 @@ struct AllCurrencyScreen: View {
 }
 
 #Preview {
-    AllCurrencyScreen()
+    AllCurrencyScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer(), onCurrencySelected: nil)
 }

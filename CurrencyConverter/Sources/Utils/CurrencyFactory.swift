@@ -10,11 +10,8 @@ import Foundation
 
 struct CurrencyFactory {
     
-    /// Создает Currency для любого кода. Сначала ищет в предопределенных, затем создаёт новую
+    /// Создает Currency для любого кода через CurrencyNames
     static func createCurrency(for code: String) -> Currency? {
-        if let predefined = Currency.allCurrencies.first(where: { $0.code == code }) {
-            return predefined
-        }
         return createDynamicCurrency(for: code)
     }
     
@@ -76,14 +73,5 @@ struct CurrencyFactory {
     /// Проверка поддержки валюты
     static func isSupported(currencyCode: String) -> Bool {
         CurrencyNames.hasRussianName(for: currencyCode)
-    }
-}
-
-// MARK: - Удобные методы
-
-extension CurrencyFactory {
-    /// Коды основных валют
-    static var predefinedCurrencyCodes: [String] {
-        Currency.allCurrencies.map(\.code)
     }
 }

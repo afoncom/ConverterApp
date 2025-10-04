@@ -21,3 +21,18 @@ struct ExchangeRate: Codable {
         self.lastUpdated = Date()
     }
 }
+
+// MARK: - UI Extensions
+
+extension ExchangeRate {
+    
+    /// Текст для отображения валюты (код + название)
+    var displayText: String {
+        "\(toCurrency.code) - \(toCurrency.name)"
+    }
+
+    /// Текст для отображения курса относительно рубля
+    var rateDisplayText: String {
+        "1 RUB = \(String(format: "%.4f", rate)) \(toCurrency.code)"
+    }
+}

@@ -5,33 +5,26 @@
 //  Created by afon.com on 01.10.2025.
 //
 
-
 import SwiftUI
-import Combine
+
 
 @MainActor
 final class AllCurrencyViewModel: ObservableObject {
     
     // MARK: - Состояния, которые видит View
     
-    @Published var allCurrencies: [String] = []
-    
+    private var allCurrencies: [String] = []
     @Published var availableCurrencies: [String] = []
-    
     @Published var isLoading = false
-    
     @Published var errorMessage: String?
     
     // MARK: - Приватные свойства
     
     /// Сервис для работы с валютами (API или кэш)
-    private let currencyService: CurrencyService
+    private var currencyService: CurrencyService
     
     /// Менеджер выбранных пользователем валют
     private var currencyManager: CurrencyManager!
-    
-    /// Для хранения подписок Combine
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Инициализация
     
@@ -39,24 +32,13 @@ final class AllCurrencyViewModel: ObservableObject {
         self.currencyService = currencyService
     }
     
-    /// Удобный конструктор по умолчанию
-    convenience init() {
-        self.init(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
-    }
-    
     // MARK: - Настройка CurrencyManager
     
-    /// Устанавливаем менеджер валют и подписываемся на изменения выбранных валют
-    func setCurrencyManager(_ manager: CurrencyManager) {
-        self.currencyManager = manager
-        
-        manager.$selectedCurrencies
-            .sink { [weak self] _ in
-                Task { @MainActor in
-                    self?.filterAvailableCurrencies()
-                }
-            }
-            .store(in: &cancellables)
+    /// Метод - устанавливаем менеджер и сервис
+    func setServices(currencyManager: CurrencyManager, currencyService: CurrencyService) {
+        self.currencyManager = currencyManager
+        self.currencyService = currencyService
+        filterAvailableCurrencies()
     }
     
     // MARK: - Загрузка валют
@@ -74,7 +56,7 @@ final class AllCurrencyViewModel: ObservableObject {
                 switch result {
                 case .success(let currencies):
                     self.allCurrencies = currencies
-                    self.filterAvailableCurrencies() 
+                    self.filterAvailableCurrencies()
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                     self.availableCurrencies = []
@@ -113,3 +95,5 @@ final class AllCurrencyViewModel: ObservableObject {
         return CurrencyNames.hasRussianName(for: currencyCode)
     }
 }
+
+

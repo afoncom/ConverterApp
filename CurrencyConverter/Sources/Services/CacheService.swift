@@ -11,16 +11,16 @@ import Foundation
 protocol CacheServiceProtocol {
     func cacheRates(_ rates: [String: Double])
     func getCachedRates() -> [String: Double]?
-    func getCachedRate(for currencyCode: String) -> Double?
+//    func getCachedRate(for currencyCode: String) -> Double?
     func isCacheValid() -> Bool
     func clearCache()
-    func getLastUpdateTime() -> Date?
-    func getCachedRatesCount() -> Int
+//    func getLastUpdateTime() -> Date?
+//    func getCachedRatesCount() -> Int
 }
 
 // MARK: - Cache Service для курсов валют из CacheManager
 
-final class CacheService: CacheServiceProtocol, ObservableObject {
+final class CacheService: CacheServiceProtocol {
     
     // MARK: - Initializer
     init() {}
@@ -46,14 +46,6 @@ final class CacheService: CacheServiceProtocol, ObservableObject {
         return cachedRates.isEmpty ? nil : cachedRates
     }
     
-    /// Получить курс конкретной валюты из кэша
-    func getCachedRate(for currencyCode: String) -> Double? {
-        guard isCacheValid() else {
-            return nil
-        }
-        return cachedRates[currencyCode]
-    }
-    
     /// Проверить, актуален ли кэш
     func isCacheValid() -> Bool {
         guard let timestamp = cacheTimestamp else {
@@ -68,13 +60,21 @@ final class CacheService: CacheServiceProtocol, ObservableObject {
         cacheTimestamp = nil
     }
     
+    /// Получить курс конкретной валюты из кэша
+//    func getCachedRate(for currencyCode: String) -> Double? {
+//        guard isCacheValid() else {
+//            return nil
+//        }
+//        return cachedRates[currencyCode]
+//    }
+    
     /// Получить время последнего обновления кэша
-    func getLastUpdateTime() -> Date? {
-        return cacheTimestamp
-    }
+//    func getLastUpdateTime() -> Date? {
+//        return cacheTimestamp
+//    }
     
     /// Получить количество закэшированных курсов
-    func getCachedRatesCount() -> Int {
-        return cachedRates.count
-    } 
+//    func getCachedRatesCount() -> Int {
+//        return cachedRates.count
+//    } 
 }

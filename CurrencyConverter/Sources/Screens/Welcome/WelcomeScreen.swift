@@ -6,9 +6,16 @@
 
 import SwiftUI
 
-
 struct WelcomeScreen: View {
     @State private var showWelcome = true
+    
+    let currencyManager: CurrencyManager
+    let serviceContainer: ServiceContainer
+    
+    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
+        self.currencyManager = currencyManager
+        self.serviceContainer = serviceContainer
+    }
     
     var body: some View {
         if showWelcome {
@@ -31,11 +38,11 @@ struct WelcomeScreen: View {
                 }
             }
         } else {
-            CurrencyConverterScreen()
+            CurrencyConverterScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
         }
     }
 }
 
 #Preview {
-    WelcomeScreen()
+    WelcomeScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())
 }

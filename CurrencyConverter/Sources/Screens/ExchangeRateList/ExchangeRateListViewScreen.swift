@@ -10,20 +10,22 @@ struct ExchangeRateListViewScreen: View {
     
     // MARK: - Состояния экрана
     
-    @StateObject private var viewModel = ExchangeRateListViewModel()
-    
-    @EnvironmentObject var currencyManager: CurrencyManager
-    
+    @StateObject private var viewModel = ExchangeRateListViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
     @Environment(\.dismiss) private var dismiss
     
-    /// Callback при выборе валюты
+    let currencyManager: CurrencyManager
+    let serviceContainer: ServiceContainer
     let onCurrencySelected: ((Currency) -> Void)?
     
     // MARK: - Инициализация
     
     /// Конструктор с опциональным callback
-    init(onCurrencySelected: ((Currency) -> Void)? = nil) {
+    init(currencyManager: CurrencyManager,
+         serviceContainer: ServiceContainer,
+        onCurrencySelected: ((Currency) -> Void)? = nil) {
+        self.currencyManager = currencyManager
         self.onCurrencySelected = onCurrencySelected
+        self.serviceContainer = serviceContainer
     }
     
     // MARK: - Body экрана
@@ -47,9 +49,9 @@ struct ExchangeRateListViewScreen: View {
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    List(viewModel.items, id: \.currency.code) { exchangeRate in
+                    List(viewModel.items, id: \.toCurrency.code) { exchangeRate in
                         Button {
-                            onCurrencySelected?(exchangeRate.currency)
+                            onCurrencySelected?(exchangeRate.toCurrency)
                             dismiss()
                         } label: {
                             HStack {
@@ -61,14 +63,14 @@ struct ExchangeRateListViewScreen: View {
                                         .foregroundColor(.secondary)
                                 }
                                 Spacer()
-                                Text(exchangeRate.currencySymbol)
+                                Text(exchangeRate.toCurrency.symbol)
                                     .font(.title2)
                             }
                             .padding(.vertical, 4)
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button {
-                                viewModel.removeCurrency(exchangeRate.currency.code)
+                                viewModel.removeCurrency(exchangeRate.toCurrency.code)
                             } label: {
                                 Label("Удалить", systemImage: "trash")
                             }
@@ -81,7 +83,7 @@ struct ExchangeRateListViewScreen: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
-                        AllCurrencyScreen { selectedCurrency in
+                        AllCurrencyScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { selectedCurrency in
                             print("Добавлена валюта: \(selectedCurrency)")
                         }
                     } label: {
@@ -93,12 +95,12 @@ struct ExchangeRateListViewScreen: View {
                 viewModel.reload()
             }
             .onAppear {
-                viewModel.setCurrencyManager(currencyManager)
+                viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService)
             }
         }
     }
 }
 
 #Preview {
-    ExchangeRateListViewScreen()
+    ExchangeRateListViewScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())
 }

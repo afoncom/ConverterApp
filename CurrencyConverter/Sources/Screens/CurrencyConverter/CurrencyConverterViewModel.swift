@@ -12,29 +12,20 @@ final class CurrencyConverterViewModel: ObservableObject {
     // MARK: - Состояния экрана
     
     @Published var conversionResult: ConversionResult?
-    
     @Published var rates: [ExchangeRate] = []
-    
     @Published var isLoading = false
-    
     @Published var errorMessage: String?
     
     // MARK: - Приватные свойства
     
     /// Сервис для работы с валютами
-    private let currencyService: CurrencyService
-    
-    private let baseCurrency = Currency.rub
+    private var currencyService: CurrencyService
+    private let baseCurrency = CurrencyFactory.createCurrency(for: "RUB")!
     
     // MARK: - Инициализация
     
     init(currencyService: CurrencyService) {
         self.currencyService = currencyService
-    }
-    
-    /// Удобный конструктор по умолчанию
-    convenience init() {
-        self.init(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
     }
     
     // MARK: - Загрузка курсов валют
@@ -45,7 +36,7 @@ final class CurrencyConverterViewModel: ObservableObject {
         errorMessage = nil
         
         currencyService.getExchangeRates(baseCurrency: baseCurrency, selectedCurrencies: nil) { [weak self] result in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 guard let self = self else { return }
                 self.isLoading = false
                 
@@ -60,7 +51,12 @@ final class CurrencyConverterViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Конвертация
+    // MARK: - Методы
+
+    /// Метод - устанавливаем сервис
+    func setServices(currencyService: CurrencyService) {
+        self.currencyService = currencyService
+    }
     
     /// Конвертирует сумму из базовой валюты в выбранную
     func convert(amount: Double, to currency: Currency) {

@@ -21,7 +21,6 @@ struct ExchangeRateAPIResponse: Codable {
     }
 }
 
-
 // MARK: - Currency Service Implementation
 
 protocol CurrencyService {
@@ -42,17 +41,6 @@ final class CurrencyServiceImpl: CurrencyService {
         self.cacheService = cacheService
     }
     
-    private func getAPIURL(for baseCurrency: Currency) -> String {
-        return "https://api.exchangerate-api.com/v4/latest/\(baseCurrency.code)"
-    }
-    
-    // Статические курсы (для офлайн режима)
-    private let staticRatesFromRub: [String: Double] = [
-        "USD": 95.50, "EUR": 105.00, "RUB": 1.0,
-        "GBP": 120.00, "CNY": 13.20, "JPY": 0.87,
-        "CHF": 104.00, "CAD": 71.00, "AUD": 64.00
-    ]
-    
     // MARK: - Number Formatters
     
     private let numberFormatter: NumberFormatter = {
@@ -65,97 +53,34 @@ final class CurrencyServiceImpl: CurrencyService {
     
     // MARK: - Public Methods
     
-    /// Универсальный метод получения курсов
+    /// Универсальный метод получения курсов только через API
     func getExchangeRates(baseCurrency: Currency, selectedCurrencies: [String]? = nil, completion: @escaping (Result<[ExchangeRate], Error>) -> Void) {
-        fetchFromAPI(baseCurrency: baseCurrency, selectedCurrencies: selectedCurrencies) { [weak self] result in
-            switch result {
-            case .success(let rates):
-                completion(.success(rates))
-            case .failure(_):
-                // Если API недоступно, используем статические данные
-                let staticRates = self?.getStaticExchangeRates(baseCurrency: baseCurrency, selectedCurrencies: selectedCurrencies) ?? []
-                completion(.success(staticRates))
-            }
-        }
+        fetchFromAPI(baseCurrency: baseCurrency, selectedCurrencies: selectedCurrencies, completion: completion)
     }
     
-    /// Получение статических курсов валют (запасной вариант)
-    private func getStaticExchangeRates(baseCurrency: Currency, selectedCurrencies: [String]? = nil) -> [ExchangeRate] {
-        var rates: [ExchangeRate] = []
-        
-        let currenciesToProcess: [String]
-        if let selected = selectedCurrencies {
-            currenciesToProcess = selected
-        } else {
-            currenciesToProcess = CurrencyFactory.predefinedCurrencyCodes
-        }
-        
-        for currencyCode in currenciesToProcess {
-            if currencyCode != baseCurrency.code {
-                if let rubRate = staticRatesFromRub[currencyCode] {
-                    let rate: Double
-                    
-                    if baseCurrency.code == "RUB" {
-                        rate = 1.0 / rubRate
-                    } else {
-                        guard let baseRubRate = staticRatesFromRub[baseCurrency.code] else { continue }
-                        rate = rubRate / baseRubRate
-                    }
-                    
-                    // Используем CurrencyFactory для создания объекта валюты
-                    if let currency = CurrencyFactory.createCurrency(for: currencyCode) {
-                        let exchangeRate = ExchangeRate(
-                            from: baseCurrency,
-                            to: currency,
-                            rate: rate
-                        )
-                        rates.append(exchangeRate)
-                    }
-                }
-            }
-        }
-        
-        return rates
-    }
-    
-    
-    /// Конвертация суммы из одной валюты в другую
+    /// Конвертация суммы из одной валюты в другую (только через кэш)
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult? {
+        // Конвертация возможна только при наличии кэшированных данных
+        guard let cachedRates = cacheService.getCachedRates() else {
+            return nil // Нет данных - нужен интернет
+        }
+        
         let convertedAmount: Double
         let exchangeRate: Double
         
-        if let cachedRates = cacheService.getCachedRates() {
-            if from.code == "RUB" {
-                guard let rate = cachedRates[to.code] else { return nil }
-                convertedAmount = amount * rate
-                exchangeRate = rate
-            } else if to.code == "RUB" {
-                guard let rate = cachedRates[from.code] else { return nil }
-                convertedAmount = amount / rate
-                exchangeRate = 1.0 / rate
-            } else {
-                guard let fromRate = cachedRates[from.code],
-                      let toRate = cachedRates[to.code] else { return nil }
-                convertedAmount = amount * toRate / fromRate
-                exchangeRate = toRate / fromRate
-            }
+        if from.code == "RUB" {
+            guard let rate = cachedRates[to.code] else { return nil }
+            convertedAmount = amount * rate
+            exchangeRate = rate
+        } else if to.code == "RUB" {
+            guard let rate = cachedRates[from.code] else { return nil }
+            convertedAmount = amount / rate
+            exchangeRate = 1.0 / rate
         } else {
-            
-            if from.code == "RUB" {
-                guard let rubsPerUnit = staticRatesFromRub[to.code] else { return nil }
-                convertedAmount = amount / rubsPerUnit
-                exchangeRate = 1.0 / rubsPerUnit
-            } else if to.code == "RUB" {
-                guard let rubsPerUnit = staticRatesFromRub[from.code] else { return nil }
-                convertedAmount = amount * rubsPerUnit
-                exchangeRate = rubsPerUnit
-            } else {
-                guard let fromRubsPerUnit = staticRatesFromRub[from.code],
-                      let toRubsPerUnit = staticRatesFromRub[to.code] else { return nil }
-                let rubAmount = amount * fromRubsPerUnit
-                convertedAmount = rubAmount / toRubsPerUnit
-                exchangeRate = fromRubsPerUnit / toRubsPerUnit
-            }
+            guard let fromRate = cachedRates[from.code],
+                  let toRate = cachedRates[to.code] else { return nil }
+            convertedAmount = amount * toRate / fromRate
+            exchangeRate = toRate / fromRate
         }
         
         let formattedOriginal = getFormattedAmount(amount, currency: from)
@@ -181,6 +106,10 @@ final class CurrencyServiceImpl: CurrencyService {
     
     // MARK: - API Methods (API - кэширование через CacheService)
     
+    private func getAPIURL(for baseCurrency: Currency) -> String {
+        return "https://api.exchangerate-api.com/v4/latest/\(baseCurrency.code)"
+    }
+    
     /// Универсальный метод для загрузки курсов с API
     private func fetchFromAPI(baseCurrency: Currency, selectedCurrencies: [String]?, completion: @escaping (Result<[ExchangeRate], Error>) -> Void) {
         guard let url = URL(string: getAPIURL(for: baseCurrency)) else {
@@ -205,8 +134,7 @@ final class CurrencyServiceImpl: CurrencyService {
                 // Обновляем кэш через CacheService
                 self?.cacheService.cacheRates(apiResponse.rates)
                 
-                
-                let currenciesToProcess = selectedCurrencies ?? CurrencyFactory.predefinedCurrencyCodes
+                let currenciesToProcess = selectedCurrencies ?? []
                 let exchangeRates = self?.convertAPIResponse(apiResponse, baseCurrency: baseCurrency, selectedCurrencies: currenciesToProcess) ?? []
                 completion(.success(exchangeRates))
             } catch {
@@ -219,7 +147,8 @@ final class CurrencyServiceImpl: CurrencyService {
     
     /// Получение всех доступных валют с API
     func getAllAvailableCurrencies(completion: @escaping (Result<[String], Error>) -> Void) {
-        guard let url = URL(string: getAPIURL(for: Currency.rub)) else {
+        guard let rubCurrency = CurrencyFactory.createCurrency(for: "RUB"),
+              let url = URL(string: getAPIURL(for: rubCurrency)) else {
             completion(.failure(APIError.invalidURL))
             return
         }
@@ -263,7 +192,6 @@ final class CurrencyServiceImpl: CurrencyService {
                 }
             }
         }
-        
         return exchangeRates
     }
 }

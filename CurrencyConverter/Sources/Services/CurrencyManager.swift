@@ -6,24 +6,19 @@
 //
 
 import Foundation
-import Combine
 
 // MARK: - Currency Manager для управления списком валют
 
-@MainActor
-final class CurrencyManager: ObservableObject {
-    
-    // MARK: - Published Properties
-    @Published var selectedCurrencies: [String] = []
+final class CurrencyManager {
+
+    var selectedCurrencies: [String] = []
     
     // MARK: - Private Properties
     private let userDefaults = UserDefaults.standard
     private let selectedCurrenciesKey = "selectedCurrencies"
     
-    // Базовые валюты по умолчанию (те что были в Currency.allCurrencies)
-    private let defaultCurrencies = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "CHF", "CAD", "AUD"]
     
-    // MARK: - Initialization (Environment Object)
+    // MARK: - Initialization
     
     init() {
         loadSelectedCurrencies()
@@ -36,7 +31,7 @@ final class CurrencyManager: ObservableObject {
         guard !selectedCurrencies.contains(currencyCode) else { return }
         
         selectedCurrencies.append(currencyCode)
-        selectedCurrencies.sort() // Сортируем по алфавиту
+        selectedCurrencies.sort()
         saveSelectedCurrencies()
     }
     
@@ -54,11 +49,8 @@ final class CurrencyManager: ObservableObject {
     /// Получить список доступных для добавления валют (исключая уже выбранные)
     func getAvailableCurrencies(from allCurrencies: [String]) -> [String] {
         return allCurrencies.filter { currency in
-            // Исключаем уже выбранные валюты
             let isNotSelected = !selectedCurrencies.contains(currency)
-            // Показываем только валюты с русскими названиями
             let hasRussianName = CurrencyNames.hasRussianName(for: currency)
-            
             return isNotSelected && hasRussianName
         }
     }
@@ -68,12 +60,6 @@ final class CurrencyManager: ObservableObject {
         return selectedCurrencies.count
     }
     
-    /// Сбросить к валютам по умолчанию
-    func resetToDefault() {
-        selectedCurrencies = defaultCurrencies
-        saveSelectedCurrencies()
-    }
-    
     // MARK: - Private Methods
     
     /// Загрузить выбранные валюты из UserDefaults
@@ -81,8 +67,9 @@ final class CurrencyManager: ObservableObject {
         if let saved = userDefaults.array(forKey: selectedCurrenciesKey) as? [String] {
             selectedCurrencies = saved
         } else {
-            // Если нет сохраненных данных, используем валюты по умолчанию
-            selectedCurrencies = defaultCurrencies
+            
+            // При первом запуске начинаем с пустого списка - пользователь сам выберет валюты через API
+            selectedCurrencies = []
             saveSelectedCurrencies()
         }
     }

@@ -6,61 +6,32 @@
 //
 
 import SwiftUI
-import Combine
+
 
 @MainActor
 final class ExchangeRateListViewModel: ObservableObject {
     
     // MARK: - Состояния экрана
     
-    @Published private(set) var items: [ExchangeRate] = []
-    
+    @Published var items: [ExchangeRate] = []
     @Published var title: String = "Выберите валюту"
-    
     @Published var isLoading = false
-    
     @Published var errorMessage: String?
     
     // MARK: - Приватные свойства
     
     /// Сервис для работы с курсами валют
-    private let currencyService: CurrencyService
+    private var currencyService: CurrencyService
     
     /// Менеджер выбранных пользователем валют
     private var currencyManager: CurrencyManager!
     
-    private let baseCurrency = Currency.rub
-    
-    /// Для хранения подписок Combine
-    private var cancellables = Set<AnyCancellable>()
+    private let baseCurrency = CurrencyFactory.createCurrency(for: "RUB")!
     
     // MARK: - Инициализация
     
     init(currencyService: CurrencyService) {
         self.currencyService = currencyService
-    }
-    
-    /// Удобный конструктор по умолчанию
-    convenience init() {
-        self.init(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
-    }
-    
-    // MARK: - Настройка CurrencyManager
-    
-    /// Устанавливаем менеджер валют и подписываемся на изменения выбранных валют
-    func setCurrencyManager(_ manager: CurrencyManager) {
-        self.currencyManager = manager
-        
-        // Подписка на изменения выбранных валют
-        manager.$selectedCurrencies
-            .sink { [weak self] _ in
-                Task { @MainActor in
-                    self?.reload()
-                }
-            }
-            .store(in: &cancellables)
-        
-        reload() // Загрузка данных при установке менеджера
     }
     
     // MARK: - Загрузка курсов валют
@@ -82,10 +53,8 @@ final class ExchangeRateListViewModel: ObservableObject {
                 
                 switch result {
                 case .success(let exchangeRates):
-                    // Обновляем список курсов
                     self.items = exchangeRates
                 case .failure(let error):
-                    // При ошибке показываем сообщение и пустой список
                     self.errorMessage = error.localizedDescription
                     self.items = []
                 }
@@ -93,10 +62,19 @@ final class ExchangeRateListViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Работа с выбранными валютами
+    // MARK: - Методы
     
     /// Удаляет валюту из выбранных
     func removeCurrency(_ currencyCode: String) {
         currencyManager.removeCurrency(currencyCode)
+        reload()
+    }
+    
+    /// Метод - устанавливаем менеджер и сервис
+    func setServices(currencyManager: CurrencyManager, currencyService: CurrencyService) {
+        self.currencyManager = currencyManager
+        self.currencyService = currencyService
+        reload()
     }
 }
+

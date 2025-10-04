@@ -9,17 +9,29 @@ import SwiftUI
 struct CurrencyConverterScreen: View {
     
     // MARK: - Состояния экрана
-    @State private var amount: String = ""
-    @State private var selectedCurrency: Currency = .usd
-    @State private var showCurrencyList = false
-    @StateObject private var viewModel = CurrencyConverterViewModel()
     
-    private let baseCurrency = Currency.rub
+    @State private var amount: String = ""
+    @State private var selectedCurrency: Currency = CurrencyFactory.createCurrency(for: "USD")!
+    @State private var showCurrencyList = false
+    @StateObject private var viewModel = CurrencyConverterViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
+    
+    private let baseCurrency = CurrencyFactory.createCurrency(for: "RUB")!
+    let currencyManager: CurrencyManager
+    let serviceContainer: ServiceContainer
+    
+    // MARK: - Инициализация
+    
+    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
+        self.currencyManager = currencyManager
+        self.serviceContainer = serviceContainer
+    }
+    
+    // MARK: - Body экрана
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-    
+                
                 TextField("Введите сумму в \(baseCurrency.name)", text: $amount)
                     .keyboardType(.decimalPad)
                     .padding()
@@ -84,7 +96,7 @@ struct CurrencyConverterScreen: View {
             }
             .padding()
             .navigationDestination(isPresented: $showCurrencyList) {
-                ExchangeRateListViewScreen { currency in
+                ExchangeRateListViewScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { currency in
                     updateSelectedCurrency(currency)
                 }
             }
@@ -102,6 +114,7 @@ struct CurrencyConverterScreen: View {
             }
             
             .task {
+                viewModel.setServices(currencyService: serviceContainer.currencyService)
                 viewModel.fetchRates()
             }
         }
@@ -124,5 +137,5 @@ struct CurrencyConverterScreen: View {
 }
 
 #Preview {
-    CurrencyConverterScreen()
+    CurrencyConverterScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())
 }
