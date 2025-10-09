@@ -11,17 +11,15 @@ struct AllCurrencyScreen: View {
     
     // MARK: - State и Environment
     
-    @State private var searchText = ""
-    @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
     @StateObject private var viewModel = AllCurrencyViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
-    @State private var addedCurrency: String? = nil      // Валюта, которую добавили
-    @State private var showAddedAlert = false            // Показывать ли алерт
-    @State private var pressedCurrency: String? = nil    // Валюта, на которую нажали
+    @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     
     let currencyManager: CurrencyManager                 // Менеджер выбранных валют
     let serviceContainer: ServiceContainer               // Контейнер сервисов
     let onCurrencySelected: ((String) -> Void)?          // Callback при выборе валюты
+    
+    
     // MARK: - Инициализация
     
     init(currencyManager: CurrencyManager,
@@ -32,23 +30,7 @@ struct AllCurrencyScreen: View {
         self.onCurrencySelected = onCurrencySelected
     }
     
-    // MARK: - Фильтрация валют по поиску
-    
-    var filteredCurrencies: [String] {
-        let currenciesToShow = viewModel.availableCurrencies
-        
-        if searchText.isEmpty {
-            return currenciesToShow
-        } else {
-            return currenciesToShow.filter { currency in
-                guard viewModel.hasRussianName(for: currency) else { return false }
-                let matchesCode = currency.localizedCaseInsensitiveContains(searchText)
-                let russianName = viewModel.getRussianName(for: currency)
-                let matchesRussianName = russianName.localizedCaseInsensitiveContains(searchText)
-                return matchesCode || matchesRussianName
-            }
-        }
-    }
+    // MARK: - Body экрана
     
     var body: some View {
         NavigationStack {
@@ -56,7 +38,7 @@ struct AllCurrencyScreen: View {
                 searchBar
                 listView
             }
-            .navigationTitle("Все валюты (\(filteredCurrencies.count))")
+            .navigationTitle("Все валюты (\(viewModel.filteredCurrencies.count))")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 // Передаем менеджер валют и сервис в ViewModel
@@ -66,11 +48,11 @@ struct AllCurrencyScreen: View {
                     viewModel.loadAllCurrencies()
                 }
             }
-            .alert("Валюта добавлена!", isPresented: $showAddedAlert) {
+            .alert("Валюта добавлена!", isPresented: $viewModel.showAddedAlert) {
                 Button("ОК") {}
             } message: {
-                if let currency = addedCurrency {
-                    Text("\(currency) - \(viewModel.getRussianName(for: currency))\nдобавлена в список валют")
+                if let currency = viewModel.addedCurrency {
+                    Text("\(currency) - \(viewModel.getRussianName(for: currency) ?? "Неизвстная валюта")\nдобавлена в список валют")
                 }
             }
         }
@@ -83,14 +65,14 @@ struct AllCurrencyScreen: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                TextField("Поиск валюты...", text: $searchText)
+                TextField("Поиск валюты...", text: $viewModel.searchText)
                     .focused($isSearchFocused)
                     .submitLabel(.search)
                     .onSubmit { isSearchFocused = false }
                 
-                if !searchText.isEmpty {
+                if !viewModel.searchText.isEmpty {
                     Button {
-                        searchText = ""
+                        viewModel.clearSearch()
                         isSearchFocused = false
                     } label: {
                         Image(systemName: "xmark.circle.fill")
@@ -145,12 +127,12 @@ struct AllCurrencyScreen: View {
     
     private var currencyList: some View {
         List {
-            ForEach(filteredCurrencies, id: \.self) { currency in
+            ForEach(viewModel.filteredCurrencies, id: \.self) { currency in
                 currencyRow(currency)
             }
         }
         .listStyle(PlainListStyle())
-        .animation(.easeInOut(duration: 0.3), value: filteredCurrencies)
+        .animation(.easeInOut(duration: 0.3), value: viewModel.filteredCurrencies)
         .onTapGesture { isSearchFocused = false }
     }
     
@@ -160,7 +142,7 @@ struct AllCurrencyScreen: View {
                 Text(currency)
                     .font(.headline)
                     .fontWeight(.semibold)
-                Text(viewModel.getRussianName(for: currency))
+                Text(viewModel.getRussianName(for: currency) ?? "Неизвестная валюта")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
@@ -179,12 +161,12 @@ struct AllCurrencyScreen: View {
                 .foregroundColor(.blue)
                 .font(.system(size: 20))
                 .padding(8)
-                .scaleEffect(pressedCurrency == currency ? 0.8 : 1.0)
-                .animation(.easeInOut(duration: 0.1), value: pressedCurrency)
+                .scaleEffect(viewModel.pressedCurrency == currency ? 0.8 : 1.0)
+                .animation(.easeInOut(duration: 0.1), value: viewModel.pressedCurrency)
         }
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { isPressing in
-            pressedCurrency = isPressing ? currency : nil
+                viewModel.setPressedCurrency(isPressing ? currency : nil)
         }, perform: {})
     }
     
@@ -194,8 +176,7 @@ struct AllCurrencyScreen: View {
     private func addCurrency(_ currency: String) {
         isSearchFocused = false               
         viewModel.addCurrency(currency)
-        addedCurrency = currency
-        showAddedAlert = true
+        viewModel.showCurrencyAddedAlert(currency: currency)
         onCurrencySelected?(currency)
     }
 }

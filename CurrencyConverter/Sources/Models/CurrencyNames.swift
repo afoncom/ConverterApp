@@ -114,16 +114,11 @@ struct CurrencyNames {
         "TMT": "Туркменский манат",
         "UAH": "Украинская гривна",
         "UZS": "Узбекский сум",
-   
+        
     ]
     
     /// Получить русское название валюты по коду
-    static func getRussianName(for currencyCode: String) -> String {
-        return russianNames[currencyCode] ?? "Неизвестная валюта"
-    }
-    
-    /// Проверить, есть ли русское название для валюты
-    static func hasRussianName(for currencyCode: String) -> Bool {
-        return russianNames[currencyCode] != nil
+    static func getRussianName(for currencyCode: String) -> String? {
+        return russianNames[currencyCode]
     }
 }

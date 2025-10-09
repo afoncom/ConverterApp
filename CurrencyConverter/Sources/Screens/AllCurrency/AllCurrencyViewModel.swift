@@ -18,6 +18,28 @@ final class AllCurrencyViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
+    @Published var searchText = ""
+    @Published var addedCurrency: String? = nil      // Валюта, которую добавили
+    @Published var showAddedAlert = false            // Показывать ли алерт
+    @Published var pressedCurrency: String? = nil    // Валюта, на которую нажали
+    
+    // MARK: - Фильтрация валют по поиску
+    
+    var filteredCurrencies: [String] {
+        let currenciesToShow = availableCurrencies
+        
+        if searchText.isEmpty {
+            return currenciesToShow
+        } else {
+            return currenciesToShow.filter { currency in
+                guard let russianName = getRussianName(for: currency) else { return false }
+                let matchesCode = currency.localizedCaseInsensitiveContains(searchText)
+                let matchesRussianName = russianName.localizedCaseInsensitiveContains(searchText)
+                return matchesCode || matchesRussianName
+            }
+        }
+    }
+    
     // MARK: - Приватные свойства
     
     /// Сервис для работы с валютами (API или кэш)
@@ -85,15 +107,27 @@ final class AllCurrencyViewModel: ObservableObject {
         availableCurrencies = currencyManager.getAvailableCurrencies(from: allCurrencies)
     }
     
-    /// Возвращает русское название валюты по коду
-    func getRussianName(for currencyCode: String) -> String {
+    /// Возвращает русское название валюты по коду (nil если не найдено)
+    func getRussianName(for currencyCode: String) -> String? {
         return CurrencyNames.getRussianName(for: currencyCode)
     }
     
-    /// Проверяет, есть ли русское название для валюты
-    func hasRussianName(for currencyCode: String) -> Bool {
-        return CurrencyNames.hasRussianName(for: currencyCode)
+    /// Очистить поиск
+    func clearSearch() {
+        searchText = ""
+    }
+
+    /// Показать алерт о добавлении валюты
+    func showCurrencyAddedAlert(currency: String) {
+        addedCurrency = currency
+        showAddedAlert = true
+    }
+
+    /// Установить нажатую валюту (для анимации)
+    func setPressedCurrency(_ currency: String?) {
+        pressedCurrency = currency
     }
 }
+
 
 
