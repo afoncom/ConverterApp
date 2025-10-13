@@ -117,8 +117,130 @@ struct CurrencyNames {
         
     ]
     
+    static let englishNames: [String: String] = [
+        
+        // Main currencies
+        "USD": "US Dollar",
+        "EUR": "Euro",
+        "RUB": "Russian Ruble",
+        "GBP": "British Pound Sterling",
+        "JPY": "Japanese Yen",
+        "CNY": "Chinese Yuan",
+        "CHF": "Swiss Franc",
+        "CAD": "Canadian Dollar",
+        "AUD": "Australian Dollar",
+        
+        // Popular currencies
+        "KRW": "South Korean Won",
+        "SGD": "Singapore Dollar",
+        "HKD": "Hong Kong Dollar",
+        "NZD": "New Zealand Dollar",
+        "SEK": "Swedish Krona",
+        "NOK": "Norwegian Krone",
+        "DKK": "Danish Krone",
+        "PLN": "Polish Zloty",
+        "CZK": "Czech Koruna",
+        "HUF": "Hungarian Forint",
+        
+        // European currencies
+        "BGN": "Bulgarian Lev",
+        "HRK": "Croatian Kuna",
+        "RON": "Romanian Leu",
+        "ISK": "Icelandic Krona",
+        "TRY": "Turkish Lira",
+        
+        // Asian currencies
+        "INR": "Indian Rupee",
+        "THB": "Thai Baht",
+        "MYR": "Malaysian Ringgit",
+        "IDR": "Indonesian Rupiah",
+        "PHP": "Philippine Peso",
+        "VND": "Vietnamese Dong",
+        
+        // Middle Eastern currencies
+        "AED": "UAE Dirham",
+        "SAR": "Saudi Riyal",
+        "QAR": "Qatari Rial",
+        "KWD": "Kuwaiti Dinar",
+        "BHD": "Bahraini Dinar",
+        "OMR": "Omani Rial",
+        "JOD": "Jordanian Dinar",
+        "LBP": "Lebanese Pound",
+        "ILS": "Israeli New Shekel",
+        
+        // African currencies
+        "ZAR": "South African Rand",
+        "EGP": "Egyptian Pound",
+        "NGN": "Nigerian Naira",
+        "GHS": "Ghanaian Cedi",
+        "KES": "Kenyan Shilling",
+        "TZS": "Tanzanian Shilling",
+        "UGX": "Ugandan Shilling",
+        "ETB": "Ethiopian Birr",
+        "MAD": "Moroccan Dirham",
+        "TND": "Tunisian Dinar",
+        
+        // American currencies
+        "MXN": "Mexican Peso",
+        "BRL": "Brazilian Real",
+        "ARS": "Argentine Peso",
+        "CLP": "Chilean Peso",
+        "COP": "Colombian Peso",
+        "PEN": "Peruvian Sol",
+        "UYU": "Uruguayan Peso",
+        "BOB": "Bolivian Boliviano",
+        "PYG": "Paraguayan Guarani",
+        
+        // Other currencies
+        "XAF": "Central African CFA Franc",
+        "XOF": "West African CFA Franc",
+        "XCD": "East Caribbean Dollar",
+        "XPF": "CFP Franc",
+        "FJD": "Fijian Dollar",
+        "TOP": "Tongan Pa'anga",
+        "WST": "Samoan Tala",
+        "VUV": "Vanuatu Vatu",
+        "SBD": "Solomon Islands Dollar",
+        "PGK": "Papua New Guinean Kina",
+        
+        // Additional currencies
+        "ALL": "Albanian Lek",
+        "AFN": "Afghan Afghani",
+        "AMD": "Armenian Dram",
+        "AZN": "Azerbaijani Manat",
+        "BYN": "Belarusian Ruble",
+        "BAM": "Bosnia and Herzegovina Convertible Mark",
+        "GEL": "Georgian Lari",
+        "KZT": "Kazakhstani Tenge",
+        "KGS": "Kyrgystani Som",
+        "MDL": "Moldovan Leu",
+        "MKD": "Macedonian Denar",
+        "RSD": "Serbian Dinar",
+        "TJS": "Tajikistani Somoni",
+        "TMT": "Turkmenistani Manat",
+        "UAH": "Ukrainian Hryvnia",
+        "UZS": "Uzbekistani Som",
+    ]
+    
     /// Получить русское название валюты по коду
     static func getRussianName(for currencyCode: String) -> String? {
         return russianNames[currencyCode]
+    }
+    
+    /// Получить английское название валюты по коду
+    static func getEnglishName(for currencyCode: String) -> String? {
+        return englishNames[currencyCode]
+    }
+    
+    /// Получить локализованное название валюты
+    static func getLocalizedName(for currencyCode: String, languageCode: String) -> String? {
+        switch languageCode {
+        case "ru":
+            return getRussianName(for: currencyCode)
+        case "en":
+            return getEnglishName(for: currencyCode)
+        default:
+            return getEnglishName(for: currencyCode) // По умолчанию английский
+        }
     }
 }

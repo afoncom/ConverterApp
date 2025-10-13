@@ -1,0 +1,63 @@
+/* 
+  Localizable.strings (Russian)
+  CurrencyConverter
+  Created by afon.com on 13.10.2025.
+*/
+
+// MARK: - Welcome Screen
+"welcome_title" = "Конвертер валют";
+"welcome_subtitle" = "Добро пожаловать!";
+
+// MARK: - Currency Converter Screen
+"currency_converter_title" = "Конвертер валют";
+"amount_input_label" = "Сумма для конвертации";
+"amount_placeholder" = "Введите сумму в %@";
+"loading_rates" = "Загрузка курсов...";
+"error_prefix" = "Ошибка: %@";
+"from_currency" = "ИЗ";
+"to_currency" = "В";
+"exchange_rate" = "Курс:";
+"convert_button" = "Конвертировать";
+"conversion_result" = "Результат конвертации";
+"from_amount" = "От";
+"to_amount" = "В";
+
+// MARK: - Settings Screen
+"settings_title" = "Настройки";
+"preferences_section" = "Основные";
+"dark_mode" = "Темная тема";
+"decimal_precision" = "Точность";
+"language" = "Язык";
+"support_section" = "Поддержка";
+"rate_app" = "Оценить приложение";
+"send_feedback" = "Отправить отзыв";
+"version" = "Версия";
+"done" = "Готово";
+
+// MARK: - Exchange Rate List Screen
+"all_currencies" = "Все валюты";
+"search_currencies" = "Поиск валют";
+
+// MARK: - All Currency Screen
+"all_currencies" = "Все валюты";
+
+// MARK: - Exchange Rate List Screen
+"select_currency" = "Выберите валюту";
+"loading_rates" = "Загрузка курсов...";
+"error_colon" = "Ошибка: %@";
+"retry" = "Повторить";
+"delete" = "Удалить";
+"no_connection" = "Нет подключения";
+"data_outdated" = "Данные устарели";
+"updated_colon" = "Обновлено: %@";
+"currency_added" = "Валюта добавлена!";
+"currency_added_message" = "%@ - %@\nдобавлена в список валют";
+"ok" = "ОК";
+"added_currency" = "Добавлена валюта: %@";
+"unknown_currency" = "Неизвестная валюта";
+"loading_error" = "Ошибка загрузки";
+"loading_currencies" = "Загрузка валют...";
+
+// MARK: - Language Names
+"language_russian" = "🇷🇺 Русский";
+"language_english" = "🇺🇸 English";

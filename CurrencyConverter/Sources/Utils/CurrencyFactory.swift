@@ -10,29 +10,37 @@ import Foundation
 
 struct CurrencyFactory {
     
-    /// Создает Currency для любого кода через CurrencyNames
+    /// Создает Currency для любого кода через CurrencyNames (по умолчанию русский)
     static func createCurrency(for code: String) -> Currency? {
-        return createDynamicCurrency(for: code)
+        return createDynamicCurrency(for: code, languageCode: "ru")
     }
     
-    /// Создает массив Currency объектов из массива кодов
+    /// Создает Currency с указанным языком
+    static func createLocalizedCurrency(for code: String, languageCode: String) -> Currency? {
+        return createDynamicCurrency(for: code, languageCode: languageCode)
+    }
+    
+    /// Создает массив Currency объектов из массива кодов (по умолчанию русский)
     static func createCurrencies(for codes: [String]) -> [Currency] {
         return codes.compactMap { createCurrency(for: $0) }
     }
     
-    // MARK: - Private Methods
+    /// Создает массив Currency объектов с указанным языком
+    static func createLocalizedCurrencies(for codes: [String], languageCode: String) -> [Currency] {
+        return codes.compactMap { createLocalizedCurrency(for: $0, languageCode: languageCode) }
+    }
     
-    /// Создает новый объект Currency динамически
-    private static func createDynamicCurrency(for code: String) -> Currency? {
-        let russianName = CurrencyNames.getRussianName(for: code)
-        
-        guard russianName != "Неизвестная валюта" else {
+    // MARK: - Private Methods (Приватные методы)
+    
+    /// Создает новый объект Currency динамически с указанным языком
+    private static func createDynamicCurrency(for code: String, languageCode: String) -> Currency? {
+        guard let localizedName = CurrencyNames.getLocalizedName(for: code, languageCode: languageCode) else {
             return nil
         }
         
         let symbol = getSymbolForCurrency(code: code)
         
-        return Currency(code: code, name: russianName, symbol: symbol)
+        return Currency(code: code, name: localizedName, symbol: symbol)
     }
     
     private static func getSymbolForCurrency(code: String) -> String {
@@ -65,6 +73,9 @@ struct CurrencyFactory {
         case "TJS": return "SM"
         case "TMT": return "T"
         case "MDL": return "L"
+        case "AUD": return "A$"
+        case "BAM": return "KM"
+        case "BGN": return "лв"
         default:
             return code
         }
@@ -72,6 +83,7 @@ struct CurrencyFactory {
     
     /// Проверка поддержки валюты
     static func isSupported(currencyCode: String) -> Bool {
-        CurrencyNames.hasRussianName(for: currencyCode)
+        return CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "ru") != nil || 
+               CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "en") != nil
     }
 }

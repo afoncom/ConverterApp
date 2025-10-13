@@ -6,7 +6,7 @@
 
 import Foundation
 
-// MARK: - API Errors
+// MARK: - API Errors (Ошибки API)
 
 enum APIError: Error, LocalizedError {
     case invalidURL

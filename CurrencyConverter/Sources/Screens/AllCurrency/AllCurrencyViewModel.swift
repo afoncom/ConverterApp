@@ -11,17 +11,19 @@ import SwiftUI
 @MainActor
 final class AllCurrencyViewModel: ObservableObject {
     
-    // MARK: - Состояния, которые видит View
+    // MARK: - Screen states (Состояния экрана)
     
     private var allCurrencies: [String] = []
     @Published var availableCurrencies: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var connectionStatus: String?   // "Нет интернета" или "Данные устарели"
+    @Published var lastUpdated: Date?           // Время последнего обновления
     
     @Published var searchText = ""
-    @Published var addedCurrency: String? = nil      // Валюта, которую добавили
-    @Published var showAddedAlert = false            // Показывать ли алерт
-    @Published var pressedCurrency: String? = nil    // Валюта, на которую нажали
+    @Published var addedCurrency: String? = nil
+    @Published var showAddedAlert = false
+    @Published var pressedCurrency: String? = nil
     
     // MARK: - Фильтрация валют по поиску
     
@@ -32,10 +34,18 @@ final class AllCurrencyViewModel: ObservableObject {
             return currenciesToShow
         } else {
             return currenciesToShow.filter { currency in
-                guard let russianName = getRussianName(for: currency) else { return false }
                 let matchesCode = currency.localizedCaseInsensitiveContains(searchText)
-                let matchesRussianName = russianName.localizedCaseInsensitiveContains(searchText)
-                return matchesCode || matchesRussianName
+                
+                // Получаем название валюты на текущем языке
+                let localizedName: String?
+                if let localizationManager = localizationManager {
+                    localizedName = CurrencyNames.getLocalizedName(for: currency, languageCode: localizationManager.languageCode)
+                } else {
+                    localizedName = CurrencyNames.getLocalizedName(for: currency, languageCode: "ru")
+                }
+                
+                let matchesLocalizedName = localizedName?.localizedCaseInsensitiveContains(searchText) ?? false
+                return matchesCode || matchesLocalizedName
             }
         }
     }
@@ -48,7 +58,10 @@ final class AllCurrencyViewModel: ObservableObject {
     /// Менеджер выбранных пользователем валют
     private var currencyManager: CurrencyManager!
     
-    // MARK: - Инициализация
+    /// Менеджер локализации
+    private var localizationManager: LocalizationManager?
+    
+    // MARK: - Initialization (Инициализация)
     
     init(currencyService: CurrencyService) {
         self.currencyService = currencyService
@@ -56,40 +69,49 @@ final class AllCurrencyViewModel: ObservableObject {
     
     // MARK: - Настройка CurrencyManager
     
-    /// Метод - устанавливаем менеджер и сервис
-    func setServices(currencyManager: CurrencyManager, currencyService: CurrencyService) {
+    /// Метод - устанавливаем менеджер, сервис и локализацию
+    func setServices(currencyManager: CurrencyManager, currencyService: CurrencyService, localizationManager: LocalizationManager? = nil) {
         self.currencyManager = currencyManager
         self.currencyService = currencyService
+        self.localizationManager = localizationManager
         filterAvailableCurrencies()
     }
     
     // MARK: - Загрузка валют
     
     /// Загружает все доступные валюты с сервера
-    func loadAllCurrencies() {
+    func loadAllCurrencies() async {
         isLoading = true
         errorMessage = nil
+        connectionStatus = nil
         
-        currencyService.getAllAvailableCurrencies { [weak self] result in
-            Task { @MainActor in
-                guard let self = self else { return }
-                self.isLoading = false
-                
-                switch result {
-                case .success(let currencies):
-                    self.allCurrencies = currencies
-                    self.filterAvailableCurrencies()
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                    self.availableCurrencies = []
-                }
+        do {
+            let result = try await currencyService.getAllAvailableCurrencies(requestType: .networkOrCache)
+            allCurrencies = result.data
+            lastUpdated = result.lastUpdated
+            
+            // Обновляем статус подключения
+            switch result.status {
+            case .fresh:
+                connectionStatus = nil
+            case .stale:
+                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.dataOutdated) ?? "Data outdated"
+            case .noConnection:
+                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.noConnection) ?? "No internet connection"
             }
+            
+            filterAvailableCurrencies()
+        } catch {
+            errorMessage = error.localizedDescription
+            availableCurrencies = []
         }
+        
+        isLoading = false
     }
     
     /// Перезагрузка валют (например, после ошибки)
-    func reload() {
-        loadAllCurrencies()
+    func reload() async {
+        await loadAllCurrencies()
     }
     
     // MARK: - Работа с выбранными валютами
@@ -107,10 +129,15 @@ final class AllCurrencyViewModel: ObservableObject {
         availableCurrencies = currencyManager.getAvailableCurrencies(from: allCurrencies)
     }
     
-    /// Возвращает русское название валюты по коду (nil если не найдено)
-    func getRussianName(for currencyCode: String) -> String? {
-        return CurrencyNames.getRussianName(for: currencyCode)
+    /// Возвращает локализованное название валюты по коду (nil если не найдено)
+    func getLocalizedName(for currencyCode: String) -> String? {
+        if let localizationManager = localizationManager {
+            return CurrencyNames.getLocalizedName(for: currencyCode, languageCode: localizationManager.languageCode)
+        } else {
+            return CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "ru")
+        }
     }
+    
     
     /// Очистить поиск
     func clearSearch() {

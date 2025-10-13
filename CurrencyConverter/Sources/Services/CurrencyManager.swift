@@ -15,16 +15,16 @@ final class CurrencyManager {
     
     // MARK: - Private Properties
     private let userDefaults = UserDefaults.standard
-    private let selectedCurrenciesKey = "selectedCurrencies"
+    private let selectedCurrenciesKey = AppConfig.UserDefaultsKeys.selectedCurrencies
     
     
-    // MARK: - Initialization
+    // MARK: - Initialization (Инициализация)
     
     init() {
         loadSelectedCurrencies()
     }
     
-    // MARK: - Public Methods
+    // MARK: - Public Methods (Публичные методы)
     
     /// Добавить валюту в список
     func addCurrency(_ currencyCode: String) {
@@ -50,8 +50,8 @@ final class CurrencyManager {
     func getAvailableCurrencies(from allCurrencies: [String]) -> [String] {
         return allCurrencies.filter { currency in
             let isNotSelected = !selectedCurrencies.contains(currency)
-            let hasRussianName = CurrencyNames.hasRussianName(for: currency)
-            return isNotSelected && hasRussianName
+            let hasLocalizedName = CurrencyNames.getLocalizedName(for: currency, languageCode: "ru") != nil
+            return isNotSelected && hasLocalizedName
         }
     }
     
@@ -60,16 +60,14 @@ final class CurrencyManager {
         return selectedCurrencies.count
     }
     
-    // MARK: - Private Methods
+    // MARK: - Private Methods (Приватные методы)
     
     /// Загрузить выбранные валюты из UserDefaults
     private func loadSelectedCurrencies() {
         if let saved = userDefaults.array(forKey: selectedCurrenciesKey) as? [String] {
             selectedCurrencies = saved
         } else {
-            
-            // При первом запуске начинаем с пустого списка - пользователь сам выберет валюты через API
-            selectedCurrencies = []
+            selectedCurrencies = AppConfig.Currency.popularCurrencies
             saveSelectedCurrencies()
         }
     }

@@ -1,0 +1,63 @@
+/* 
+  Localizable.strings (English)
+  CurrencyConverter
+  Created by afon.com on 13.10.2025.
+*/
+
+// MARK: - Welcome Screen
+"welcome_title" = "Currency Converter";
+"welcome_subtitle" = "Welcome!";
+
+// MARK: - Currency Converter Screen
+"currency_converter_title" = "Currency Converter";
+"amount_input_label" = "Amount to convert";
+"amount_placeholder" = "Enter amount in %@";
+"loading_rates" = "Loading rates...";
+"error_prefix" = "Error: %@";
+"from_currency" = "FROM";
+"to_currency" = "TO";
+"exchange_rate" = "Rate:";
+"convert_button" = "Convert";
+"conversion_result" = "Conversion Result";
+"from_amount" = "From";
+"to_amount" = "To";
+
+// MARK: - Settings Screen
+"settings_title" = "Settings";
+"preferences_section" = "Preferences";
+"dark_mode" = "Dark Mode";
+"decimal_precision" = "Decimal Precision";
+"language" = "Language";
+"support_section" = "Support";
+"rate_app" = "Rate App";
+"send_feedback" = "Send Feedback";
+"version" = "Version";
+"done" = "Done";
+
+// MARK: - Exchange Rate List Screen
+"all_currencies" = "All Currencies";
+"search_currencies" = "Search currencies";
+
+// MARK: - All Currency Screen
+"all_currencies" = "All Currencies";
+
+// MARK: - Exchange Rate List Screen
+"select_currency" = "Select Currency";
+"loading_rates" = "Loading rates...";
+"error_colon" = "Error: %@";
+"retry" = "Retry";
+"delete" = "Delete";
+"no_connection" = "No connection";
+"data_outdated" = "Data outdated";
+"updated_colon" = "Updated: %@";
+"currency_added" = "Currency added!";
+"currency_added_message" = "%@ - %@\nadded to currency list";
+"ok" = "OK";
+"added_currency" = "Added currency: %@";
+"unknown_currency" = "Unknown currency";
+"loading_error" = "Loading error";
+"loading_currencies" = "Loading currencies...";
+
+// MARK: - Language Names
+"language_russian" = "🇷🇺 Русский";
+"language_english" = "🇺🇸 English";

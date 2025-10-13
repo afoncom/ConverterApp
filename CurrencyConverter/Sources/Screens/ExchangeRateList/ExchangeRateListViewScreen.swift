@@ -16,8 +16,9 @@ struct ExchangeRateListViewScreen: View {
     let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
     let onCurrencySelected: ((Currency) -> Void)?
+    @ObservedObject private var localizationManager: LocalizationManager
     
-    // MARK: - Инициализация
+    // MARK: - Initialization (Инициализация)
     
     /// Конструктор с опциональным callback
     init(currencyManager: CurrencyManager,
@@ -26,22 +27,25 @@ struct ExchangeRateListViewScreen: View {
         self.currencyManager = currencyManager
         self.onCurrencySelected = onCurrencySelected
         self.serviceContainer = serviceContainer
+        self.localizationManager = serviceContainer.localizationManager
     }
     
     // MARK: - Body экрана
-
+    
     var body: some View {
         NavigationStack {
             Group {
                 if viewModel.isLoading {
-                    ProgressView("Загрузка курсов...")
+                    ProgressView(localizationManager.localizedString("loading_rates"))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = viewModel.errorMessage {
                     VStack(spacing: 10) {
-                        Text("Ошибка: \(error)")
+                        Text(String(format: localizationManager.localizedString("error_colon"), error))
                             .foregroundColor(.red)
-                        Button("Повторить") {
-                            viewModel.reload()
+                        Button(localizationManager.localizedString("retry")) {
+                            Task {
+                                await viewModel.reload()
+                            }
                         }
                         .padding()
                         .background(Color.blue.opacity(0.2))
@@ -54,25 +58,55 @@ struct ExchangeRateListViewScreen: View {
                             onCurrencySelected?(exchangeRate.toCurrency)
                             dismiss()
                         } label: {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(exchangeRate.displayText)
-                                        .font(.headline)
-                                    Text(exchangeRate.rateDisplayText)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                            HStack(spacing: 16) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color(.systemBlue).opacity(0.1))
+                                        .frame(width: 50, height: 50)
+                                    
+                                    Text(exchangeRate.toCurrency.symbol)
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundColor(.blue)
                                 }
-                                Spacer()
-                                Text(exchangeRate.toCurrency.symbol)
-                                    .font(.title2)
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text(exchangeRate.toCurrency.code)
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundColor(.primary)
+                                        
+                                        Spacer()
+                                        
+                                        Text(String(format: "%.*f", serviceContainer.themeManager.decimalPrecision, exchangeRate.rate))
+                                            .font(.system(size: 16, weight: .medium))
+                                            .foregroundColor(.primary)
+                                    }
+                                    
+                                    HStack {
+                                        Text(exchangeRate.toCurrency.name)
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(1)
+                                        
+                                        Spacer()
+                                        
+                                        Text("1 \(exchangeRate.fromCurrency.code)")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.secondary)
                             }
-                            .padding(.vertical, 4)
+                            .padding(.vertical, 8)
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button {
                                 viewModel.removeCurrency(exchangeRate.toCurrency.code)
                             } label: {
-                                Label("Удалить", systemImage: "trash")
+                                Label(localizationManager.localizedString("delete"), systemImage: "trash")
                             }
                             .tint(.red)
                         }
@@ -81,10 +115,23 @@ struct ExchangeRateListViewScreen: View {
             }
             .navigationTitle(viewModel.title)
             .toolbar {
+                if let status = viewModel.connectionStatus {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        let isNoConnection = status.contains(localizationManager.localizedString("no_connection"))
+                        Label(status, systemImage: isNoConnection ? "wifi.slash" : "clock")
+                            .font(.caption)
+                            .foregroundColor(isNoConnection ? .red : .orange)
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         AllCurrencyScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { selectedCurrency in
-                            print("Добавлена валюта: \(selectedCurrency)")
+                            print(String(format: localizationManager.localizedString("added_currency"), selectedCurrency.description))
+
+                            Task {
+                                await viewModel.reload()
+                            }
                         }
                     } label: {
                         Image(systemName: "plus")
@@ -92,14 +139,29 @@ struct ExchangeRateListViewScreen: View {
                 }
             }
             .refreshable {
-                viewModel.reload()
+                await viewModel.reload()
             }
-            .onAppear {
-                viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService)
+            .task {
+                viewModel.setServices(
+                    currencyManager: currencyManager, 
+                    currencyService: serviceContainer.currencyService,
+                    baseCurrency: serviceContainer.baseCurrencyManager.baseCurrency,
+                    localizationManager: serviceContainer.localizationManager
+                )
+            }
+            .onChange(of: serviceContainer.baseCurrencyManager.baseCurrency) { _, newBaseCurrency in
+                viewModel.updateBaseCurrency(newBaseCurrency)
+            }
+            .onChange(of: localizationManager.currentLanguage) { _, _ in
+                viewModel.updateTitle()
+                Task {
+                    await viewModel.reload()
+                }
             }
         }
     }
 }
+
 
 #Preview {
     ExchangeRateListViewScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())

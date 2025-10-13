@@ -22,7 +22,7 @@ struct ExchangeRate: Codable {
     }
 }
 
-// MARK: - UI Extensions
+// MARK: - UI Extensions (UI расширение)
 
 extension ExchangeRate {
     
@@ -31,8 +31,8 @@ extension ExchangeRate {
         "\(toCurrency.code) - \(toCurrency.name)"
     }
 
-    /// Текст для отображения курса относительно рубля
+    /// Текст для отображения курса относительно базовой валюты
     var rateDisplayText: String {
-        "1 RUB = \(String(format: "%.4f", rate)) \(toCurrency.code)"
+        "1 \(fromCurrency.code) = \(String(format: "%.4f", rate)) \(toCurrency.code)"
     }
 }

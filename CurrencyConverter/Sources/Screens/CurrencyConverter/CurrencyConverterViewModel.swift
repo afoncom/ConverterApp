@@ -9,58 +9,88 @@ import SwiftUI
 @MainActor
 final class CurrencyConverterViewModel: ObservableObject {
     
-    // MARK: - Состояния экрана
+    // MARK: - Screen states (Состояния экрана)
     
     @Published var conversionResult: ConversionResult?
     @Published var rates: [ExchangeRate] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var connectionStatus: String?
+    @Published var lastUpdated: Date?
     
-    // MARK: - Приватные свойства
+    // MARK: - Private properties (Приватные свойства)
     
     /// Сервис для работы с валютами
     private var currencyService: CurrencyService
-    private let baseCurrency = CurrencyFactory.createCurrency(for: "RUB")!
+    /// Менеджер базовой валюты
+    private var baseCurrencyManager: BaseCurrencyManager
+    /// Менеджер темы для отслеживания изменений форматирования
+    private var themeManager: ThemeManager?
+    /// Менеджер локализации
+    private var localizationManager: LocalizationManager?
     
-    // MARK: - Инициализация
+    // MARK: - Initialization (Инициализация)
     
-    init(currencyService: CurrencyService) {
+    init(currencyService: CurrencyService, baseCurrencyManager: BaseCurrencyManager, themeManager: ThemeManager? = nil, localizationManager: LocalizationManager? = nil) {
         self.currencyService = currencyService
+        self.baseCurrencyManager = baseCurrencyManager
+        self.themeManager = themeManager
+        self.localizationManager = localizationManager
     }
     
     // MARK: - Загрузка курсов валют
     
     /// Получает курсы валют относительно базовой валюты
-    func fetchRates() {
+    func fetchRates() async {
         isLoading = true
         errorMessage = nil
+        connectionStatus = nil
         
-        currencyService.getExchangeRates(baseCurrency: baseCurrency, selectedCurrencies: nil) { [weak self] result in
-            Task { @MainActor in
-                guard let self = self else { return }
-                self.isLoading = false
-                
-                switch result {
-                case .success(let rates):
-                    self.rates = rates
-                    self.errorMessage = nil
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                }
+        do {
+            let result = try await currencyService.getExchangeRates(
+                baseCurrency: baseCurrencyManager.baseCurrency, 
+                selectedCurrencies: nil,
+                requestType: .networkOrCache
+            )
+            
+            rates = result.data
+            lastUpdated = result.lastUpdated
+            
+            // Обновляем статус подключения
+            switch result.status {
+            case .fresh:
+                connectionStatus = nil
+            case .stale:
+                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.dataOutdated) ?? "Data outdated"
+            case .noConnection:
+                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.noConnection) ?? "No connection"
             }
+            
+        } catch {
+            errorMessage = error.localizedDescription
         }
+        
+        isLoading = false
     }
     
-    // MARK: - Методы
+    // MARK: - Public Methods (Публичные методы)
 
-    /// Метод - устанавливаем сервис
-    func setServices(currencyService: CurrencyService) {
+    /// Метод - устанавливаем сервисы
+    func setServices(currencyService: CurrencyService, baseCurrencyManager: BaseCurrencyManager) {
         self.currencyService = currencyService
+        self.baseCurrencyManager = baseCurrencyManager
     }
     
     /// Конвертирует сумму из базовой валюты в выбранную
     func convert(amount: Double, to currency: Currency) {
-        conversionResult = currencyService.convert(amount: amount, from: baseCurrency, to: currency)
+        conversionResult = currencyService.convert(amount: amount, from: baseCurrencyManager.baseCurrency, to: currency)
+    }
+    
+    /// Обновляет форматирование текущего результата конвертации
+    func refreshResultFormatting() {
+        guard let result = conversionResult else { return }
+        // Пересчитываем результат с новой точностью
+        convert(amount: result.originalAmount, to: result.toCurrency)
     }
 }
 

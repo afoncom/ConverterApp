@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AllCurrencyScreen: View {
     
-    // MARK: - State и Environment
+    // MARK: - Screen states (Состояния экрана)
     
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
     @StateObject private var viewModel = AllCurrencyViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
@@ -19,8 +19,13 @@ struct AllCurrencyScreen: View {
     let serviceContainer: ServiceContainer               // Контейнер сервисов
     let onCurrencySelected: ((String) -> Void)?          // Callback при выборе валюты
     
+    // MARK: - Computed Properties (Вычисленные свойства)
     
-    // MARK: - Инициализация
+    private var localizationManager: LocalizationManager {
+        serviceContainer.localizationManager
+    }
+    
+    // MARK: - Initialization (Инициализация)
     
     init(currencyManager: CurrencyManager,
         serviceContainer: ServiceContainer,
@@ -35,24 +40,48 @@ struct AllCurrencyScreen: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                if let status = viewModel.connectionStatus {
+                    let isNoConnection = status.contains(localizationManager.localizedString("no_connection"))
+                    HStack {
+                        Image(systemName: isNoConnection ? "wifi.slash" : "clock")
+                        Text(status)
+                        Spacer()
+                        if let lastUpdate = viewModel.lastUpdated {
+                            Text(String(format: localizationManager.localizedString("updated_colon"), DateFormatter.shortTime.string(from: lastUpdate)))
+                                .font(.caption2)
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundColor(isNoConnection ? .red : .orange)
+                    .padding(.horizontal)
+                    .padding(.vertical, 4)
+                    .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+                }
+                
                 searchBar
                 listView
             }
-            .navigationTitle("Все валюты (\(viewModel.filteredCurrencies.count))")
+            .navigationTitle("\(localizationManager.localizedString(AppConfig.LocalizationKeys.allCurrencies)) (\(viewModel.filteredCurrencies.count))")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                // Передаем менеджер валют и сервис в ViewModel
-                viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService)
+                
+            
+                viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService, localizationManager: localizationManager)
                 
                 if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
-                    viewModel.loadAllCurrencies()
+                    Task {
+                        await viewModel.loadAllCurrencies()
+                    }
                 }
             }
-            .alert("Валюта добавлена!", isPresented: $viewModel.showAddedAlert) {
-                Button("ОК") {}
+            .alert(localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAdded),
+                   isPresented: $viewModel.showAddedAlert) {
+                Button(localizationManager.localizedString(AppConfig.LocalizationKeys.ok)) {}
             } message: {
                 if let currency = viewModel.addedCurrency {
-                    Text("\(currency) - \(viewModel.getRussianName(for: currency) ?? "Неизвстная валюта")\nдобавлена в список валют")
+                    Text(String(format: localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAddedMessage), 
+                               currency, 
+                               viewModel.getLocalizedName(for: currency) ?? localizationManager.localizedString(AppConfig.LocalizationKeys.unknownCurrency)))
                 }
             }
         }
@@ -65,7 +94,7 @@ struct AllCurrencyScreen: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                TextField("Поиск валюты...", text: $viewModel.searchText)
+                TextField(localizationManager.localizedString(AppConfig.LocalizationKeys.searchCurrencies), text: $viewModel.searchText)
                     .focused($isSearchFocused)
                     .submitLabel(.search)
                     .onSubmit { isSearchFocused = false }
@@ -102,7 +131,7 @@ struct AllCurrencyScreen: View {
     }
     
     private var loadingView: some View {
-        ProgressView("Загрузка валют...")
+        ProgressView(localizationManager.localizedString(AppConfig.LocalizationKeys.loadingCurrencies))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
@@ -111,13 +140,17 @@ struct AllCurrencyScreen: View {
             Image(systemName: "exclamationmark.triangle")
                 .foregroundColor(.orange)
                 .font(.system(size: 48))
-            Text("Ошибка загрузки")
+            Text(localizationManager.localizedString(AppConfig.LocalizationKeys.loadingError))
                 .font(.headline)
             Text(error)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            Button("Повторить") { viewModel.reload() }
+            Button(localizationManager.localizedString(AppConfig.LocalizationKeys.retry)) {
+                Task {
+                    await viewModel.reload()
+                }
+            }
                 .padding()
                 .background(Color.blue.opacity(0.2))
                 .cornerRadius(10)
@@ -142,7 +175,7 @@ struct AllCurrencyScreen: View {
                 Text(currency)
                     .font(.headline)
                     .fontWeight(.semibold)
-                Text(viewModel.getRussianName(for: currency) ?? "Неизвестная валюта")
+                Text(viewModel.getLocalizedName(for: currency) ?? localizationManager.localizedString(AppConfig.LocalizationKeys.unknownCurrency))
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
@@ -179,7 +212,9 @@ struct AllCurrencyScreen: View {
         viewModel.showCurrencyAddedAlert(currency: currency)
         onCurrencySelected?(currency)
     }
+    
 }
+
 
 #Preview {
     AllCurrencyScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer(), onCurrencySelected: nil)
