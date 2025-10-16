@@ -6,32 +6,35 @@
 
 import SwiftUI
 
-// MARK: - Service Container
-
-// Контейнер для хранения сервисов приложения
-final class ServiceContainer: ObservableObject {
-    @Published var baseCurrencyManager = BaseCurrencyManager()  // Менеджер базовой валюты
-    @Published var themeManager = ThemeManager()                // Менеджер темы приложения
-    @Published var localizationManager = LocalizationManager() // Менеджер локализации приложения
-    let cacheService: CacheServiceProtocol                     // Сервис для кэширования данных
-    let currencyService: CurrencyService                       // Сервис для работы с валютами
-    let currencyFormatter: CurrencyFormatterProtocol           // Сервис для форматирования валют
-    
-    init() {
-        self.cacheService = CacheService()
-        self.currencyFormatter = CurrencyFormatterService()
-        let serviceImpl = CurrencyServiceImpl(cacheService: self.cacheService)
-        self.currencyService = serviceImpl
-        // Устанавливаем themeManager и localizationManager после инициализации
-        serviceImpl.setThemeManager(self.themeManager)
-        serviceImpl.setLocalizationManager(self.localizationManager)
-    }
-}
-
 @main
 struct CurrencyConverterApp: App {
-    @StateObject private var serviceContainer = ServiceContainer()
-    private var currencyManager = CurrencyManager()
+    private let serviceContainer: ServiceContainer
+    private let currencyManager = CurrencyManager()
+    
+    init() {
+            // Инициализация зависимостей
+            let baseCurrencyManager = BaseCurrencyManager()
+            let themeManager = ThemeManager()
+            let localizationManager = LocalizationManager()
+            let cacheService = CacheService()
+            let currencyFormatter = CurrencyFormatterService()
+            let currencyService = CurrencyServiceImpl(cacheService: cacheService)
+
+            // Связываем зависимости
+            currencyService.setThemeManager(themeManager)
+            currencyService.setLocalizationManager(localizationManager)
+
+            // Собираем контейнер
+            self.serviceContainer = ServiceContainer(
+                baseCurrencyManager: baseCurrencyManager,
+                themeManager: themeManager,
+                localizationManager: localizationManager,
+                cacheService: cacheService,
+                currencyService: currencyService,
+                currencyFormatter: currencyFormatter
+            )
+        }
+
     
     var body: some Scene {
         WindowGroup {

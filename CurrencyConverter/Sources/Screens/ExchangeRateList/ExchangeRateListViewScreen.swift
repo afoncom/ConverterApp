@@ -10,7 +10,7 @@ struct ExchangeRateListViewScreen: View {
     
     // MARK: - Состояния экрана
     
-    @StateObject private var viewModel = ExchangeRateListViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
+    @StateObject private var viewModel: ExchangeRateListViewModel
     @Environment(\.dismiss) private var dismiss
     
     let currencyManager: CurrencyManager
@@ -20,14 +20,24 @@ struct ExchangeRateListViewScreen: View {
     
     // MARK: - Initialization (Инициализация)
     
-    /// Конструктор с опциональным callback
-    init(currencyManager: CurrencyManager,
+    init(
+        currencyManager: CurrencyManager,
          serviceContainer: ServiceContainer,
-        onCurrencySelected: ((Currency) -> Void)? = nil) {
+        onCurrencySelected: ((Currency) -> Void)? = nil
+    ) {
         self.currencyManager = currencyManager
         self.onCurrencySelected = onCurrencySelected
         self.serviceContainer = serviceContainer
         self.localizationManager = serviceContainer.localizationManager
+        
+        _viewModel = StateObject(
+            wrappedValue: ExchangeRateListViewModel(
+                currencyService: serviceContainer.currencyService,
+                currencyManager: currencyManager,
+                baseCurrency: serviceContainer.baseCurrencyManager.baseCurrency,
+                localizationManager: serviceContainer.localizationManager
+            )
+        )
     }
     
     // MARK: - Body экрана
@@ -141,14 +151,6 @@ struct ExchangeRateListViewScreen: View {
             .refreshable {
                 await viewModel.reload()
             }
-            .task {
-                viewModel.setServices(
-                    currencyManager: currencyManager, 
-                    currencyService: serviceContainer.currencyService,
-                    baseCurrency: serviceContainer.baseCurrencyManager.baseCurrency,
-                    localizationManager: serviceContainer.localizationManager
-                )
-            }
             .onChange(of: serviceContainer.baseCurrencyManager.baseCurrency) { _, newBaseCurrency in
                 viewModel.updateBaseCurrency(newBaseCurrency)
             }
@@ -164,5 +166,5 @@ struct ExchangeRateListViewScreen: View {
 
 
 #Preview {
-    ExchangeRateListViewScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())
+    ExchangeRateListViewScreen(currencyManager: CurrencyManager(), serviceContainer: .makePreview())
 }

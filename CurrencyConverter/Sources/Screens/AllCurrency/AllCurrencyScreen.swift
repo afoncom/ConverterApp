@@ -217,5 +217,5 @@ struct AllCurrencyScreen: View {
 
 
 #Preview {
-    AllCurrencyScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer(), onCurrencySelected: nil)
+    AllCurrencyScreen(currencyManager: CurrencyManager(), serviceContainer: .makePreview(), onCurrencySelected: nil)
 }

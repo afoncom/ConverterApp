@@ -23,21 +23,35 @@ final class ExchangeRateListViewModel: ObservableObject {
     // MARK: - Приватные свойства
     
     /// Сервис для работы с курсами валют
-    private var currencyService: CurrencyService
+    private let currencyService: CurrencyService
     
     /// Менеджер выбранных пользователем валют
-    private var currencyManager: CurrencyManager!
+    private let currencyManager: CurrencyManager
     
     /// Базовая валюта (теперь динамическая)
-    private var baseCurrency: Currency!
+    private var baseCurrency: Currency
     
     /// Менеджер локализации
-    private var localizationManager: LocalizationManager!
+    private let localizationManager: LocalizationManager
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyService: CurrencyService) {
+    init(
+        currencyService: CurrencyService,
+        currencyManager: CurrencyManager,
+        baseCurrency: Currency,
+        localizationManager: LocalizationManager
+    ) {
         self.currencyService = currencyService
+        self.currencyManager = currencyManager
+        self.baseCurrency = baseCurrency
+        self.localizationManager = localizationManager
+        
+        updateTitle()
+        
+        Task {
+            await reload()
+        }
     }
     
     // MARK: - Загрузка курсов валют
@@ -88,29 +102,14 @@ final class ExchangeRateListViewModel: ObservableObject {
         }
     }
     
-    /// Метод - устанавливаем менеджер, сервис и базовую валюту
-    func setServices(currencyManager: CurrencyManager, currencyService: CurrencyService, baseCurrency: Currency, localizationManager: LocalizationManager) {
-        self.currencyManager = currencyManager
-        self.currencyService = currencyService
-        self.baseCurrency = baseCurrency
-        self.localizationManager = localizationManager
-        
-        updateTitle()
-        
-        Task {
-            await reload()
-        }
-    }
-    
     /// Обновляет заголовок с учетом текущей локализации
     func updateTitle() {
-        guard let localizationManager = localizationManager else { return }
-        self.title = localizationManager.localizedString(AppConfig.LocalizationKeys.selectCurrency)
+       title = localizationManager.localizedString(AppConfig.LocalizationKeys.selectCurrency)
     }
     
     /// Обновляет базовую валюту и перезагружает данные
     func updateBaseCurrency(_ newBaseCurrency: Currency) {
-        self.baseCurrency = newBaseCurrency
+        baseCurrency = newBaseCurrency
         Task {
             await reload()
         }

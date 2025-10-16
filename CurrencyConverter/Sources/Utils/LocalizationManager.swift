@@ -45,6 +45,15 @@ class LocalizationManager: ObservableObject {
         return NSLocalizedString(key, bundle: bundle, comment: "")
     }
     
+    /// Получает локализованное название валюты по коду
+    func getCurrencyName(for currencyCode: String) -> String? {
+        let key = "currency_\(currencyCode)"
+        let localizedName = NSLocalizedString(key, bundle: bundle, comment: "")
+        
+        // Проверяем, что локализация найдена (не равен ключу)
+        return localizedName != key ? localizedName : nil
+    }
+    
     /// Получает код языка для API запросов
     var languageCode: String {
         switch currentLanguage {

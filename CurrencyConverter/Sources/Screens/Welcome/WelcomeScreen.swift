@@ -47,5 +47,5 @@ struct WelcomeScreen: View {
 }
 
 #Preview {
-    WelcomeScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())
+    WelcomeScreen(currencyManager: CurrencyManager(), serviceContainer: .makePreview())
 }

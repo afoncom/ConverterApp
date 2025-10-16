@@ -159,5 +159,5 @@ struct SettingScreen: View {
 // MARK: - Preview
 
 #Preview {
-    SettingScreen(serviceContainer: ServiceContainer())
+    SettingScreen(serviceContainer: .makePreview())
 }

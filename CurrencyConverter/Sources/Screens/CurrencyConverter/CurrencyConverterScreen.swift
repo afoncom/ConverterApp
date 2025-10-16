@@ -316,5 +316,5 @@ struct CurrencyConverterScreen: View {
 }
 
 #Preview {
-    CurrencyConverterScreen(currencyManager: CurrencyManager(), serviceContainer: ServiceContainer())
+    CurrencyConverterScreen(currencyManager: CurrencyManager(), serviceContainer: .makePreview())
 }
