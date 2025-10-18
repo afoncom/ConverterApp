@@ -12,28 +12,30 @@ struct CurrencyConverterApp: App {
     private let currencyManager = CurrencyManager()
     
     init() {
-            // Инициализация зависимостей
+        self.serviceContainer = {
             let baseCurrencyManager = BaseCurrencyManager()
             let themeManager = ThemeManager()
             let localizationManager = LocalizationManager()
             let cacheService = CacheService()
             let currencyFormatter = CurrencyFormatterService()
-            let currencyService = CurrencyServiceImpl(cacheService: cacheService)
-
-            // Связываем зависимости
-            currencyService.setThemeManager(themeManager)
-            currencyService.setLocalizationManager(localizationManager)
-
-            // Собираем контейнер
-            self.serviceContainer = ServiceContainer(
+            let networkService = CurrencyNetworkService(cacheService: cacheService)
+            
+            let currencyService = CurrencyServiceImpl(
+                networkService: networkService,
+                themeManager: themeManager,
+                localizationManager: localizationManager)
+            
+            return ServiceContainer(
                 baseCurrencyManager: baseCurrencyManager,
                 themeManager: themeManager,
                 localizationManager: localizationManager,
                 cacheService: cacheService,
+                networkService: networkService,
                 currencyService: currencyService,
                 currencyFormatter: currencyFormatter
             )
-        }
+        } ()
+    }
 
     
     var body: some Scene {

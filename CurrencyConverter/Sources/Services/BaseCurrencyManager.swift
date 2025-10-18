@@ -1,4 +1,4 @@
-//
+///
 //  BaseCurrencyManager.swift
 //  CurrencyConverter
 //
@@ -7,63 +7,64 @@
 
 import Foundation
 
-// MARK: - Base Currency Manager для управления базовой валютой
+// MARK: - Storage Protocol (для инверсии зависимостей)
+protocol StorageProtocol {
+    func string(forKey: String) -> String?
+    func set(_ value: String, forKey: String)
+}
 
+extension UserDefaults: StorageProtocol {
+    func set(_ value: String, forKey key: String) {
+        self.set(value as Any, forKey: key)
+    }
+}
+
+
+// MARK: - Base Currency Manager
 final class BaseCurrencyManager: ObservableObject {
     
     // MARK: - Published Properties
-    
-    /// Текущая базовая валюта
     @Published private(set) var baseCurrency: Currency
     
     // MARK: - Private Properties
-    
-    private let userDefaults = UserDefaults.standard
+    private let storage: StorageProtocol
     private let baseCurrencyKey = AppConfig.UserDefaultsKeys.baseCurrency
     private let defaultBaseCurrencyCode = AppConfig.Currency.defaultBaseCurrency
     
-    // MARK: - Initialization (Инициализация)
-    
-    init() {
-        let savedCode = userDefaults.string(forKey: baseCurrencyKey) ?? defaultBaseCurrencyCode
+    // MARK: - Initialization
+    init(storage: StorageProtocol = UserDefaults.standard) {
+        self.storage = storage
         
-        if let currency = CurrencyFactory.createCurrency(for: savedCode) {
-            self.baseCurrency = currency
-        } else {
-            self.baseCurrency = CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode)!
-            userDefaults.set(defaultBaseCurrencyCode, forKey: baseCurrencyKey)
+        guard let savedCode = storage.string(forKey: baseCurrencyKey),
+              let currency = CurrencyFactory.createCurrency(for: savedCode) else {
+            let defaultCurrency = CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode)!
+            self.baseCurrency = defaultCurrency
+            storage.set(defaultBaseCurrencyCode, forKey: baseCurrencyKey)
+            return
         }
+        
+        self.baseCurrency = currency
     }
     
-    // MARK: - Public Methods (Публичные методы)
+    // MARK: - Public Methods
     
     /// Установить новую базовую валюту
     func setBaseCurrency(_ currency: Currency) {
         baseCurrency = currency
-        userDefaults.set(currency.code, forKey: baseCurrencyKey)
-        
-        // Уведомляем об изменении
-        objectWillChange.send()
+        storage.set(currency.code, forKey: baseCurrencyKey)
     }
     
-    /// Получить код базовой валюты
-    var baseCurrencyCode: String {
-        return baseCurrency.code
-    }
+    /// Код базовой валюты
+    var baseCurrencyCode: String { baseCurrency.code }
     
-    /// Получить символ базовой валюты
-    var baseCurrencySymbol: String {
-        return baseCurrency.symbol
-    }
+    /// Символ базовой валюты
+    var baseCurrencySymbol: String { baseCurrency.symbol }
     
-    /// Получить название базовой валюты
-    var baseCurrencyName: String {
-        return baseCurrency.name
-    }
+    /// Название базовой валюты
+    var baseCurrencyName: String { baseCurrency.name }
     
     /// Проверить, является ли валюта базовой
     func isBaseCurrency(_ currencyCode: String) -> Bool {
-        return baseCurrency.code == currencyCode
+        baseCurrency.code == currencyCode
     }
-    
 }

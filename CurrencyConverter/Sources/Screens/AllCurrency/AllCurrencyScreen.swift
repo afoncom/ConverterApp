@@ -12,7 +12,10 @@ struct AllCurrencyScreen: View {
     // MARK: - Screen states (Состояния экрана)
     
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
-    @StateObject private var viewModel = AllCurrencyViewModel(currencyService: CurrencyServiceImpl(cacheService: CacheService()))
+    @StateObject private var viewModel = AllCurrencyViewModel(
+        currencyService: CurrencyServiceImpl(
+            networkService: CurrencyNetworkService(cacheService: CacheService())))
+
     @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     
     let currencyManager: CurrencyManager                 // Менеджер выбранных валют
