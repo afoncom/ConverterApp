@@ -33,8 +33,6 @@ struct AppConfig {
     
     struct Colors {
         static let success = Color.green
-        static let warning = Color.orange
-        static let error = Color.red
         static let info = Color.blue
     }
     
