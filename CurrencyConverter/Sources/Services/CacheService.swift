@@ -10,11 +10,11 @@ import Foundation
 
 protocol CacheServiceProtocol {
     func cacheRates(_ rates: [String: Double], baseCurrency: String)
-    func getCachedRates() -> [String: Double]?           // Только свежие данные
-    func getStaleRates() -> [String: Double]?            // Любые данные, даже устаревшие
-    func getCachedBaseCurrency() -> String?              // Получить базовую валюту кэшированных курсов
+    func getCachedRates() -> [String: Double]           // Только свежие данные
+    func getStaleRates() -> [String: Double]            // Любые данные, даже устаревшие
+    func getCachedBaseCurrency() -> String              // Получить базовую валюту кэшированных курсов
     func cacheAllCurrencies(_ currencies: [String])      // Кэширование всех валют
-    func getStaleAllCurrencies() -> [String]?            // Получение всех валют из кэша
+    func getStaleAllCurrencies() -> [String]            // Получение всех валют из кэша
     func isCacheValid() -> Bool
     func getLastUpdateTime() -> Date?
     func clearCache()
@@ -29,8 +29,8 @@ final class CacheService: CacheServiceProtocol {
     
     // MARK: - Private Properties
     private var cachedRates: [String: Double] = [:]
-    private var cachedCurrencies: [String] = []           
-    private var cachedBaseCurrency: String?
+    private var cachedCurrencies: [String] = []
+    private var cachedBaseCurrency = ""
     private var cacheTimestamp: Date?
     private let cacheValidityDuration: TimeInterval = AppConfig.Cache.validityDuration
     
@@ -44,11 +44,8 @@ final class CacheService: CacheServiceProtocol {
     }
     
     /// Получить курсы валют из кэша (если актуальные)
-    func getCachedRates() -> [String: Double]? {
-        guard isCacheValid() else {
-            return nil
-        }
-        return cachedRates.isEmpty ? nil : cachedRates
+    func getCachedRates() -> [String: Double] {
+        isCacheValid() ? cachedRates : [:]
     }
     
     /// Проверить, актуален ли кэш
@@ -60,13 +57,13 @@ final class CacheService: CacheServiceProtocol {
     }
     
     /// Получить любые данные из кэша (даже устаревшие)
-    func getStaleRates() -> [String: Double]? {
-        return cachedRates.isEmpty ? nil : cachedRates
+    func getStaleRates() -> [String: Double] {
+        cachedRates
     }
     
     /// Получить базовую валюту кэшированных курсов
-    func getCachedBaseCurrency() -> String? {
-        return cachedBaseCurrency
+    func getCachedBaseCurrency() -> String {
+        cachedBaseCurrency
     }
     
     /// Кэшировать все доступные валюты
@@ -79,20 +76,20 @@ final class CacheService: CacheServiceProtocol {
     }
     
     /// Получить все валюты из кэша (даже устаревшие)
-    func getStaleAllCurrencies() -> [String]? {
-        return cachedCurrencies.isEmpty ? nil : cachedCurrencies
+    func getStaleAllCurrencies() -> [String] {
+        cachedCurrencies
     }
     
     /// Получить время последнего обновления
     func getLastUpdateTime() -> Date? {
-        return cacheTimestamp
+        cacheTimestamp
     }
     
     /// Очистить кэш
     func clearCache() {
         cachedRates.removeAll()
         cachedCurrencies.removeAll()
-        cachedBaseCurrency = nil
+        cachedBaseCurrency = ""
         cacheTimestamp = nil
     }
 }

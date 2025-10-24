@@ -14,8 +14,12 @@ struct AllCurrencyScreen: View {
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
     @StateObject private var viewModel = AllCurrencyViewModel(
         currencyService: CurrencyServiceImpl(
-            networkService: CurrencyNetworkService(cacheService: CacheService())))
-
+            networkService: CurrencyNetworkService(
+                cacheService: CacheService()
+            )
+        )
+    )
+    
     @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     
     let currencyManager: CurrencyManager                 // Менеджер выбранных валют
@@ -30,9 +34,11 @@ struct AllCurrencyScreen: View {
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyManager: CurrencyManager,
+    init(
+        currencyManager: CurrencyManager,
         serviceContainer: ServiceContainer,
-        onCurrencySelected: ((String) -> Void)? = nil) {
+        onCurrencySelected: ((String) -> Void)? = nil
+    ) {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.onCurrencySelected = onCurrencySelected
@@ -68,7 +74,7 @@ struct AllCurrencyScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 
-            
+                
                 viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService, localizationManager: localizationManager)
                 
                 if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
@@ -77,14 +83,21 @@ struct AllCurrencyScreen: View {
                     }
                 }
             }
-            .alert(localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAdded),
-                   isPresented: $viewModel.showAddedAlert) {
+            .alert(
+                localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAdded),
+                isPresented: $viewModel.showAddedAlert
+            ) {
                 Button(localizationManager.localizedString(AppConfig.LocalizationKeys.ok)) {}
             } message: {
                 if let currency = viewModel.addedCurrency {
-                    Text(String(format: localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAddedMessage), 
-                               currency, 
-                               viewModel.getLocalizedName(for: currency) ?? localizationManager.localizedString(AppConfig.LocalizationKeys.unknownCurrency)))
+                    Text(
+                        String(
+                            format: localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAddedMessage),
+                            currency,
+                            viewModel.getLocalizedName(for: currency) ?? localizationManager.localizedString(AppConfig.LocalizationKeys.unknownCurrency)
+                        )
+                    )
+                    
                 }
             }
         }
@@ -154,9 +167,9 @@ struct AllCurrencyScreen: View {
                     await viewModel.reload()
                 }
             }
-                .padding()
-                .background(Color.blue.opacity(0.2))
-                .cornerRadius(10)
+            .padding()
+            .background(Color.blue.opacity(0.2))
+            .cornerRadius(10)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -170,6 +183,7 @@ struct AllCurrencyScreen: View {
         .listStyle(PlainListStyle())
         .animation(.easeInOut(duration: 0.3), value: viewModel.filteredCurrencies)
         .onTapGesture { isSearchFocused = false }
+        .accessibilityAddTraits(.isButton)
     }
     
     private func currencyRow(_ currency: String) -> some View {
@@ -201,16 +215,20 @@ struct AllCurrencyScreen: View {
                 .animation(.easeInOut(duration: 0.1), value: viewModel.pressedCurrency)
         }
         .buttonStyle(PlainButtonStyle())
-        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { isPressing in
+        .onLongPressGesture(
+            minimumDuration: 0,
+            maximumDistance: .infinity,
+            pressing: { isPressing in
                 viewModel.setPressedCurrency(isPressing ? currency : nil)
-        }, perform: {})
+            }, perform: {}
+        )
     }
     
     // MARK: - Добавление валюты в список
     
     /// Добавляет выбранную валюту, скрывает клавиатуру, показывает алерт и вызывает callback
     private func addCurrency(_ currency: String) {
-        isSearchFocused = false               
+        isSearchFocused = false
         viewModel.addCurrency(currency)
         viewModel.showCurrencyAddedAlert(currency: currency)
         onCurrencySelected?(currency)

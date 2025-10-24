@@ -43,12 +43,12 @@ final class CurrencyManager {
     
     /// Проверить, есть ли валюта в списке
     func isSelected(_ currencyCode: String) -> Bool {
-        return selectedCurrencies.contains(currencyCode)
+        selectedCurrencies.contains(currencyCode)
     }
     
     /// Получить список доступных для добавления валют (исключая уже выбранные)
     func getAvailableCurrencies(from allCurrencies: [String]) -> [String] {
-        return allCurrencies.filter { currency in
+        allCurrencies.filter { currency in
             let isNotSelected = !selectedCurrencies.contains(currency)
             let hasLocalizedName = CurrencyNames.getLocalizedName(for: currency, languageCode: "ru") != nil
             return isNotSelected && hasLocalizedName
@@ -57,7 +57,7 @@ final class CurrencyManager {
     
     /// Получить количество выбранных валют
     var selectedCount: Int {
-        return selectedCurrencies.count
+        selectedCurrencies.count
     }
     
     // MARK: - Private Methods (Приватные методы)
@@ -77,4 +77,3 @@ final class CurrencyManager {
         userDefaults.set(selectedCurrencies, forKey: selectedCurrenciesKey)
     }
 }
-

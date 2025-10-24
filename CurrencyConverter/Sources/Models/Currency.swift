@@ -12,5 +12,4 @@ struct Currency: Codable, Equatable {
     let code: String
     let name: String
     let symbol: String
-    
 }

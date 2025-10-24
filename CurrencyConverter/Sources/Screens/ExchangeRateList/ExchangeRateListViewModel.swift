@@ -14,7 +14,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     // MARK: - Состояния экрана
     
     @Published var items: [ExchangeRate] = []
-    @Published var title: String = "Select Currency"
+    @Published var title = "Select Currency"
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var connectionStatus: String?
@@ -115,4 +115,3 @@ final class ExchangeRateListViewModel: ObservableObject {
         }
     }
 }
-

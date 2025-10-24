@@ -27,15 +27,17 @@ struct ExchangeRateAPIResponse: Codable {
 
 protocol CurrencyNetworkServiceProtocol {
     var cacheService: CacheServiceProtocol { get }
-    func fetchExchangeRates(baseCurrency: Currency,
-                            selectedCurrencies: [String]?,
-                            requestType: RequestType,
-                            localizationManager: LocalizationManager?) async throws -> DataResult<[ExchangeRate]>
+    func fetchExchangeRates(
+        baseCurrency: Currency,
+        selectedCurrencies: [String],
+        requestType: RequestType,
+        localizationManager: LocalizationManager?
+    ) async throws -> DataResult<[ExchangeRate]>
     
     func fetchAllCurrencies(requestType: RequestType) async throws -> DataResult<[String]>
 }
 
-    // MARK: - Implementation
+// MARK: - Implementation
 
 final class CurrencyNetworkService: CurrencyNetworkServiceProtocol {
     
@@ -47,10 +49,12 @@ final class CurrencyNetworkService: CurrencyNetworkServiceProtocol {
     
     // MARK: - Exchange Rates
     
-    func fetchExchangeRates(baseCurrency: Currency,
-                            selectedCurrencies: [String]?,
-                            requestType: RequestType,
-                            localizationManager: LocalizationManager?) async throws -> DataResult<[ExchangeRate]> {
+    func fetchExchangeRates(
+        baseCurrency: Currency,
+        selectedCurrencies: [String],
+        requestType: RequestType,
+        localizationManager: LocalizationManager?
+    ) async throws -> DataResult<[ExchangeRate]> {
         
         switch requestType {
         case .networkOnly:
@@ -86,15 +90,18 @@ final class CurrencyNetworkService: CurrencyNetworkServiceProtocol {
 
 // MARK: - Private Helpers
 
-private extension CurrencyNetworkService {
+extension CurrencyNetworkService {
     
     func getAPIURL(for baseCurrency: Currency) -> String {
         AppConfig.API.url(for: baseCurrency.code)
     }
     
-    func fetchFromNetwork(baseCurrency: Currency,
-                          selectedCurrencies: [String]?,
-                          localizationManager: LocalizationManager?) async throws -> DataResult<[ExchangeRate]> {
+    func fetchFromNetwork(
+        baseCurrency: Currency,
+        selectedCurrencies: [String],
+        localizationManager: LocalizationManager?
+    ) async throws -> DataResult<[ExchangeRate]> {
+        
         guard let url = URL(string: getAPIURL(for: baseCurrency)) else { throw APIError.invalidURL }
         
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -102,19 +109,24 @@ private extension CurrencyNetworkService {
         
         cacheService.cacheRates(apiResponse.rates, baseCurrency: baseCurrency.code)
         
-        let exchangeRates = convertAPIResponse(apiResponse,
-                                               baseCurrency: baseCurrency,
-                                               selectedCurrencies: selectedCurrencies,
-                                               localizationManager: localizationManager)
+        let exchangeRates = convertAPIResponse(
+            apiResponse,
+            baseCurrency: baseCurrency,
+            selectedCurrencies: selectedCurrencies,
+            localizationManager: localizationManager
+        )
         
         return DataResult(data: exchangeRates, status: .fresh, lastUpdated: Date())
     }
     
-    func getFromCache(baseCurrency: Currency,
-                      selectedCurrencies: [String]?,
-                      localizationManager: LocalizationManager?,
-                      isNetworkError: Bool = false) throws -> DataResult<[ExchangeRate]> {
-        let cachedRates: [String: Double]?
+    func getFromCache(
+        baseCurrency: Currency,
+        selectedCurrencies: [String],
+        localizationManager: LocalizationManager?,
+        isNetworkError: Bool = false
+    ) throws -> DataResult<[ExchangeRate]> {
+        
+        let cachedRates: [String: Double]
         let status: DataStatus
         
         if cacheService.isCacheValid() {
@@ -125,7 +137,7 @@ private extension CurrencyNetworkService {
             status = isNetworkError ? .noConnection : .stale
         }
         
-        guard let rates = cachedRates, !rates.isEmpty else {
+        guard !cachedRates.isEmpty else {
             throw APIError.noData
         }
         
@@ -134,13 +146,15 @@ private extension CurrencyNetworkService {
             base: baseCurrency.code,
             date: "",
             timeLastUpdated: 0,
-            rates: rates
+            rates: cachedRates
         )
         
-        let exchangeRates = convertAPIResponse(fakeResponse,
-                                               baseCurrency: baseCurrency,
-                                               selectedCurrencies: selectedCurrencies,
-                                               localizationManager: localizationManager)
+        let exchangeRates = convertAPIResponse(
+            fakeResponse,
+            baseCurrency: baseCurrency,
+            selectedCurrencies: selectedCurrencies,
+            localizationManager: localizationManager
+        )
         
         return DataResult(data: exchangeRates, status: status, lastUpdated: cacheService.getLastUpdateTime())
     }
@@ -159,19 +173,22 @@ private extension CurrencyNetworkService {
     }
     
     func getAllFromCache(isNetworkError: Bool = false) throws -> DataResult<[String]> {
-        guard let cached = cacheService.getStaleAllCurrencies(),
-              !cached.isEmpty else { throw APIError.noData }
+        let cached = cacheService.getStaleAllCurrencies()
+        guard !cached.isEmpty else { throw APIError.noData }
         
         let status: DataStatus = cacheService.isCacheValid() ? .fresh : (isNetworkError ? .noConnection : .stale)
         
         return DataResult(data: cached, status: status, lastUpdated: cacheService.getLastUpdateTime())
     }
     
-    func convertAPIResponse(_ apiResponse: ExchangeRateAPIResponse,
-                            baseCurrency: Currency,
-                            selectedCurrencies: [String]?,
-                            localizationManager: LocalizationManager?) -> [ExchangeRate] {
-        let targetCurrencies = selectedCurrencies ?? Array(apiResponse.rates.keys)
+    func convertAPIResponse(
+        _ apiResponse: ExchangeRateAPIResponse,
+        baseCurrency: Currency,
+        selectedCurrencies: [String],
+        localizationManager: LocalizationManager?
+    ) -> [ExchangeRate] {
+        
+        let targetCurrencies = selectedCurrencies
         var results: [ExchangeRate] = []
         
         let localizedBase = localizationManager.flatMap {
@@ -195,4 +212,3 @@ private extension CurrencyNetworkService {
         return results
     }
 }
-
