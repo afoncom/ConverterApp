@@ -1,4 +1,4 @@
-///
+//
 //  BaseCurrencyManager.swift
 //  CurrencyConverter
 //

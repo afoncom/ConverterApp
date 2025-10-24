@@ -21,9 +21,9 @@ final class AllCurrencyViewModel: ObservableObject {
     @Published var lastUpdated: Date?           // Время последнего обновления
     
     @Published var searchText = ""
-    @Published var addedCurrency: String? = nil
+    @Published var addedCurrency: String?
     @Published var showAddedAlert = false
-    @Published var pressedCurrency: String? = nil
+    @Published var pressedCurrency: String?
     
     // MARK: - Фильтрация валют по поиску
     
@@ -155,6 +155,3 @@ final class AllCurrencyViewModel: ObservableObject {
         pressedCurrency = currency
     }
 }
-
-
-

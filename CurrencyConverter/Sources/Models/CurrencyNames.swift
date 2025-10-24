@@ -13,7 +13,7 @@ struct CurrencyNames {
     
     /// Получить локализованное название валюты через LocalizationManager
     static func getCurrencyName(for currencyCode: String, localizationManager: LocalizationManager) -> String? {
-        return localizationManager.getCurrencyName(for: currencyCode)
+        localizationManager.getCurrencyName(for: currencyCode)
     }
     
     /// Получить локализованное название валюты по коду языка (для совместимости)
@@ -34,11 +34,11 @@ struct CurrencyNames {
     
     /// Получить русское название валюты по коду (для совместимости)
     static func getRussianName(for currencyCode: String) -> String? {
-        return getLocalizedName(for: currencyCode, languageCode: "ru")
+        getLocalizedName(for: currencyCode, languageCode: "ru")
     }
     
     /// Получить английское название валюты по коду (для совместимости)
     static func getEnglishName(for currencyCode: String) -> String? {
-        return getLocalizedName(for: currencyCode, languageCode: "en")
+        getLocalizedName(for: currencyCode, languageCode: "en")
     }
 }

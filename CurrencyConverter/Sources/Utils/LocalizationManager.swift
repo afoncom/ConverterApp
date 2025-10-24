@@ -8,7 +8,7 @@ import SwiftUI
 import Foundation
 
 /// Менеджер для управления локализацией приложения
-class LocalizationManager: ObservableObject {
+final class LocalizationManager: ObservableObject {
     
     // MARK: - Published Properties
     
@@ -21,7 +21,7 @@ class LocalizationManager: ObservableObject {
     
     // MARK: - Private Properties
     
-    private var bundle: Bundle = Bundle.main
+    private var bundle = Bundle.main
     
     // MARK: - Initialization (Инициализация)
     
@@ -42,7 +42,7 @@ class LocalizationManager: ObservableObject {
     
     /// Локализует строку по ключу
     func localizedString(_ key: String) -> String {
-        return NSLocalizedString(key, bundle: bundle, comment: "")
+        NSLocalizedString(key, bundle: bundle, comment: "")
     }
     
     /// Получает локализованное название валюты по коду
@@ -68,7 +68,7 @@ class LocalizationManager: ObservableObject {
     
     /// Получает название языка для отображения
     var displayLanguageName: String {
-        return currentLanguage
+        currentLanguage
     }
     
     // MARK: - Private Methods (Приватные методы)
@@ -95,6 +95,6 @@ class LocalizationManager: ObservableObject {
 extension String {
     /// Конвенция для быстрой локализации строк
     func localized(using manager: LocalizationManager) -> String {
-        return manager.localizedString(self)
+        manager.localizedString(self)
     }
 }

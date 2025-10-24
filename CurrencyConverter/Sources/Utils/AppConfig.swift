@@ -19,7 +19,7 @@ struct AppConfig {
         
         /// Получить URL для базовой валюты
         static func url(for baseCurrency: String) -> String {
-            return baseURL + baseCurrency
+            baseURL + baseCurrency
         }
     }
     
@@ -138,5 +138,5 @@ extension CGFloat {
     static let smallPadding: CGFloat = 8
     
     /// Размеры компонентов
-    static let currencyButtonHeight: CGFloat = 80
+    static let currencyButtonHeight: CGFloat  = 80
 }

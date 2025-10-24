@@ -12,22 +12,22 @@ struct CurrencyFactory {
     
     /// Создает Currency для любого кода через CurrencyNames (по умолчанию русский)
     static func createCurrency(for code: String) -> Currency? {
-        return createDynamicCurrency(for: code, languageCode: "ru")
+        createDynamicCurrency(for: code, languageCode: "ru")
     }
     
     /// Создает Currency с указанным языком
     static func createLocalizedCurrency(for code: String, languageCode: String) -> Currency? {
-        return createDynamicCurrency(for: code, languageCode: languageCode)
+        createDynamicCurrency(for: code, languageCode: languageCode)
     }
     
     /// Создает массив Currency объектов из массива кодов (по умолчанию русский)
     static func createCurrencies(for codes: [String]) -> [Currency] {
-        return codes.compactMap { createCurrency(for: $0) }
+        codes.compactMap { createCurrency(for: $0) }
     }
     
     /// Создает массив Currency объектов с указанным языком
     static func createLocalizedCurrencies(for codes: [String], languageCode: String) -> [Currency] {
-        return codes.compactMap { createLocalizedCurrency(for: $0, languageCode: languageCode) }
+        codes.compactMap { createLocalizedCurrency(for: $0, languageCode: languageCode) }
     }
     
     // MARK: - Private Methods (Приватные методы)
@@ -83,7 +83,7 @@ struct CurrencyFactory {
     
     /// Проверка поддержки валюты
     static func isSupported(currencyCode: String) -> Bool {
-        return CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "ru") != nil || 
-               CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "en") != nil
+        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "ru") != nil ||
+        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "en") != nil
     }
 }
