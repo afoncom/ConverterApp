@@ -37,9 +37,9 @@ final class BaseCurrencyManager: ObservableObject {
         
         guard let savedCode = storage.string(forKey: baseCurrencyKey),
               let currency = CurrencyFactory.createCurrency(for: savedCode) else {
-            guard let defaultCurrency = CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode) else {
+            let defaultCurrency = CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode) ?? {
                 fatalError("Failed to create default currency")
-            }
+            } ()
             self.baseCurrency = defaultCurrency
             storage.set(defaultBaseCurrencyCode, forKey: baseCurrencyKey)
             return
