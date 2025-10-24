@@ -49,7 +49,7 @@ final class CurrencyConverterViewModel: ObservableObject {
         do {
             let result = try await currencyService.getExchangeRates(
                 baseCurrency: baseCurrencyManager.baseCurrency, 
-                selectedCurrencies: nil,
+                selectedCurrencies: [],
                 requestType: .networkOrCache
             )
             
@@ -93,5 +93,3 @@ final class CurrencyConverterViewModel: ObservableObject {
         convert(amount: result.originalAmount, to: result.toCurrency)
     }
 }
-
-

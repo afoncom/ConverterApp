@@ -22,7 +22,7 @@ struct ExchangeRateListViewScreen: View {
     
     init(
         currencyManager: CurrencyManager,
-         serviceContainer: ServiceContainer,
+        serviceContainer: ServiceContainer,
         onCurrencySelected: ((Currency) -> Void)? = nil
     ) {
         self.currencyManager = currencyManager
@@ -138,7 +138,7 @@ struct ExchangeRateListViewScreen: View {
                     NavigationLink {
                         AllCurrencyScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { selectedCurrency in
                             print(String(format: localizationManager.localizedString("added_currency"), selectedCurrency.description))
-
+                            
                             Task {
                                 await viewModel.reload()
                             }

@@ -7,7 +7,8 @@
 import SwiftUI
 
 /// Менеджер для управления темой приложения
-class ThemeManager: ObservableObject {
+
+final class ThemeManager: ObservableObject {
     
     // MARK: - Published Properties (Опубликованные свойства)
     
@@ -39,6 +40,6 @@ class ThemeManager: ObservableObject {
     
     /// Возвращает текущую цветовую схему
     var colorScheme: ColorScheme? {
-        return isDarkMode ? .dark : .light
+        isDarkMode ? .dark : .light
     }
 }

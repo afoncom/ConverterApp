@@ -23,7 +23,8 @@ struct CurrencyConverterApp: App {
             let currencyService = CurrencyServiceImpl(
                 networkService: networkService,
                 themeManager: themeManager,
-                localizationManager: localizationManager)
+                localizationManager: localizationManager
+            )
             
             return ServiceContainer(
                 baseCurrencyManager: baseCurrencyManager,
@@ -34,7 +35,7 @@ struct CurrencyConverterApp: App {
                 currencyService: currencyService,
                 currencyFormatter: currencyFormatter
             )
-        } ()
+        }()
     }
 
     
@@ -50,7 +51,7 @@ struct CurrencyConverterApp: App {
 struct ContentView: View {
     let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
-    @ObservedObject var themeManager: ThemeManager
+    @ObservedObject private var themeManager: ThemeManager
     
     init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
         self.currencyManager = currencyManager
@@ -63,4 +64,3 @@ struct ContentView: View {
             .preferredColorScheme(themeManager.colorScheme)
     }
 }
-
