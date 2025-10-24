@@ -30,7 +30,7 @@ struct DataResult<T> {
 // MARK: - Currency Service Protocol
 
 protocol CurrencyService {
-    func getExchangeRates(baseCurrency: Currency, selectedCurrencies: [String]?, requestType: RequestType) async throws -> DataResult<[ExchangeRate]>
+    func getExchangeRates(baseCurrency: Currency, selectedCurrencies: [String], requestType: RequestType) async throws -> DataResult<[ExchangeRate]>
     func getAllAvailableCurrencies(requestType: RequestType) async throws -> DataResult<[String]>
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult?
     func getFormattedAmount(_ amount: Double, currency: Currency, decimalPrecision: Int?) -> String
@@ -52,9 +52,11 @@ final class CurrencyServiceImpl: CurrencyService {
         return formatter
     }()
     
-    init(networkService: CurrencyNetworkServiceProtocol,
-         themeManager: ThemeManager? = nil,
-         localizationManager: LocalizationManager? = nil) {
+    init(
+        networkService: CurrencyNetworkServiceProtocol,
+        themeManager: ThemeManager? = nil,
+        localizationManager: LocalizationManager? = nil
+    ) {
         self.networkService = networkService
         self.themeManager = themeManager
         self.localizationManager = localizationManager
@@ -68,22 +70,34 @@ final class CurrencyServiceImpl: CurrencyService {
         self.localizationManager = localizationManager
     }
     
+    func getFormattedAmount(_ amount: Double, currency: Currency, decimalPrecision: Int? = nil) -> String {
+        let precision = decimalPrecision ?? themeManager?.decimalPrecision ?? 2
+        numberFormatter.currencyCode = currency.code
+        numberFormatter.currencySymbol = currency.symbol
+        numberFormatter.minimumFractionDigits = precision
+        numberFormatter.maximumFractionDigits = precision
+        return numberFormatter.string(from: NSNumber(value: amount)) ?? "\(currency.symbol)\(amount)"
+    }
     // MARK: - Public Methods
     
-    func getExchangeRates(baseCurrency: Currency, selectedCurrencies: [String]?, requestType: RequestType) async throws -> DataResult<[ExchangeRate]> {
-        return try await networkService.fetchExchangeRates(baseCurrency: baseCurrency,
-                                                          selectedCurrencies: selectedCurrencies,
-                                                          requestType: requestType,
-                                                          localizationManager: localizationManager)
+    func getExchangeRates(baseCurrency: Currency, selectedCurrencies: [String], requestType: RequestType) async throws -> DataResult<[ExchangeRate]> {
+        try await networkService.fetchExchangeRates(
+            baseCurrency: baseCurrency,
+            selectedCurrencies: selectedCurrencies,
+            requestType: requestType,
+            localizationManager: localizationManager
+        )
     }
     
     func getAllAvailableCurrencies(requestType: RequestType) async throws -> DataResult<[String]> {
-        return try await networkService.fetchAllCurrencies(requestType: requestType)
+        try await networkService.fetchAllCurrencies(requestType: requestType)
     }
     
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult? {
-        guard let cachedRates = networkService.cacheService.getStaleRates(),
-              let cachedBaseCurrency = networkService.cacheService.getCachedBaseCurrency() else {
+        let cachedRates = networkService.cacheService.getStaleRates()
+        let cachedBaseCurrency = networkService.cacheService.getCachedBaseCurrency()
+        
+        guard !cachedRates.isEmpty, !cachedBaseCurrency.isEmpty else {
             return nil
         }
         
@@ -118,14 +132,4 @@ final class CurrencyServiceImpl: CurrencyService {
             formattedConverted: formattedConverted
         )
     }
-    
-    func getFormattedAmount(_ amount: Double, currency: Currency, decimalPrecision: Int? = nil) -> String {
-        let precision = decimalPrecision ?? themeManager?.decimalPrecision ?? 2
-        numberFormatter.currencyCode = currency.code
-        numberFormatter.currencySymbol = currency.symbol
-        numberFormatter.minimumFractionDigits = precision
-        numberFormatter.maximumFractionDigits = precision
-        return numberFormatter.string(from: NSNumber(value: amount)) ?? "\(currency.symbol)\(amount)"
-    }
 }
-

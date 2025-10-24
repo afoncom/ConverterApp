@@ -43,7 +43,6 @@ final class CurrencyFormatterService: CurrencyFormatterProtocol {
     
     /// Форматирует курс обмена
     func formatExchangeRate(rate: Double, from: Currency, to: Currency, precision: Int) -> String {
-        return "1 \(from.code) = \(String(format: "%.*f", precision, rate)) \(to.code)"
+        "1 \(from.code) = \(String(format: "%.*f", precision, rate)) \(to.code)"
     }
 }
-

@@ -19,7 +19,7 @@ struct AppConfig {
         
         /// Получить URL для базовой валюты
         static func url(for baseCurrency: String) -> String {
-            return baseURL + baseCurrency
+            baseURL + baseCurrency
         }
     }
     

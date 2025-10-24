@@ -96,6 +96,7 @@ struct SettingScreen: View {
                             .font(.caption)
                     }
                     .contentShape(Rectangle())
+                    .accessibilityAddTraits(.isButton)
                     .onTapGesture {
                         print("Rate App tapped")
                     }
@@ -115,6 +116,7 @@ struct SettingScreen: View {
                             .font(.caption)
                     }
                     .contentShape(Rectangle())
+                    .accessibilityAddTraits(.isButton)
                     .onTapGesture {
                         print("Send Feedback tapped")
                     }
@@ -151,7 +153,7 @@ struct SettingScreen: View {
     
     /// Получает версию приложения
     private var appVersion: String {
-        return AppConfig.AppInfo.version
+        AppConfig.AppInfo.version
     }
     
 }

@@ -20,13 +20,13 @@ final class ServiceContainer {
     let currencyFormatter: CurrencyFormatterProtocol           // Сервис для форматирования валют
     
     init (
-    baseCurrencyManager: BaseCurrencyManager,
-    themeManager: ThemeManager,
-    localizationManager: LocalizationManager,
-    cacheService: CacheServiceProtocol,
-    networkService: CurrencyNetworkServiceProtocol,
-    currencyService: CurrencyService,
-    currencyFormatter: CurrencyFormatterProtocol
+        baseCurrencyManager: BaseCurrencyManager,
+        themeManager: ThemeManager,
+        localizationManager: LocalizationManager,
+        cacheService: CacheServiceProtocol,
+        networkService: CurrencyNetworkServiceProtocol,
+        currencyService: CurrencyService,
+        currencyFormatter: CurrencyFormatterProtocol
     ) {
         self.baseCurrencyManager = baseCurrencyManager
         self.themeManager = themeManager
@@ -38,7 +38,7 @@ final class ServiceContainer {
     }
 }
 
-//MARK: - Extension
+// MARK: - Extension
 
 extension ServiceContainer {
     static func makePreview() -> ServiceContainer {
@@ -48,9 +48,11 @@ extension ServiceContainer {
         let cacheService = CacheService()
         let currencyFormatter = CurrencyFormatterService()
         let networkService = CurrencyNetworkService(cacheService: cacheService)
-        let currencyService = CurrencyServiceImpl(networkService: networkService,
-                                                  themeManager: themeManager,
-                                                  localizationManager: localizationManager)
+        let currencyService = CurrencyServiceImpl(
+            networkService: networkService,
+            themeManager: themeManager,
+            localizationManager: localizationManager
+        )
         
         
         return ServiceContainer(
