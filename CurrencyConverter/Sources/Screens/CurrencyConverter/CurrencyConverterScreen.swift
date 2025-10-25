@@ -10,8 +10,8 @@ struct CurrencyConverterScreen: View {
     
     // MARK: - Screen states (Состояния экрана)
     
-    @State private var amount: String = ""
-    @State private var selectedCurrencyCode: String = "USD"
+    @State private var amount = ""
+    @State private var selectedCurrencyCode = "USD"
     @State private var showCurrencyList = false
     @State private var showBaseCurrencyPicker = false
     @State private var showSettings = false
@@ -24,7 +24,7 @@ struct CurrencyConverterScreen: View {
     
     /// Получает валюту с учетом текущей локализации
     private var selectedCurrency: Currency {
-        return CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ?? 
+        CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ?? 
                CurrencyFactory.createCurrency(for: selectedCurrencyCode)!
     }
     
@@ -233,6 +233,7 @@ struct CurrencyConverterScreen: View {
                 
                 Spacer()
             }
+            .accessibilityHidden(true)
             .padding()
             .onTapGesture {
                 
