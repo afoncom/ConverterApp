@@ -17,7 +17,7 @@ struct CurrencyButton: View {
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: AppConfig.UI.smallPadding) {
+            VStack(spacing: .smallPadding) {
                 Text(label)
                     .font(.caption2)
                     .fontWeight(.medium)
@@ -28,14 +28,14 @@ struct CurrencyButton: View {
                     .fontWeight(.bold)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: AppConfig.UI.currencyButtonHeight)
+            .frame(height: .currencyButtonHeight)
             .background {
-                RoundedRectangle(cornerRadius: AppConfig.UI.cornerRadius)
+                RoundedRectangle(cornerRadius: .cornerRadius)
                     .fill(Color(.systemBackground))
                     .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 2)
             }
             .overlay {
-                RoundedRectangle(cornerRadius: AppConfig.UI.cornerRadius)
+                RoundedRectangle(cornerRadius: .cornerRadius)
                     .stroke(borderColor.opacity(0.3), lineWidth: 1)
             }
             .foregroundColor(.primary)

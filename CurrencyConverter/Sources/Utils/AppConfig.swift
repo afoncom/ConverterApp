@@ -29,25 +29,15 @@ struct AppConfig {
         static let validityDuration: TimeInterval = 300 // 5 минут
     }
     
-    // MARK: - UI Configuration
-
-    struct UI {
-        /// Размеры (только используемые)
-        static let cornerRadius: CGFloat = 16
-        static let smallCornerRadius: CGFloat = 12
-        static let standardPadding: CGFloat = 16
-        static let smallPadding: CGFloat = 8
-        
-        /// Размеры компонентов
-        static let currencyButtonHeight: CGFloat = 80
-
-        /// Цвета (только используемые)
-        struct Colors {
-            static let success = Color.green
-            static let info = Color.blue
-        }
+    // MARK: - Colors Configuration
+    
+    struct Colors {
+        static let success = Color.green
+        static let warning = Color.orange
+        static let error = Color.red
+        static let info = Color.blue
     }
-
+    
     // MARK: - Currency Configuration
     
     struct Currency {

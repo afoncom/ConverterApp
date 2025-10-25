@@ -96,7 +96,7 @@ struct CurrencyConverterScreen: View {
                 CurrencyButton(
                     currency: serviceContainer.baseCurrencyManager.baseCurrency,
                     label: localizationManager.localizedString(AppConfig.LocalizationKeys.fromCurrency),
-                    borderColor: AppConfig.UI.Colors.success
+                    borderColor: AppConfig.Colors.success
                 ) {
                     hideKeyboard()
                     showBaseCurrencyPicker = true
@@ -118,7 +118,7 @@ struct CurrencyConverterScreen: View {
                     CurrencyButton(
                         currency: selectedCurrency,
                         label: localizationManager.localizedString(AppConfig.LocalizationKeys.toCurrency),
-                        borderColor: AppConfig.UI.Colors.info
+                        borderColor: AppConfig.Colors.info
                     ) {
                         hideKeyboard()
                         showCurrencyList = true
