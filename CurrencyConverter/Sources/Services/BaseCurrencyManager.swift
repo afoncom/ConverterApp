@@ -37,14 +37,13 @@ final class BaseCurrencyManager: ObservableObject {
         
         let currency = if let savedCode = storage.string(forKey: baseCurrencyKey),
                           let newCurrency = CurrencyFactory.createCurrency(for: savedCode) {
-        newCurrency
+            newCurrency
+        } else {
+            CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode) ?? Currency(code: "USD", name: "US Dollar", symbol: "$")
         }
-        else {
-         CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode) ?? Currency(code: "USD", name: "US Dollar", symbol: "$")
-        }
-        storage.set(defaultBaseCurrencyCode, forKey: baseCurrencyKey)
         
-        self .baseCurrency = currency
+        storage.set(defaultBaseCurrencyCode, forKey: baseCurrencyKey)
+        self.baseCurrency = currency
     }
     
     // MARK: - Public Methods
