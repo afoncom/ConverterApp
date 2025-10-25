@@ -94,8 +94,8 @@ final class CurrencyServiceImpl: CurrencyService {
     }
     
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult? {
-        let cachedRates = networkService.cacheService.getStaleRates()
-        let cachedBaseCurrency = networkService.cacheService.getCachedBaseCurrency()
+        let cachedRates = networkService.cacheService.cachedRates
+        let cachedBaseCurrency = networkService.cacheService.cachedBaseCurrency
         
         guard !cachedRates.isEmpty, !cachedBaseCurrency.isEmpty else {
             return nil

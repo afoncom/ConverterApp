@@ -126,14 +126,12 @@ extension CurrencyNetworkService {
         isNetworkError: Bool = false
     ) throws -> DataResult<[ExchangeRate]> {
         
-        let cachedRates: [String: Double]
+        let cachedRates = cacheService.cachedRates
         let status: DataStatus
         
         if cacheService.isCacheValid() {
-            cachedRates = cacheService.getCachedRates()
             status = .fresh
         } else {
-            cachedRates = cacheService.getStaleRates()
             status = isNetworkError ? .noConnection : .stale
         }
         
@@ -156,7 +154,7 @@ extension CurrencyNetworkService {
             localizationManager: localizationManager
         )
         
-        return DataResult(data: exchangeRates, status: status, lastUpdated: cacheService.getLastUpdateTime())
+        return DataResult(data: exchangeRates, status: status, lastUpdated: cacheService.cacheTimestamp)
     }
     
     func fetchAllFromNetwork() async throws -> DataResult<[String]> {
@@ -173,12 +171,12 @@ extension CurrencyNetworkService {
     }
     
     func getAllFromCache(isNetworkError: Bool = false) throws -> DataResult<[String]> {
-        let cached = cacheService.getStaleAllCurrencies()
+        let cached = cacheService.cachedCurrencies
         guard !cached.isEmpty else { throw APIError.noData }
         
         let status: DataStatus = cacheService.isCacheValid() ? .fresh : (isNetworkError ? .noConnection : .stale)
         
-        return DataResult(data: cached, status: status, lastUpdated: cacheService.getLastUpdateTime())
+        return DataResult(data: cached, status: status, lastUpdated: cacheService.cacheTimestamp)
     }
     
     func convertAPIResponse(
