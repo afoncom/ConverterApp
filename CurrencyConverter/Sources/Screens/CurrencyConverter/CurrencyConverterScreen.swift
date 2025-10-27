@@ -24,8 +24,8 @@ struct CurrencyConverterScreen: View {
     
     /// Получает валюту с учетом текущей локализации
     private var selectedCurrency: Currency {
-        CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ?? 
-               CurrencyFactory.createCurrency(for: selectedCurrencyCode)!
+        CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ??
+        CurrencyFactory.createCurrency(for: selectedCurrencyCode)!
     }
     
     /// Получает локализованное название базовой валюты
@@ -92,26 +92,28 @@ struct CurrencyConverterScreen: View {
                 
                 // Выбор валют: ИЗ -> В
                 HStack(spacing: 16) {
-                // Базовая валюта (ИЗ)
-                CurrencyButton(
-                    currency: serviceContainer.baseCurrencyManager.baseCurrency,
-                    label: localizationManager.localizedString(AppConfig.LocalizationKeys.fromCurrency),
-                    borderColor: AppConfig.Colors.success
-                ) {
-                    hideKeyboard()
-                    showBaseCurrencyPicker = true
-                }
+                    // Базовая валюта (ИЗ)
+                    CurrencyButton(
+                        currency: serviceContainer.baseCurrencyManager.baseCurrency,
+                        label: localizationManager.localizedString(AppConfig.LocalizationKeys.fromCurrency),
+                        borderColor: AppConfig.Colors.success
+                    ) {
+                        hideKeyboard()
+                        showBaseCurrencyPicker = true
+                    }
                     
-                    
-                    ZStack {
-                        Circle()
-                            .fill(Color(.secondarySystemBackground))
-                            .frame(width: 40, height: 40)
-                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
-                        
-                        Image(systemName: "arrow.right")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.secondary)
+                    Button { swapCurriencies()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color(.secondarySystemBackground))
+                                .frame(width: 40, height: 40)
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
+                            
+                            Image(systemName: "arrow.left.arrow.right")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.secondary)
+                        }
                     }
                     
                     // Целевая валюта (В)
@@ -246,7 +248,7 @@ struct CurrencyConverterScreen: View {
             }
             .navigationDestination(isPresented: $showBaseCurrencyPicker) {
                 ExchangeRateListViewScreen(
-                    currencyManager: currencyManager, 
+                    currencyManager: currencyManager,
                     serviceContainer: serviceContainer
                 ) { baseCurrency in
                     updateBaseCurrency(baseCurrency)
@@ -313,6 +315,15 @@ struct CurrencyConverterScreen: View {
                 viewModel.convert(amount: value, to: selectedCurrency)
             }
         }
+    }
+    
+    /// Смена валют местами и обновление конвертации
+    private func swapCurriencies() {
+        let temp = serviceContainer.baseCurrencyManager.baseCurrency
+        serviceContainer.baseCurrencyManager.setBaseCurrency(selectedCurrency)
+        selectedCurrencyCode = temp.code
+        
+        convertCurrency()
     }
 }
 
