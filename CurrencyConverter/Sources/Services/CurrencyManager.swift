@@ -55,11 +55,6 @@ final class CurrencyManager {
         }
     }
     
-    /// Получить количество выбранных валют
-    var selectedCount: Int {
-        selectedCurrencies.count
-    }
-    
     // MARK: - Private Methods (Приватные методы)
     
     /// Загрузить выбранные валюты из UserDefaults
