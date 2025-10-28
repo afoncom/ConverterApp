@@ -32,7 +32,7 @@ struct CurrencyConverterScreen: View {
     private var localizedBaseCurrencyName: String {
         let baseCurrencyCode = serviceContainer.baseCurrencyManager.baseCurrency.code
         let localizedCurrency = CurrencyFactory.createLocalizedCurrency(for: baseCurrencyCode, languageCode: localizationManager.languageCode)
-        return localizedCurrency?.name ?? serviceContainer.baseCurrencyManager.baseCurrencyName
+        return localizedCurrency?.name ?? serviceContainer.baseCurrencyManager.baseCurrency.name
     }
     
     // MARK: - Initialization (Инициализация)

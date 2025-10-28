@@ -131,7 +131,7 @@ struct SettingScreen: View {
                         
                         Spacer()
                         
-                        Text(appVersion)
+                        Text(AppConfig.AppInfo.version)
                             .foregroundColor(.gray)
                     }
                 }
@@ -148,14 +148,6 @@ struct SettingScreen: View {
         }
         .preferredColorScheme(themeManager.colorScheme)
     }
-    
-    // MARK: - Private Methods (Приватные методы)
-    
-    /// Получает версию приложения
-    private var appVersion: String {
-        AppConfig.AppInfo.version
-    }
-    
 }
 
 // MARK: - Preview
