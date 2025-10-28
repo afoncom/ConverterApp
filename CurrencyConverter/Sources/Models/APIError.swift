@@ -16,11 +16,11 @@ enum APIError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Некорректный URL API"
+            return L10n.apiErrorInvalidUrl
         case .noData:
-            return "Нет данных от сервера"
+            return L10n.apiErrorNoData
         case .decodingError:
-            return "Ошибка декодирования данных"
+            return L10n.apiErrorDecoding
         }
     }
 }

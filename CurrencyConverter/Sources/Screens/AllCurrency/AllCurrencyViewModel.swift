@@ -95,9 +95,9 @@ final class AllCurrencyViewModel: ObservableObject {
             case .fresh:
                 connectionStatus = nil
             case .stale:
-                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.dataOutdated) ?? "Data outdated"
+                connectionStatus = L10n.dataOutdated
             case .noConnection:
-                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.noConnection) ?? "No internet connection"
+                connectionStatus = L10n.noConnection
             }
             
             filterAvailableCurrencies()

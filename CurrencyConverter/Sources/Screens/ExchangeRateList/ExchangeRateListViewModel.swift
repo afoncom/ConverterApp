@@ -14,7 +14,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     // MARK: - Состояния экрана
     
     @Published var items: [ExchangeRate] = []
-    @Published var title = "Select Currency"
+    @Published var title = L10n.selectCurrency
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var connectionStatus: String?
@@ -79,9 +79,9 @@ final class ExchangeRateListViewModel: ObservableObject {
             case .fresh:
                 connectionStatus = nil
             case .stale:
-                connectionStatus = localizationManager.localizedString(AppConfig.LocalizationKeys.dataOutdated)
+                connectionStatus = L10n.dataOutdated
             case .noConnection:
-                connectionStatus = localizationManager.localizedString(AppConfig.LocalizationKeys.noConnection)
+                connectionStatus = L10n.noConnection
             }
             
         } catch {
@@ -104,7 +104,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     
     /// Обновляет заголовок с учетом текущей локализации
     func updateTitle() {
-       title = localizationManager.localizedString(AppConfig.LocalizationKeys.selectCurrency)
+        title = L10n.selectCurrency
     }
     
     /// Обновляет базовую валюту и перезагружает данные

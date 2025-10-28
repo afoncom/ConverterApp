@@ -34,14 +34,14 @@ struct SettingScreen: View {
         NavigationView {
             List {
                 // MARK: - Preferences Section
-                Section(localizationManager.localizedString(AppConfig.LocalizationKeys.preferencesSection)) {
+                Section(L10n.preferencesSection) {
                     // Dark Mode Toggle
                     HStack {
                         Image(systemName: "moon.fill")
                             .foregroundColor(.blue)
                             .frame(width: 24, height: 24)
                         
-                        Text(localizationManager.localizedString(AppConfig.LocalizationKeys.darkMode))
+                        Text(L10n.darkMode)
                         
                         Spacer()
                         
@@ -56,7 +56,7 @@ struct SettingScreen: View {
                         
                         Spacer()
                         
-                        Picker(localizationManager.localizedString(AppConfig.LocalizationKeys.decimalPrecision), selection: $themeManager.decimalPrecision) {
+                        Picker(L10n.decimalPrecision, selection: $themeManager.decimalPrecision) {
                             ForEach(1...5, id: \.self) { precision in
                                 Text("\(precision)").tag(precision)
                             }
@@ -71,23 +71,23 @@ struct SettingScreen: View {
                         
                         Spacer()
                         
-                        Picker(localizationManager.localizedString(AppConfig.LocalizationKeys.language), selection: $localizationManager.currentLanguage) {
-                            Text(localizationManager.localizedString(AppConfig.LocalizationKeys.languageRussian)).tag("Русский")
-                            Text(localizationManager.localizedString(AppConfig.LocalizationKeys.languageEnglish)).tag("English")
+                        Picker(L10n.language, selection: $localizationManager.currentLanguage) {
+                            Text(L10n.languageRussian)
+                            Text(L10n.languageEnglish)
                         }
                         .pickerStyle(MenuPickerStyle())
                     }
                 }
                 
                 // MARK: - Support Section
-                Section(localizationManager.localizedString(AppConfig.LocalizationKeys.supportSection)) {
+                Section(L10n.supportSection) {
                     // Rate App
                     HStack {
                         Image(systemName: "star.fill")
                             .foregroundColor(.yellow)
                             .frame(width: 24, height: 24)
                         
-                        Text(localizationManager.localizedString(AppConfig.LocalizationKeys.rateApp))
+                        Text(L10n.rateApp)
                         
                         Spacer()
                         
@@ -107,7 +107,7 @@ struct SettingScreen: View {
                             .foregroundColor(.blue)
                             .frame(width: 24, height: 24)
                         
-                        Text(localizationManager.localizedString(AppConfig.LocalizationKeys.sendFeedback))
+                        Text(L10n.sendFeedback)
                         
                         Spacer()
                         
@@ -127,7 +127,7 @@ struct SettingScreen: View {
                             .foregroundColor(.gray)
                             .frame(width: 24, height: 24)
                         
-                        Text(localizationManager.localizedString(AppConfig.LocalizationKeys.version))
+                        Text(L10n.version)
                         
                         Spacer()
                         
@@ -136,11 +136,11 @@ struct SettingScreen: View {
                     }
                 }
             }
-            .navigationTitle(localizationManager.localizedString(AppConfig.LocalizationKeys.settingsTitle))
+            .navigationTitle(L10n.settingsTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(localizationManager.localizedString(AppConfig.LocalizationKeys.done)) {
+                    Button(L10n.done) {
                         dismiss()
                     }
                 }

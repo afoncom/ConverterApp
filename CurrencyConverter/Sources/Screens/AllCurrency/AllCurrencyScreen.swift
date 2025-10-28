@@ -50,13 +50,13 @@ struct AllCurrencyScreen: View {
         NavigationStack {
             VStack(spacing: 0) {
                 if let status = viewModel.connectionStatus {
-                    let isNoConnection = status.contains(localizationManager.localizedString("no_connection"))
+                    let isNoConnection = status.contains(L10n.noConnection)
                     HStack {
                         Image(systemName: isNoConnection ? "wifi.slash" : "clock")
                         Text(status)
                         Spacer()
                         if let lastUpdate = viewModel.lastUpdated {
-                            Text(String(format: localizationManager.localizedString("updated_colon"), DateFormatter.shortTime.string(from: lastUpdate)))
+                            Text(L10n.updatedColon(DateFormatter.shortTime.string(from: lastUpdate)))
                                 .font(.caption2)
                         }
                     }
@@ -70,7 +70,7 @@ struct AllCurrencyScreen: View {
                 searchBar
                 listView
             }
-            .navigationTitle("\(localizationManager.localizedString(AppConfig.LocalizationKeys.allCurrencies)) (\(viewModel.filteredCurrencies.count))")
+            .navigationTitle("\(L10n.allCurrencies) \(viewModel.filteredCurrencies.count))")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 
@@ -84,20 +84,18 @@ struct AllCurrencyScreen: View {
                 }
             }
             .alert(
-                localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAdded),
+                L10n.currencyAdded,
                 isPresented: $viewModel.showAddedAlert
             ) {
-                Button(localizationManager.localizedString(AppConfig.LocalizationKeys.ok)) {}
+                Button(L10n.ok) {}
             } message: {
                 if let currency = viewModel.addedCurrency {
                     Text(
-                        String(
-                            format: localizationManager.localizedString(AppConfig.LocalizationKeys.currencyAddedMessage),
+                        L10n.currencyAddedMessage(
                             currency,
-                            viewModel.getLocalizedName(for: currency) ?? localizationManager.localizedString(AppConfig.LocalizationKeys.unknownCurrency)
+                            viewModel.getLocalizedName(for: currency) ?? L10n.unknownCurrency
                         )
                     )
-                    
                 }
             }
         }
@@ -110,7 +108,7 @@ struct AllCurrencyScreen: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                TextField(localizationManager.localizedString(AppConfig.LocalizationKeys.searchCurrencies), text: $viewModel.searchText)
+                TextField(L10n.searchCurrencies, text: $viewModel.searchText)
                     .focused($isSearchFocused)
                     .submitLabel(.search)
                     .onSubmit { isSearchFocused = false }
@@ -147,7 +145,7 @@ struct AllCurrencyScreen: View {
     }
     
     private var loadingView: some View {
-        ProgressView(localizationManager.localizedString(AppConfig.LocalizationKeys.loadingCurrencies))
+        ProgressView(L10n.loadingCurrencies)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
@@ -156,13 +154,13 @@ struct AllCurrencyScreen: View {
             Image(systemName: "exclamationmark.triangle")
                 .foregroundColor(.orange)
                 .font(.system(size: 48))
-            Text(localizationManager.localizedString(AppConfig.LocalizationKeys.loadingError))
+            Text(L10n.loadingError)
                 .font(.headline)
             Text(error)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            Button(localizationManager.localizedString(AppConfig.LocalizationKeys.retry)) {
+            Button(L10n.retry) {
                 Task {
                     await viewModel.reload()
                 }
@@ -192,7 +190,7 @@ struct AllCurrencyScreen: View {
                 Text(currency)
                     .font(.headline)
                     .fontWeight(.semibold)
-                Text(viewModel.getLocalizedName(for: currency) ?? localizationManager.localizedString(AppConfig.LocalizationKeys.unknownCurrency))
+                Text(viewModel.getLocalizedName(for: currency) ?? L10n.unknownCurrency)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)

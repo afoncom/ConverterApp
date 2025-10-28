@@ -46,13 +46,13 @@ struct ExchangeRateListViewScreen: View {
         NavigationStack {
             Group {
                 if viewModel.isLoading {
-                    ProgressView(localizationManager.localizedString("loading_rates"))
+                    ProgressView(L10n.loadingRates)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = viewModel.errorMessage {
                     VStack(spacing: 10) {
-                        Text(String(format: localizationManager.localizedString("error_colon"), error))
+                        Text("\(L10n.errorColon)) \(error)")
                             .foregroundColor(.red)
-                        Button(localizationManager.localizedString("retry")) {
+                        Button(L10n.retry) {
                             Task {
                                 await viewModel.reload()
                             }
@@ -116,7 +116,7 @@ struct ExchangeRateListViewScreen: View {
                             Button {
                                 viewModel.removeCurrency(exchangeRate.toCurrency.code)
                             } label: {
-                                Label(localizationManager.localizedString("delete"), systemImage: "trash")
+                                Label(L10n.delete, systemImage: "trash")
                             }
                             .tint(.red)
                         }
@@ -127,7 +127,7 @@ struct ExchangeRateListViewScreen: View {
             .toolbar {
                 if let status = viewModel.connectionStatus {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        let isNoConnection = status.contains(localizationManager.localizedString("no_connection"))
+                        let isNoConnection = status.contains(L10n.noConnection)
                         Label(status, systemImage: isNoConnection ? "wifi.slash" : "clock")
                             .font(.caption)
                             .foregroundColor(isNoConnection ? .red : .orange)
@@ -137,7 +137,7 @@ struct ExchangeRateListViewScreen: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         AllCurrencyScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { selectedCurrency in
-                            print(String(format: localizationManager.localizedString("added_currency"), selectedCurrency.description))
+                            print(L10n.addedCurrency(selectedCurrency.description))
                             
                             Task {
                                 await viewModel.reload()

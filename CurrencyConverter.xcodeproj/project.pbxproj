@@ -57,6 +57,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0806E6682E6A158900C21A3A /* Build configuration list for PBXNativeTarget "CurrencyConverter" */;
 			buildPhases = (
+				08D3B3002EB11E72002A32FE /* SwiftGen */,
 				0806E64E2E6A158500C21A3A /* Sources */,
 				0806E64F2E6A158500C21A3A /* Frameworks */,
 				0806E6502E6A158500C21A3A /* Resources */,
@@ -124,6 +125,29 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		08D3B3002EB11E72002A32FE /* SwiftGen */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/swiftgen.yml\n$(SRCROOT)/Resources/Localization/en.lproj/Localizable.strings",
+			);
+			name = SwiftGen;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Generated/Localizable.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftgen >/dev/null; then\n  cd \"$SRCROOT\"\n  swiftgen config run\nelse\n  echo \"warning: SwiftGen not installed\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0806E64E2E6A158500C21A3A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -150,6 +174,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9282D5CGQH;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CurrencyConverter/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -182,6 +207,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9282D5CGQH;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CurrencyConverter/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

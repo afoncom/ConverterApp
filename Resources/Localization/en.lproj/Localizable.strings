@@ -1,26 +1,25 @@
 /* 
-  Localizable.strings (English)
+  Localizable.strings
   CurrencyConverter
-  Created by afon.com on 13.10.2025.
 */
 
 // MARK: - Welcome Screen
-"welcome_title" = "Currency Converter";
-"welcome_subtitle" = "Welcome!";
+"welcome_title" = "Welcome";
+"welcome_subtitle" = "Convert currencies easily";
 
 // MARK: - Currency Converter Screen
 "currency_converter_title" = "Currency Converter";
-"amount_input_label" = "Amount to convert";
+"amount_input_label" = "Amount";
 "amount_placeholder" = "Enter amount in %@";
 "loading_rates" = "Loading rates...";
-"error_prefix" = "Error: %@";
-"from_currency" = "FROM";
-"to_currency" = "TO";
-"exchange_rate" = "Rate:";
+"error_prefix" = "Error";
+"from_currency" = "From";
+"to_currency" = "To";
+"exchange_rate" = "Exchange Rate";
 "convert_button" = "Convert";
-"conversion_result" = "Conversion Result";
-"from_amount" = "From";
-"to_amount" = "To";
+"conversion_result" = "Result";
+"from_amount" = "From Amount";
+"to_amount" = "To Amount";
 
 // MARK: - Settings Screen
 "settings_title" = "Settings";
@@ -34,47 +33,38 @@
 "version" = "Version";
 "done" = "Done";
 
-// MARK: - Exchange Rate List Screen
+// MARK: - Currency List
 "all_currencies" = "All Currencies";
 "search_currencies" = "Search currencies";
-
-// MARK: - All Currency Screen
-"all_currencies" = "All Currencies";
-
-// MARK: - Exchange Rate List Screen
 "select_currency" = "Select Currency";
-"loading_rates" = "Loading rates...";
-"error_colon" = "Error: %@";
+"error_colon" = "Error:";
 "retry" = "Retry";
 "delete" = "Delete";
-"no_connection" = "No connection";
-"data_outdated" = "Data outdated";
-"updated_colon" = "Updated: %@";
-"currency_added" = "Currency added!";
-"currency_added_message" = "%@ - %@\nadded to currency list";
+"no_connection" = "No Internet Connection";
+"data_outdated" = "Data may be outdated";
+"updated_colon" = "Updated:";
+"currency_added" = "Currency Added";
+"currency_added_message" = "%@ added to %@";
 "ok" = "OK";
-"added_currency" = "Added currency: %@";
-"unknown_currency" = "Unknown currency";
-"loading_error" = "Loading error";
-"loading_currencies" = "Loading currencies...";
+"added_currency" = "Added %@";
+"unknown_currency" = "Unknown Currency";
+"loading_error" = "Loading Error";
+"loading_currencies" = "Loading Currencies...";
 
-// MARK: - Language Names
-"language_russian" = "🇷🇺 Русский";
-"language_english" = "🇺🇸 English";
+// MARK: - Languages
+"language_russian" = "Russian";
+"language_english" = "English";
 
 // MARK: - Currency Names
-// Main currencies
 "currency_USD" = "US Dollar";
 "currency_EUR" = "Euro";
 "currency_RUB" = "Russian Ruble";
-"currency_GBP" = "British Pound Sterling";
+"currency_GBP" = "British Pound";
 "currency_JPY" = "Japanese Yen";
 "currency_CNY" = "Chinese Yuan";
 "currency_CHF" = "Swiss Franc";
 "currency_CAD" = "Canadian Dollar";
 "currency_AUD" = "Australian Dollar";
-
-// Popular currencies
 "currency_KRW" = "South Korean Won";
 "currency_SGD" = "Singapore Dollar";
 "currency_HKD" = "Hong Kong Dollar";
@@ -85,34 +75,26 @@
 "currency_PLN" = "Polish Zloty";
 "currency_CZK" = "Czech Koruna";
 "currency_HUF" = "Hungarian Forint";
-
-// European currencies
 "currency_BGN" = "Bulgarian Lev";
 "currency_HRK" = "Croatian Kuna";
 "currency_RON" = "Romanian Leu";
 "currency_ISK" = "Icelandic Krona";
 "currency_TRY" = "Turkish Lira";
-
-// Asian currencies
 "currency_INR" = "Indian Rupee";
 "currency_THB" = "Thai Baht";
 "currency_MYR" = "Malaysian Ringgit";
 "currency_IDR" = "Indonesian Rupiah";
 "currency_PHP" = "Philippine Peso";
 "currency_VND" = "Vietnamese Dong";
-
-// Middle Eastern currencies
 "currency_AED" = "UAE Dirham";
 "currency_SAR" = "Saudi Riyal";
-"currency_QAR" = "Qatari Rial";
+"currency_QAR" = "Qatari Riyal";
 "currency_KWD" = "Kuwaiti Dinar";
 "currency_BHD" = "Bahraini Dinar";
 "currency_OMR" = "Omani Rial";
 "currency_JOD" = "Jordanian Dinar";
 "currency_LBP" = "Lebanese Pound";
-"currency_ILS" = "Israeli New Shekel";
-
-// African currencies
+"currency_ILS" = "Israeli Shekel";
 "currency_ZAR" = "South African Rand";
 "currency_EGP" = "Egyptian Pound";
 "currency_NGN" = "Nigerian Naira";
@@ -123,8 +105,6 @@
 "currency_ETB" = "Ethiopian Birr";
 "currency_MAD" = "Moroccan Dirham";
 "currency_TND" = "Tunisian Dinar";
-
-// American currencies
 "currency_MXN" = "Mexican Peso";
 "currency_BRL" = "Brazilian Real";
 "currency_ARS" = "Argentine Peso";
@@ -134,8 +114,6 @@
 "currency_UYU" = "Uruguayan Peso";
 "currency_BOB" = "Bolivian Boliviano";
 "currency_PYG" = "Paraguayan Guarani";
-
-// Other currencies
 "currency_XAF" = "Central African CFA Franc";
 "currency_XOF" = "West African CFA Franc";
 "currency_XCD" = "East Caribbean Dollar";
@@ -146,17 +124,15 @@
 "currency_VUV" = "Vanuatu Vatu";
 "currency_SBD" = "Solomon Islands Dollar";
 "currency_PGK" = "Papua New Guinean Kina";
-
-// Additional currencies
 "currency_ALL" = "Albanian Lek";
 "currency_AFN" = "Afghan Afghani";
 "currency_AMD" = "Armenian Dram";
 "currency_AZN" = "Azerbaijani Manat";
 "currency_BYN" = "Belarusian Ruble";
-"currency_BAM" = "Bosnia and Herzegovina Convertible Mark";
+"currency_BAM" = "Bosnia-Herzegovina Mark";
 "currency_GEL" = "Georgian Lari";
 "currency_KZT" = "Kazakhstani Tenge";
-"currency_KGS" = "Kyrgystani Som";
+"currency_KGS" = "Kyrgyzstani Som";
 "currency_MDL" = "Moldovan Leu";
 "currency_MKD" = "Macedonian Denar";
 "currency_RSD" = "Serbian Dinar";
@@ -164,8 +140,3 @@
 "currency_TMT" = "Turkmenistani Manat";
 "currency_UAH" = "Ukrainian Hryvnia";
 "currency_UZS" = "Uzbekistani Som";
-
-// MARK: - API Errors
-"api_error_invalid_url" = "Invalid API URL";
-"api_error_no_data" = "No data from server";
-"api_error_decoding" = "Data decoding error";
