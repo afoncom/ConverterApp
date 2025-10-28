@@ -92,15 +92,16 @@ struct CurrencyConverterScreen: View {
                 
                 // Выбор валют: ИЗ -> В
                 HStack(spacing: 16) {
-                    // Базовая валюта (ИЗ)
-                    CurrencyButton(
-                        currency: serviceContainer.baseCurrencyManager.baseCurrency,
-                        label: localizationManager.localizedString(AppConfig.LocalizationKeys.fromCurrency),
-                        borderColor: AppConfig.Colors.success
-                    ) {
-                        hideKeyboard()
-                        showBaseCurrencyPicker = true
-                    }
+                // Базовая валюта (ИЗ)
+                CurrencyButton(
+                    currency: serviceContainer.baseCurrencyManager.baseCurrency,
+                    label: localizationManager.localizedString(AppConfig.LocalizationKeys.fromCurrency),
+                    borderColor: .success
+                ) {
+                    hideKeyboard()
+                    showBaseCurrencyPicker = true
+                }
+                    
                     
                     Button { swapCurriencies()
                     } label: {
@@ -120,7 +121,7 @@ struct CurrencyConverterScreen: View {
                     CurrencyButton(
                         currency: selectedCurrency,
                         label: localizationManager.localizedString(AppConfig.LocalizationKeys.toCurrency),
-                        borderColor: AppConfig.Colors.info
+                        borderColor: .info
                     ) {
                         hideKeyboard()
                         showCurrencyList = true

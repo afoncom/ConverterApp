@@ -29,15 +29,6 @@ struct AppConfig {
         static let validityDuration: TimeInterval = 300 // 5 минут
     }
     
-    // MARK: - Colors Configuration
-    
-    struct Colors {
-        static let success = Color.green
-        static let warning = Color.orange
-        static let error = Color.red
-        static let info = Color.blue
-    }
-    
     // MARK: - Currency Configuration
     
     struct Currency {
