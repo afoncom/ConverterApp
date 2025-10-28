@@ -66,11 +66,6 @@ final class LocalizationManager: ObservableObject {
         }
     }
     
-    /// Получает название языка для отображения
-    var displayLanguageName: String {
-        currentLanguage
-    }
-    
     // MARK: - Private Methods (Приватные методы)
     
     private func updateCurrentBundle() {
