@@ -25,7 +25,8 @@ struct CurrencyConverterScreen: View {
     /// Получает валюту с учетом текущей локализации
     private var selectedCurrency: Currency {
         CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ??
-        CurrencyFactory.createCurrency(for: selectedCurrencyCode)!
+        CurrencyFactory.createCurrency(for: selectedCurrencyCode) ??
+        Currency(code: selectedCurrencyCode, name: selectedCurrencyCode, symbol: selectedCurrencyCode)
     }
     
     /// Получает локализованное название базовой валюты
