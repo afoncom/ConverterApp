@@ -17,7 +17,6 @@ struct CurrencyConverterApp: App {
             let themeManager = ThemeManager()
             let localizationManager = LocalizationManager()
             let cacheService = CacheService()
-            let currencyFormatter = CurrencyFormatterService()
             let networkService = CurrencyNetworkService(cacheService: cacheService)
             
             let currencyService = CurrencyServiceImpl(
@@ -32,8 +31,7 @@ struct CurrencyConverterApp: App {
                 localizationManager: localizationManager,
                 cacheService: cacheService,
                 networkService: networkService,
-                currencyService: currencyService,
-                currencyFormatter: currencyFormatter
+                currencyService: currencyService
             )
         }()
     }
@@ -52,15 +50,18 @@ struct ContentView: View {
     let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
     @ObservedObject private var themeManager: ThemeManager
+    @ObservedObject private var localizationManager: LocalizationManager
     
     init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.themeManager = serviceContainer.themeManager
+        self.localizationManager = serviceContainer.localizationManager
     }
     
     var body: some View {
         WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
             .preferredColorScheme(themeManager.colorScheme)
+            .id(localizationManager.currentLanguage) // Пересоздаем view при смене языка
     }
 }

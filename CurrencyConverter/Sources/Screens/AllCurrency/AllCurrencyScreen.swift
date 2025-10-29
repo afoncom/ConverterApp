@@ -12,14 +12,8 @@ struct AllCurrencyScreen: View {
     // MARK: - Screen states (Состояния экрана)
     
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
-    @StateObject private var viewModel = AllCurrencyViewModel(
-        currencyService: CurrencyServiceImpl(
-            networkService: CurrencyNetworkService(
-                cacheService: CacheService()
-            )
-        )
-    )
-    
+    @StateObject private var viewModel: AllCurrencyViewModel
+
     @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     
     let currencyManager: CurrencyManager                 // Менеджер выбранных валют
@@ -42,6 +36,11 @@ struct AllCurrencyScreen: View {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.onCurrencySelected = onCurrencySelected
+        
+        _viewModel = StateObject(wrappedValue: AllCurrencyViewModel(
+            currencyService: serviceContainer.currencyService,
+            currencyManager: currencyManager
+        ))
     }
     
     // MARK: - Body экрана
@@ -70,12 +69,12 @@ struct AllCurrencyScreen: View {
                 searchBar
                 listView
             }
-            .navigationTitle("\(L10n.allCurrencies) \(viewModel.filteredCurrencies.count))")
+            .navigationTitle(L10n.allCurrenciesWithCount(viewModel.filteredCurrencies.count))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 
                 
-                viewModel.setServices(currencyManager: currencyManager, currencyService: serviceContainer.currencyService, localizationManager: localizationManager)
+                viewModel.setServices(currencyService: serviceContainer.currencyService, localizationManager: localizationManager)
                 
                 if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
                     Task {

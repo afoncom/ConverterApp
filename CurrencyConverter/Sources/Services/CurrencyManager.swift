@@ -41,11 +41,6 @@ final class CurrencyManager {
         saveSelectedCurrencies()
     }
     
-    /// Проверить, есть ли валюта в списке
-    func isSelected(_ currencyCode: String) -> Bool {
-        selectedCurrencies.contains(currencyCode)
-    }
-    
     /// Получить список доступных для добавления валют (исключая уже выбранные)
     func getAvailableCurrencies(from allCurrencies: [String]) -> [String] {
         allCurrencies.filter { currency in
@@ -54,12 +49,6 @@ final class CurrencyManager {
             return isNotSelected && hasLocalizedName
         }
     }
-    
-    /// Получить количество выбранных валют
-    var selectedCount: Int {
-        selectedCurrencies.count
-    }
-    
     // MARK: - Private Methods (Приватные методы)
     
     /// Загрузить выбранные валюты из UserDefaults

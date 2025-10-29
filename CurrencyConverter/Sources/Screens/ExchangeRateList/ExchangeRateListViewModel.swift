@@ -47,8 +47,6 @@ final class ExchangeRateListViewModel: ObservableObject {
         self.baseCurrency = baseCurrency
         self.localizationManager = localizationManager
         
-        updateTitle()
-        
         Task {
             await reload()
         }
@@ -100,11 +98,6 @@ final class ExchangeRateListViewModel: ObservableObject {
         Task {
             await reload()
         }
-    }
-    
-    /// Обновляет заголовок с учетом текущей локализации
-    func updateTitle() {
-        title = L10n.selectCurrency
     }
     
     /// Обновляет базовую валюту и перезагружает данные

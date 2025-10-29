@@ -11,15 +11,11 @@ import Foundation
 // MARK: - API Response Model
 
 struct ExchangeRateAPIResponse: Codable {
-    let provider: String
     let base: String
-    let date: String
-    let timeLastUpdated: Int
     let rates: [String: Double]
     
     enum CodingKeys: String, CodingKey {
-        case provider, base, date, rates
-        case timeLastUpdated = "time_last_updated"
+        case base, rates
     }
 }
 
@@ -140,10 +136,7 @@ extension CurrencyNetworkService {
         }
         
         let fakeResponse = ExchangeRateAPIResponse(
-            provider: "Cache",
             base: baseCurrency.code,
-            date: "",
-            timeLastUpdated: 0,
             rates: cachedRates
         )
         

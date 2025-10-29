@@ -32,27 +32,13 @@ final class LocalizationManager: ObservableObject {
             self.currentLanguage = saved
         } else {
             let systemLanguage = Locale.current.language.languageCode?.identifier ?? "en"
-            self.currentLanguage = systemLanguage == "ru" ? "Русский" : "English"
+            self.currentLanguage = systemLanguage == "ru" ? L10n.Language.russian : L10n.Language.english
         }
         
         updateCurrentBundle()
     }
     
     // MARK: - Public Methods (Публичные методы)
-    
-    /// Локализует строку по ключу
-    func localizedString(_ key: String) -> String {
-        NSLocalizedString(key, bundle: bundle, comment: "")
-    }
-    
-    /// Получает локализованное название валюты по коду
-    func getCurrencyName(for currencyCode: String) -> String? {
-        let key = "currency_\(currencyCode)"
-        let localizedName = NSLocalizedString(key, bundle: bundle, comment: "")
-        
-        // Проверяем, что локализация найдена (не равен ключу)
-        return localizedName != key ? localizedName : nil
-    }
     
     /// Получает код языка для API запросов
     var languageCode: String {
@@ -65,12 +51,6 @@ final class LocalizationManager: ObservableObject {
             return "en"
         }
     }
-    
-    /// Получает название языка для отображения
-    var displayLanguageName: String {
-        currentLanguage
-    }
-    
     // MARK: - Private Methods (Приватные методы)
     
     private func updateCurrentBundle() {
@@ -86,15 +66,8 @@ final class LocalizationManager: ObservableObject {
         // Принудительно обновляем UI
         DispatchQueue.main.async {
             self.objectWillChange.send()
+            // Отправляем нотификацию для обновления всех view
+            NotificationCenter.default.post(name: NSNotification.Name("LanguageChanged"), object: nil)
         }
-    }
-}
-
-// MARK: - Convenience Extension
-
-extension String {
-    /// Конвенция для быстрой локализации строк
-    func localized(using manager: LocalizationManager) -> String {
-        manager.localizedString(self)
     }
 }

@@ -24,15 +24,16 @@ struct CurrencyConverterScreen: View {
     
     /// Получает валюту с учетом текущей локализации
     private var selectedCurrency: Currency {
-        CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ?? 
-               CurrencyFactory.createCurrency(for: selectedCurrencyCode)!
+        CurrencyFactory.createLocalizedCurrency(for: selectedCurrencyCode, languageCode: localizationManager.languageCode) ??
+        CurrencyFactory.createCurrency(for: selectedCurrencyCode) ??
+        Currency(code: selectedCurrencyCode, name: selectedCurrencyCode, symbol: selectedCurrencyCode)
     }
     
     /// Получает локализованное название базовой валюты
     private var localizedBaseCurrencyName: String {
         let baseCurrencyCode = serviceContainer.baseCurrencyManager.baseCurrency.code
         let localizedCurrency = CurrencyFactory.createLocalizedCurrency(for: baseCurrencyCode, languageCode: localizationManager.languageCode)
-        return localizedCurrency?.name ?? serviceContainer.baseCurrencyManager.baseCurrencyName
+        return localizedCurrency?.name ?? serviceContainer.baseCurrencyManager.baseCurrency.name
     }
     
     // MARK: - Initialization (Инициализация)
@@ -85,22 +86,22 @@ struct CurrencyConverterScreen: View {
                 }
                 
                 if let error = viewModel.errorMessage {
-                    Text("\(L10n.errorColon) \(error)")
+                    Text(L10n.errorColon(error))
                         .foregroundColor(.red)
                         .padding()
                 }
                 
                 // Выбор валют: ИЗ -> В
                 HStack(spacing: 16) {
-                // Базовая валюта (ИЗ)
-                CurrencyButton(
-                    currency: serviceContainer.baseCurrencyManager.baseCurrency,
-                    label: L10n.fromCurrency,
-                    borderColor: .success
-                ) {
-                    hideKeyboard()
-                    showBaseCurrencyPicker = true
-                }
+                    // Базовая валюта (ИЗ)
+                    CurrencyButton(
+                        currency: serviceContainer.baseCurrencyManager.baseCurrency,
+                        label: L10n.fromCurrency,
+                        borderColor: .success
+                    ) {
+                        hideKeyboard()
+                        showBaseCurrencyPicker = true
+                    }
                     
                     
                     ZStack {
@@ -246,7 +247,7 @@ struct CurrencyConverterScreen: View {
             }
             .navigationDestination(isPresented: $showBaseCurrencyPicker) {
                 ExchangeRateListViewScreen(
-                    currencyManager: currencyManager, 
+                    currencyManager: currencyManager,
                     serviceContainer: serviceContainer
                 ) { baseCurrency in
                     updateBaseCurrency(baseCurrency)

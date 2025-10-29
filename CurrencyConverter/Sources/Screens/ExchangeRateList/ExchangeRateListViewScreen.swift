@@ -50,7 +50,7 @@ struct ExchangeRateListViewScreen: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = viewModel.errorMessage {
                     VStack(spacing: 10) {
-                        Text("\(L10n.errorColon)) \(error)")
+                        Text(L10n.errorColon(error))
                             .foregroundColor(.red)
                         Button(L10n.retry) {
                             Task {
@@ -155,7 +155,6 @@ struct ExchangeRateListViewScreen: View {
                 viewModel.updateBaseCurrency(newBaseCurrency)
             }
             .onChange(of: localizationManager.currentLanguage) { _, _ in
-                viewModel.updateTitle()
                 Task {
                     await viewModel.reload()
                 }

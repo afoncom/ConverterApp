@@ -3,4 +3,4 @@ strings:
     - CurrencyConverter/Resources/en.lproj/Localizable.strings
   outputs:
     - templateName: structured-swift5
-      output: Generated/Localizable.swift
+      output: CurrencyConverter/Generated/Localizable.swift

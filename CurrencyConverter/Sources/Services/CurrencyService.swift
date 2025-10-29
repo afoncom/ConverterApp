@@ -62,14 +62,6 @@ final class CurrencyServiceImpl: CurrencyService {
         self.localizationManager = localizationManager
     }
     
-    func setThemeManager(_ themeManager: ThemeManager) {
-        self.themeManager = themeManager
-    }
-    
-    func setLocalizationManager(_ localizationManager: LocalizationManager) {
-        self.localizationManager = localizationManager
-    }
-    
     func getFormattedAmount(_ amount: Double, currency: Currency, decimalPrecision: Int? = nil) -> String {
         let precision = decimalPrecision ?? themeManager?.decimalPrecision ?? 2
         numberFormatter.currencyCode = currency.code
