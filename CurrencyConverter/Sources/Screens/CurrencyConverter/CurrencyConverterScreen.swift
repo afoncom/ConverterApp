@@ -104,15 +104,19 @@ struct CurrencyConverterScreen: View {
                     }
                     
                     
-                    ZStack {
-                        Circle()
-                            .fill(Color(.secondarySystemBackground))
-                            .frame(width: 40, height: 40)
-                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
-                        
-                        Image(systemName: "arrow.right")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.secondary)
+                    Button {
+                        swapCurriencies()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color(.secondarySystemBackground))
+                                .frame(width: 40, height: 40)
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 1)
+                            
+                            Image(systemName: "arrow.left.arrow.right")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.secondary)
+                        }
                     }
                     
                     // Целевая валюта (В)
@@ -314,6 +318,15 @@ struct CurrencyConverterScreen: View {
                 viewModel.convert(amount: value, to: selectedCurrency)
             }
         }
+    }
+    
+    /// Смена валют местами и обновление конвертации
+    private func swapCurriencies() {
+        let temp = serviceContainer.baseCurrencyManager.baseCurrency
+        serviceContainer.baseCurrencyManager.setBaseCurrency(selectedCurrency)
+        selectedCurrencyCode = temp.code
+        
+        convertCurrency()
     }
 }
 
