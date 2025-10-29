@@ -1,163 +1,264 @@
-# Currency Converter - MVVM Architecture
+# 💱 Currency Converter
 
-## Описание проекта
-Конвертер валют, реализованный по архитектурному паттерну MVVM (Model-View-ViewModel) с использованием Coordinator для навигации.
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-iOS%2018.5%2B-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/Swift-5.0-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/SwiftUI-Native-green" alt="SwiftUI">
+  <img src="https://img.shields.io/badge/Architecture-MVVM-red" alt="Architecture">
+</p>
 
-## Архитектура MVVM
+A modern, feature-rich currency converter iOS application built with **SwiftUI** following clean architecture principles and best practices.
 
-### 📁 Структура проекта
+## ✨ Features
+
+- 🌍 **Real-time Exchange Rates** - Live currency data via ExchangeRate API
+- 💰 **150+ Currencies** - Support for major world currencies with search functionality
+- 🎨 **Dark Mode Support** - Full theme customization
+- 🌐 **Multi-language** - English and Russian localization
+- 💾 **Smart Caching** - Optimized network requests with 5-minute cache
+- 📱 **Native SwiftUI** - Modern, declarative UI with smooth animations
+- ⚙️ **Customizable Settings** - Precision control and theme preferences
+- 🔍 **Currency Search** - Quick find with real-time filtering
+
+## 🏗 Architecture
+
+The app follows **MVVM (Model-View-ViewModel)** architecture with clear separation of concerns:
 
 ```
 CurrencyConverter/
-├── Models/                     # Модели данных
-│   ├── Currency.swift         # Модель валюты
-│   └── CurrencyRates_Old.swift # Старая модель (для справки)
-├── Views/                      # Представления (View Controllers)
-│   ├── CurrencyConverterViewController.swift    # Главный экран конвертера
-│   ├── ExchangeRateListViewController.swift     # Список курсов валют
-│   ├── ViewController.swift                     # Стартовый контроллер
-│   └── *_Old.swift                             # Старые контроллеры (для справки)
-├── ViewModels/                 # Модели представления
-│   ├── CurrencyConverterViewModel.swift         # ViewModel для конвертера
-│   └── ExchangeRateListViewModel.swift          # ViewModel для списка курсов
-├── Services/                   # Бизнес-логика и сервисы
-│   └── CurrencyService.swift                    # Сервис для работы с валютами
-├── Coordinators/               # Управление навигацией
-│   └── CurrencyCoordinator.swift                # Координатор навигации
-└── Resources/                  # Ресурсы приложения
-    ├── AppDelegate.swift
-    ├── SceneDelegate.swift
-    ├── Info.plist
-    └── Base.lproj/
+├── Sources/
+│   ├── App/
+│   │   └── CurrencyConverterApp.swift      # App entry point
+│   ├── Models/
+│   │   ├── Currency.swift                  # Currency data model
+│   │   ├── ExchangeRate.swift              # Exchange rate model
+│   │   ├── ConversionResult.swift          # Conversion result model
+│   │   ├── CurrencyNames.swift             # Currency localization
+│   │   └── APIError.swift                  # Network error handling
+│   ├── Screens/
+│   │   ├── Welcome/
+│   │   │   └── WelcomeScreen.swift         # Welcome screen
+│   │   ├── CurrencyConverter/
+│   │   │   ├── CurrencyConverterScreen.swift       # Main converter UI
+│   │   │   ├── CurrencyConverterViewModel.swift    # Converter logic
+│   │   │   └── CommonViews.swift                   # Reusable components
+│   │   ├── ExchangeRateList/
+│   │   │   ├── ExchangeRateListViewScreen.swift    # Currency list UI
+│   │   │   └── ExchangeRateListViewModel.swift     # List logic
+│   │   ├── AllCurrency/
+│   │   │   ├── AllCurrencyScreen.swift             # All currencies UI
+│   │   │   └── AllCurrencyViewModel.swift          # Selection logic
+│   │   └── Settings/
+│   │       └── SettingScreen.swift                 # Settings UI
+│   ├── Services/
+│   │   ├── CurrencyService.swift           # Currency business logic
+│   │   ├── CurrencyNetworkServiceProtocol.swift   # API protocol
+│   │   ├── CacheService.swift              # Caching layer
+│   │   ├── BaseCurrencyManager.swift       # Base currency management
+│   │   ├── CurrencyManager.swift           # Currency state management
+│   │   ├── CurrencyFormatter.swift         # Number formatting
+│   │   └── ServiceContainer.swift          # Dependency injection
+│   └── Utils/
+│       ├── AppConfig.swift                 # App configuration
+│       ├── ThemeManager.swift              # Theme management
+│       ├── LocalizationManager.swift       # Localization
+│       ├── CurrencyFactory.swift           # Currency creation
+│       └── CGFloat+Extensions.swift        # UI extensions
+├── Resources/
+│   ├── Info.plist
+│   ├── Assets.xcassets
+│   └── Localizable.xcstrings               # Localization strings
+└── Generated/
+    └── Localizable.swift                   # Generated localization
 ```
 
-## 🏗 Компоненты архитектуры
+## 🔄 Data Flow
 
-### Model (Модель)
-- **Currency.swift**: Модель валюты с кодом, названием и символом
-- **ExchangeRate**: Модель курса обмена между валютами
-- **ConversionResult**: Результат конвертации валюты
-
-```swift
-struct Currency {
-    let code: String      // Код валюты (USD, EUR, etc.)
-    let name: String      // Полное название
-    let symbol: String    // Символ валюты ($, €, etc.)
-}
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌─────────┐
+│   View      │────▶│  ViewModel   │────▶│   Service   │────▶│   API   │
+│  (SwiftUI)  │     │   (Logic)    │     │  (Business) │     │ (Remote)│
+└─────────────┘     └──────────────┘     └─────────────┘     └─────────┘
+       ▲                   │                     │                 │
+       │                   ▼                     ▼                 │
+       │            ┌──────────────┐      ┌─────────────┐         │
+       └────────────│ Published    │      │    Cache    │◀────────┘
+                    │ Properties   │      │   Service   │
+                    └──────────────┘      └─────────────┘
 ```
 
-### View (Представление)
-- **CurrencyConverterViewController**: Главный экран для ввода суммы и выбора валюты
-- **ExchangeRateListViewController**: Экран со списком доступных валют
+## 🛠 Technical Stack
 
-#### Принципы View в MVVM:
-- Не содержит бизнес-логики
-- Только отображение данных и обработка пользовательских действий
-- Взаимодействует с ViewModel через делегаты
+- **Language**: Swift 5.0+
+- **UI Framework**: SwiftUI (100% native)
+- **Architecture**: MVVM
+- **Minimum iOS**: 18.5+
+- **Dependency Management**: Swift Package Manager
+- **Code Quality**: SwiftLint (v0.62.1+)
+- **Networking**: URLSession with async/await
+- **Storage**: UserDefaults for preferences
+- **API**: [ExchangeRate-API](https://api.exchangerate-api.com)
 
-### ViewModel (Модель представления)
-- **CurrencyConverterViewModel**: Управляет логикой конвертации
-- **ExchangeRateListViewModel**: Управляет списком валют
+## 📦 Dependencies
 
-#### Возможности ViewModel:
-- Валидация пользовательского ввода
-- Форматирование данных для отображения
-- Взаимодействие с сервисами
-- Уведомление View об изменениях через делегаты
+- **SwiftLintPlugins** - Code style and quality enforcement
 
+## 🎯 Key Components
+
+### ServiceContainer
+Centralized dependency injection container managing all services:
+- `BaseCurrencyManager` - Base currency persistence
+- `ThemeManager` - App theme (light/dark mode)
+- `LocalizationManager` - Language switching
+- `CacheService` - Network response caching
+- `CurrencyNetworkService` - API communication
+- `CurrencyService` - Currency operations
+- `CurrencyFormatter` - Number formatting
+
+### CurrencyService
+Core business logic for currency operations:
 ```swift
-protocol CurrencyConverterViewModelDelegate: AnyObject {
-    func viewModelDidUpdateConversion(_ viewModel: CurrencyConverterViewModel)
-    func viewModelDidUpdateSelectedCurrency(_ viewModel: CurrencyConverterViewModel)
-    func viewModel(_ viewModel: CurrencyConverterViewModel, didFailWithError error: String)
-}
-```
-
-### Service (Сервис)
-- **CurrencyService**: Центральный сервис для работы с валютами
-
-#### Функциональность сервиса:
-- Получение курсов валют
-- Конвертация между валютами
-- Форматирование сумм
-- Кэширование данных
-
-```swift
-protocol CurrencyServiceProtocol {
-    func getExchangeRates() -> [ExchangeRate]
+protocol CurrencyService {
+    func fetchExchangeRates(for baseCurrency: String) async throws -> [ExchangeRate]
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult?
     func getFormattedAmount(_ amount: Double, currency: Currency) -> String
 }
 ```
 
-### Coordinator (Координатор)
-- **CurrencyCoordinator**: Управляет навигацией между экранами
+### CacheService
+Intelligent caching mechanism:
+- 5-minute validity window
+- Automatic expiration
+- Reduces API calls
+- Improves performance
 
-#### Преимущества использования Coordinator:
-- Разделение ответственности за навигацию
-- Упрощение тестирования
-- Централизованное управление флоу приложения
+## 🚀 Getting Started
 
-## 🔄 Поток данных в MVVM
+### Prerequisites
+- Xcode 16.4+
+- iOS 18.5+ device or simulator
+- Swift 5.0+
 
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/CurrencyConverter.git
+   cd CurrencyConverter
+   ```
+
+2. **Open in Xcode**
+   ```bash
+   open CurrencyConverter.xcodeproj
+   ```
+
+3. **Build and Run**
+   - Select your target device/simulator
+   - Press `Cmd + R` to build and run
+
+### Configuration
+
+Update `AppConfig.swift` to customize:
+```swift
+struct AppConfig {
+    struct API {
+        static let baseURL = "https://api.exchangerate-api.com/v4/latest/"
+        static let timeout: TimeInterval = 30.0
+    }
+    
+    struct Cache {
+        static let validityDuration: TimeInterval = 300 // 5 minutes
+    }
+    
+    struct Currency {
+        static let defaultBaseCurrency = "RUB"
+        static let popularCurrencies = ["RUB", "USD", "EUR", "GBP", "JPY"]
+    }
+}
 ```
-User Input → View → ViewModel → Service → Model
-     ↑                ↓
-   Update ←   Delegate ←   Business Logic
+
+## 💡 Usage
+
+1. **Launch App** - Opens with welcome screen
+2. **Select Base Currency** - Choose your starting currency
+3. **Enter Amount** - Type the amount to convert
+4. **Select Target Currency** - Pick destination currency
+5. **View Results** - See live conversion and exchange rate
+6. **Manage Favorites** - Add/remove currencies from quick access
+7. **Settings** - Customize theme, language, and precision
+
+## 🎨 Design Patterns
+
+- **MVVM** - Clear separation between UI and business logic
+- **Dependency Injection** - ServiceContainer for loose coupling
+- **Protocol-Oriented Programming** - Extensive use of protocols
+- **Singleton Pattern** - Shared managers (Theme, Localization)
+- **Factory Pattern** - CurrencyFactory for object creation
+- **Repository Pattern** - Service layer abstraction
+- **Observer Pattern** - SwiftUI's published properties
+
+## 🔐 Security & Best Practices
+
+- ✅ No API keys required (using free public API)
+- ✅ HTTPS-only communication
+- ✅ Input validation and sanitization
+- ✅ Error handling throughout the app
+- ✅ SwiftLint enforcement
+- ✅ Clean architecture principles
+- ✅ Testable components
+
+## 🧪 Testing
+
+```bash
+# Run SwiftLint
+swiftlint lint
+
+# Future: Unit tests
+# cmd + U to run tests
 ```
 
-1. **Пользователь** взаимодействует с **View**
-2. **View** передает действие в **ViewModel**
-3. **ViewModel** обрабатывает логику через **Service**
-4. **Service** работает с **Model**
-5. **ViewModel** уведомляет **View** через делегат
-6. **View** обновляет интерфейс
+## 📱 Screenshots
 
-## 🚀 Преимущества данной архитектуры
+*Coming soon: Add screenshots of your app here*
 
-### ✅ Разделение ответственности
-- **Model**: Только данные и бизнес-правила
-- **View**: Только отображение и взаимодействие с пользователем
-- **ViewModel**: Связующее звено, подготовка данных для отображения
+## 🗺 Roadmap
 
-### ✅ Тестируемость
-- ViewModel можно легко протестировать без UI
-- Service изолирован и может быть заменен моком
-- Четкие интерфейсы через протоколы
+- [ ] **Historical Data** - View exchange rate trends
+- [ ] **Favorites** - Quick access to frequently used currencies
+- [ ] **Offline Mode** - Last known rates when offline
+- [ ] **Widgets** - Home screen widgets for quick conversions
+- [ ] **Unit Tests** - Comprehensive test coverage
+- [ ] **UI Tests** - Automated UI testing
+- [ ] **Charts** - Visual exchange rate history
+- [ ] **Multiple Conversions** - Convert to multiple currencies at once
+- [ ] **Calculator Mode** - Built-in calculator for conversions
 
-### ✅ Расширяемость
-- Легко добавлять новые валюты
-- Простое подключение реального API
-- Модульная структура
+## 🤝 Contributing
 
-### ✅ Поддерживаемость
-- Четкая структура папок
-- Разделение кода по функциональности
-- Понятные зависимости
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 🛠 Возможные улучшения
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-1. **Reactive Programming**: Использование RxSwift или Combine для reactive биндингов
-2. **Dependency Injection**: Контейнер зависимостей для лучшей тестируемости
-3. **API Integration**: Подключение реального API для получения курсов валют
-4. **Core Data**: Сохранение истории конвертаций
-5. **Unit Tests**: Покрытие тестами ViewModel и Service слоев
+## 📄 License
 
-## 📚 Используемые паттерны
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-- **MVVM** (Model-View-ViewModel)
-- **Coordinator** (для навигации)
-- **Singleton** (для сервисов)
-- **Delegate** (для коммуникации)
-- **Protocol Oriented Programming** (для абстракций)
+## 👨‍💻 Author
 
-## 🔧 Технологии
+**afon.com**
+- Created: September 2025
+- iOS Developer
 
-- **Swift 5+**
-- **UIKit**
-- **Foundation**
-- **Storyboards** (для UI)
+## 🙏 Acknowledgments
+
+- [ExchangeRate-API](https://exchangerate-api.com/) - Free currency exchange rate API
+- SwiftUI Community - For inspiration and best practices
+- Apple Developer Documentation
 
 ---
 
-Данная архитектура обеспечивает четкое разделение ответственности, легкость тестирования и поддержки кода.
+<p align="center">Made with ❤️ using SwiftUI</p>
