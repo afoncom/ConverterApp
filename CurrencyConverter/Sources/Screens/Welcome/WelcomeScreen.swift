@@ -25,10 +25,10 @@ struct WelcomeScreen: View {
             VStack(spacing: 20) {
                 Text("💱")
                     .font(.system(size: 60))
-                Text(localizationManager.localizedString("welcome_title"))
+                Text(L10n.welcomeTitle)
                     .font(.title)
                     .fontWeight(.bold)
-                Text(localizationManager.localizedString("welcome_subtitle"))
+                Text(L10n.welcomeSubtitle)
                     .font(.headline)
                     .foregroundColor(.secondary)
             }

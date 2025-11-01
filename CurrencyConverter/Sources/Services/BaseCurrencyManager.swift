@@ -54,9 +54,4 @@ final class BaseCurrencyManager: ObservableObject {
         baseCurrency = currency
         storage.set(currency.code, forKey: baseCurrencyKey)
     }
-    
-    /// Проверить, является ли валюта базовой
-    func isBaseCurrency(_ currencyCode: String) -> Bool {
-        baseCurrency.code == currencyCode
-    }
 }

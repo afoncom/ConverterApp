@@ -80,10 +80,4 @@ struct CurrencyFactory {
             return code
         }
     }
-    
-    /// Проверка поддержки валюты
-    static func isSupported(currencyCode: String) -> Bool {
-        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "ru") != nil ||
-        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: "en") != nil
-    }
 }

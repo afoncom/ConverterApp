@@ -1,0 +1,6 @@
+strings:
+  inputs:
+    - CurrencyConverter/Resources/en.lproj/Localizable.strings
+  outputs:
+    - templatePath: Templates/CustomStrings.stencil
+      output: CurrencyConverter/Generated/Localizable.swift

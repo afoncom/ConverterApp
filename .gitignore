@@ -99,3 +99,6 @@ iOSInjectionProject/
 # Temporary files
 *.tmp
 *.temp
+
+# SwiftGen generated files
+Generated/

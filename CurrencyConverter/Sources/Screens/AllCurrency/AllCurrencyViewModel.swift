@@ -56,22 +56,22 @@ final class AllCurrencyViewModel: ObservableObject {
     private var currencyService: CurrencyService
     
     /// Менеджер выбранных пользователем валют
-    private var currencyManager: CurrencyManager!
+    private var currencyManager: CurrencyManager
     
     /// Менеджер локализации
     private var localizationManager: LocalizationManager?
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyService: CurrencyService) {
+    init(currencyService: CurrencyService, currencyManager: CurrencyManager) {
         self.currencyService = currencyService
+        self.currencyManager = currencyManager
     }
     
     // MARK: - Настройка CurrencyManager
     
     /// Метод - устанавливаем менеджер, сервис и локализацию
-    func setServices(currencyManager: CurrencyManager, currencyService: CurrencyService, localizationManager: LocalizationManager? = nil) {
-        self.currencyManager = currencyManager
+    func setServices(currencyService: CurrencyService, localizationManager: LocalizationManager? = nil) {
         self.currencyService = currencyService
         self.localizationManager = localizationManager
         filterAvailableCurrencies()
@@ -95,9 +95,9 @@ final class AllCurrencyViewModel: ObservableObject {
             case .fresh:
                 connectionStatus = nil
             case .stale:
-                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.dataOutdated) ?? "Data outdated"
+                connectionStatus = L10n.dataOutdated
             case .noConnection:
-                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.noConnection) ?? "No internet connection"
+                connectionStatus = L10n.noConnection
             }
             
             filterAvailableCurrencies()

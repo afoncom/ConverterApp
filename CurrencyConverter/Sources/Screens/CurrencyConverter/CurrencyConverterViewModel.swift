@@ -61,9 +61,9 @@ final class CurrencyConverterViewModel: ObservableObject {
             case .fresh:
                 connectionStatus = nil
             case .stale:
-                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.dataOutdated) ?? "Data outdated"
+                connectionStatus = L10n.dataOutdated
             case .noConnection:
-                connectionStatus = localizationManager?.localizedString(AppConfig.LocalizationKeys.noConnection) ?? "No connection"
+                connectionStatus = L10n.noConnection
             }
             
         } catch {

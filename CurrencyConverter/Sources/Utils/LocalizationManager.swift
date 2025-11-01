@@ -32,7 +32,7 @@ final class LocalizationManager: ObservableObject {
             self.currentLanguage = saved
         } else {
             let systemLanguage = Locale.current.language.languageCode?.identifier ?? "en"
-            self.currentLanguage = systemLanguage == "ru" ? "Русский" : "English"
+            self.currentLanguage = systemLanguage == "ru" ? L10n.Language.russian : L10n.Language.english
         }
         
         updateCurrentBundle()
@@ -40,32 +40,17 @@ final class LocalizationManager: ObservableObject {
     
     // MARK: - Public Methods (Публичные методы)
     
-    /// Локализует строку по ключу
-    func localizedString(_ key: String) -> String {
-        NSLocalizedString(key, bundle: bundle, comment: "")
-    }
-    
-    /// Получает локализованное название валюты по коду
-    func getCurrencyName(for currencyCode: String) -> String? {
-        let key = "currency_\(currencyCode)"
-        let localizedName = NSLocalizedString(key, bundle: bundle, comment: "")
-        
-        // Проверяем, что локализация найдена (не равен ключу)
-        return localizedName != key ? localizedName : nil
-    }
-    
     /// Получает код языка для API запросов
     var languageCode: String {
         switch currentLanguage {
-        case "Русский":
+        case "🇷🇺 Русский":
             return "ru"
-        case "English":
+        case "🇺🇸 English":
             return "en"
         default:
             return "en"
         }
     }
-    
     // MARK: - Private Methods (Приватные методы)
     
     private func updateCurrentBundle() {
@@ -82,14 +67,5 @@ final class LocalizationManager: ObservableObject {
         DispatchQueue.main.async {
             self.objectWillChange.send()
         }
-    }
-}
-
-// MARK: - Convenience Extension
-
-extension String {
-    /// Конвенция для быстрой локализации строк
-    func localized(using manager: LocalizationManager) -> String {
-        manager.localizedString(self)
     }
 }
