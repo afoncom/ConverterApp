@@ -2,5 +2,5 @@ strings:
   inputs:
     - CurrencyConverter/Resources/en.lproj/Localizable.strings
   outputs:
-    - templateName: structured-swift5
+    - templatePath: Templates/CustomStrings.stencil
       output: CurrencyConverter/Generated/Localizable.swift

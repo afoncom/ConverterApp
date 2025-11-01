@@ -43,9 +43,9 @@ final class LocalizationManager: ObservableObject {
     /// Получает код языка для API запросов
     var languageCode: String {
         switch currentLanguage {
-        case "Русский":
+        case "🇷🇺 Русский":
             return "ru"
-        case "English":
+        case "🇺🇸 English":
             return "en"
         default:
             return "en"
@@ -66,8 +66,6 @@ final class LocalizationManager: ObservableObject {
         // Принудительно обновляем UI
         DispatchQueue.main.async {
             self.objectWillChange.send()
-            // Отправляем нотификацию для обновления всех view
-            NotificationCenter.default.post(name: NSNotification.Name("LanguageChanged"), object: nil)
         }
     }
 }

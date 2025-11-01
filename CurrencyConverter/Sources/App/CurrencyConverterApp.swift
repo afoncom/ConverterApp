@@ -35,7 +35,6 @@ struct CurrencyConverterApp: App {
             )
         }()
     }
-
     
     var body: some Scene {
         WindowGroup {
@@ -62,6 +61,5 @@ struct ContentView: View {
     var body: some View {
         WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
             .preferredColorScheme(themeManager.colorScheme)
-            .id(localizationManager.currentLanguage) // Пересоздаем view при смене языка
     }
 }
