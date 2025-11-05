@@ -12,7 +12,7 @@ struct CurrencyConverterApp: App {
     private let currencyManager = CurrencyManager()
     
     init() {
-        self.serviceContainer = {
+       self.serviceContainer = {
             let baseCurrencyManager = BaseCurrencyManager()
             let themeManager = ThemeManager()
             let localizationManager = LocalizationManager()

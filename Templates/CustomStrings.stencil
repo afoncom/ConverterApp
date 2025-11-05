@@ -87,23 +87,25 @@ extension {{enumName}} {
 {% if not param.bundle and not param.lookupFunction %}
 
 // swiftlint:disable convenience_type
+private enum LanguageCode: String {
+  case russian = "ru"
+  case english = "en"
+  
+  static var current: LanguageCode {
+    let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage")
+    
+    if let saved = savedLanguage,
+       let language = LanguageCode(rawValue: saved) {
+      return language
+    }
+    
+    return .english
+  }
+}
+
 private final class BundleToken {
   static var bundle: Bundle {
-    let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage")
-    let languageCode: String
-
-    if let saved = savedLanguage {
-      switch saved {
-      case "🇷🇺 Русский":
-        languageCode = "ru"
-      case "🇺🇸 English":
-        languageCode = "en"
-      default:
-        languageCode = "en"
-      }
-    } else {
-      languageCode = "en"
-    }
+    let languageCode = LanguageCode.current.rawValue
 
     if let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
        let bundle = Bundle(path: path) {

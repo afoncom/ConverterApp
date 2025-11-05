@@ -11,7 +11,8 @@ import Foundation
 enum APIError: Error, LocalizedError {
     case invalidURL
     case noData
-    case decodingError    
+    case noDataAndNoConnection
+    case decodingError
  
     var errorDescription: String? {
         switch self {
@@ -19,6 +20,8 @@ enum APIError: Error, LocalizedError {
             return L10n.apiErrorInvalidUrl
         case .noData:
             return L10n.apiErrorNoData
+        case .noDataAndNoConnection:
+            return L10n.apiErrorNoDataAndNoConnection
         case .decodingError:
             return L10n.apiErrorDecoding
         }

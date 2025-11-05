@@ -14,7 +14,6 @@ final class ExchangeRateListViewModel: ObservableObject {
     // MARK: - Состояния экрана
     
     @Published var items: [ExchangeRate] = []
-    @Published var title = L10n.selectCurrency
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var connectionStatus: String?

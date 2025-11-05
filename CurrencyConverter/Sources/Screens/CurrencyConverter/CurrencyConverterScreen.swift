@@ -16,9 +16,9 @@ struct CurrencyConverterScreen: View {
     @State private var showBaseCurrencyPicker = false
     @State private var showSettings = false
     @StateObject private var viewModel: CurrencyConverterViewModel
+    @ObservedObject private var localizationManager: LocalizationManager
     let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
-    @ObservedObject private var localizationManager: LocalizationManager
     
     // MARK: - Computed Properties (Вычисленные свойства)
     
@@ -80,15 +80,39 @@ struct CurrencyConverterScreen: View {
                         }
                 }
                 
-                if viewModel.isLoading {
-                    ProgressView(L10n.loadingRates)
-                        .frame(maxWidth: .infinity)
+                // Статус подключения
+                if let status = viewModel.connectionStatus {
+                    let isNoConnection = status == L10n.noConnection
+                    HStack {
+                        Image(systemName: isNoConnection ? "wifi.slash" : "clock")
+                        Text(status)
+                        Spacer()
+                        if let lastUpdated = viewModel.lastUpdated {
+                            Text(lastUpdated, style: .relative)
+                                .font(.caption2)
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundColor(isNoConnection ? .red : .orange)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+                    .cornerRadius(8)
                 }
-                
+                // Ошибка (если есть)
                 if let error = viewModel.errorMessage {
-                    Text(L10n.errorColon(error))
-                        .foregroundColor(.red)
-                        .padding()
+                    let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
+                    HStack {
+                        Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
+                            .foregroundColor(isNoConnectionError ? .red : .orange)
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(isNoConnectionError ? .red : .orange)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(isNoConnectionError ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+                    .cornerRadius(8)
                 }
                 
                 // Выбор валют: ИЗ -> В

@@ -7,14 +7,28 @@
 import SwiftUI
 import Foundation
 
+enum Language: String, CaseIterable {
+    case russian = "ru"
+    case english = "en"
+    
+    var displayName: String {
+        switch self {
+        case .russian:
+            return L10n.Language.russian
+        case .english:
+            return L10n.Language.english
+        }
+    }
+}
+
 /// Менеджер для управления локализацией приложения
 final class LocalizationManager: ObservableObject {
     
     // MARK: - Published Properties
     
-    @Published var currentLanguage: String {
+    @Published var currentLanguage: Language {
         didSet {
-            UserDefaults.standard.set(currentLanguage, forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
+            UserDefaults.standard.set(currentLanguage.rawValue, forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
             updateCurrentBundle()
         }
     }
@@ -26,13 +40,14 @@ final class LocalizationManager: ObservableObject {
     // MARK: - Initialization (Инициализация)
     
     init() {
-        let savedLanguage = UserDefaults.standard.string(forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
+        let savedLanguageCode = UserDefaults.standard.string(forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
         
-        if let saved = savedLanguage {
-            self.currentLanguage = saved
+        if let code = savedLanguageCode,
+           let language = Language(rawValue: code) {
+            self.currentLanguage = language
         } else {
-            let systemLanguage = Locale.current.language.languageCode?.identifier ?? "en"
-            self.currentLanguage = systemLanguage == "ru" ? L10n.Language.russian : L10n.Language.english
+            let systemLanguageCode = Locale.current.language.languageCode?.identifier ?? "en"
+            self.currentLanguage = Language(rawValue: systemLanguageCode) ?? .english
         }
         
         updateCurrentBundle()
@@ -42,14 +57,7 @@ final class LocalizationManager: ObservableObject {
     
     /// Получает код языка для API запросов
     var languageCode: String {
-        switch currentLanguage {
-        case "🇷🇺 Русский":
-            return "ru"
-        case "🇺🇸 English":
-            return "en"
-        default:
-            return "en"
-        }
+        currentLanguage.rawValue
     }
     // MARK: - Private Methods (Приватные методы)
     

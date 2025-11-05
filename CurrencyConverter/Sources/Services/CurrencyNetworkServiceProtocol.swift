@@ -132,7 +132,7 @@ extension CurrencyNetworkService {
         }
         
         guard !cachedRates.isEmpty else {
-            throw APIError.noData
+            throw isNetworkError ? APIError.noDataAndNoConnection : APIError.noData
         }
         
         let fakeResponse = ExchangeRateAPIResponse(
@@ -165,7 +165,9 @@ extension CurrencyNetworkService {
     
     func getAllFromCache(isNetworkError: Bool = false) throws -> DataResult<[String]> {
         let cached = cacheService.cachedCurrencies
-        guard !cached.isEmpty else { throw APIError.noData }
+        guard !cached.isEmpty else {
+            throw isNetworkError ? APIError.noDataAndNoConnection : APIError.noData
+        }
         
         let status: DataStatus = cacheService.isCacheValid() ? .fresh : (isNetworkError ? .noConnection : .stale)
         

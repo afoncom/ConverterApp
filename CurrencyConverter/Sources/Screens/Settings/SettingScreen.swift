@@ -72,8 +72,9 @@ struct SettingScreen: View {
                         Spacer()
                         
                         Picker(L10n.language, selection: $localizationManager.currentLanguage) {
-                            Text(L10n.Language.russian).tag(L10n.Language.russian)
-                            Text(L10n.Language.english).tag(L10n.Language.english)
+                            ForEach(Language.allCases, id: \.self) { language in
+                                Text(language.displayName).tag(language)
+                            }
                         }
                         .pickerStyle(MenuPickerStyle())
                     }

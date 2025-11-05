@@ -169,4 +169,5 @@
 // MARK: - API Errors
 "api_error_invalid_url" = "Invalid API URL";
 "api_error_no_data" = "No data from server";
+"api_error_no_data_and_no_connection" = "No internet connection. Internet connection is required for the first launch.";
 "api_error_decoding" = "Data decoding error";

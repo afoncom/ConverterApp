@@ -169,4 +169,5 @@
 // MARK: - API Errors
 "api_error_invalid_url" = "Некорректный URL API";
 "api_error_no_data" = "Нет данных от сервера";
+"api_error_no_data_and_no_connection" = "Нет подключения к интернету. Для первого запуска необходимо подключение к сети.";
 "api_error_decoding" = "Ошибка декодирования данных";

@@ -13,7 +13,6 @@ struct AllCurrencyScreen: View {
     
     @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
     @StateObject private var viewModel: AllCurrencyViewModel
-
     @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     
     let currencyManager: CurrencyManager                 // Менеджер выбранных валют
@@ -55,7 +54,7 @@ struct AllCurrencyScreen: View {
                         Text(status)
                         Spacer()
                         if let lastUpdate = viewModel.lastUpdated {
-                            Text(L10n.updatedColon(DateFormatter.shortTime.string(from: lastUpdate)))
+                            Text(L10n.updatedColon(DateFormatter().string(from: lastUpdate)))
                                 .font(.caption2)
                         }
                     }
@@ -149,11 +148,13 @@ struct AllCurrencyScreen: View {
     }
     
     private func errorView(_ error: String) -> some View {
-        VStack(spacing: 15) {
-            Image(systemName: "exclamationmark.triangle")
-                .foregroundColor(.orange)
+        let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
+        
+        return VStack(spacing: 15) {
+            Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
+                .foregroundColor(isNoConnectionError ? .red : .orange)
                 .font(.system(size: 48))
-            Text(L10n.loadingError)
+            Text(isNoConnectionError ? L10n.noConnection : L10n.loadingError)
                 .font(.headline)
             Text(error)
                 .foregroundColor(.secondary)

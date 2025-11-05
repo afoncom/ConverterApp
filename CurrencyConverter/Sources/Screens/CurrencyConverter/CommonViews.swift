@@ -42,13 +42,3 @@ struct CurrencyButton: View {
         }
     }
 }
-
-
-/// Расширение для удобных форматтеры дат
-extension DateFormatter {
-    static let shortTime: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        return formatter
-    }()
-}

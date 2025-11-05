@@ -49,19 +49,7 @@ struct ExchangeRateListViewScreen: View {
                     ProgressView(L10n.loadingRates)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = viewModel.errorMessage {
-                    VStack(spacing: 10) {
-                        Text(L10n.errorColon(error))
-                            .foregroundColor(.red)
-                        Button(L10n.retry) {
-                            Task {
-                                await viewModel.reload()
-                            }
-                        }
-                        .padding()
-                        .background(Color.blue.opacity(0.2))
-                        .cornerRadius(10)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    errorView(error)
                 } else {
                     List(viewModel.items, id: \.toCurrency.code) { exchangeRate in
                         Button {
@@ -123,11 +111,11 @@ struct ExchangeRateListViewScreen: View {
                     }
                 }
             }
-            .navigationTitle(viewModel.title)
+            .navigationTitle(L10n.selectCurrency)
             .toolbar {
                 if let status = viewModel.connectionStatus {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        let isNoConnection = status.contains(L10n.noConnection)
+                        let isNoConnection = status == L10n.noConnection
                         Label(status, systemImage: isNoConnection ? "wifi.slash" : "clock")
                             .font(.caption)
                             .foregroundColor(isNoConnection ? .red : .orange)
@@ -160,6 +148,36 @@ struct ExchangeRateListViewScreen: View {
                 }
             }
         }
+    }
+        
+        // MARK: - Private Views
+            
+            private func errorView(_ error: String) -> some View {
+                let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
+                
+                return VStack(spacing: 15) {
+                    Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
+                        .foregroundColor(isNoConnectionError ? .red : .orange)
+                        .font(.system(size: 48))
+                    
+                    Text(isNoConnectionError ? L10n.noConnection : L10n.loadingError)
+                        .font(.headline)
+                    
+                    Text(error)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    
+                    Button(L10n.retry) {
+                        Task {
+                            await viewModel.reload()
+                        }
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.2))
+                    .cornerRadius(10)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
