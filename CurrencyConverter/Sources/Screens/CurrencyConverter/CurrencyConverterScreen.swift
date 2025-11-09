@@ -16,9 +16,9 @@ struct CurrencyConverterScreen: View {
     @State private var showBaseCurrencyPicker = false
     @State private var showSettings = false
     @StateObject private var viewModel: CurrencyConverterViewModel
+    @ObservedObject private var localizationManager: LocalizationManager
     let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
-    @ObservedObject private var localizationManager: LocalizationManager
     
     // MARK: - Computed Properties (Вычисленные свойства)
     
@@ -57,11 +57,11 @@ struct CurrencyConverterScreen: View {
             VStack(spacing: 20) {
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(localizationManager.localizedString(AppConfig.LocalizationKeys.amountInputLabel))
+                    Text(L10n.amountInputLabel)
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.secondary)
                     
-                    TextField(String(format: localizationManager.localizedString(AppConfig.LocalizationKeys.amountPlaceholder), localizedBaseCurrencyName), text: $amount)
+                    TextField(L10n.amountPlaceholder(localizedBaseCurrencyName), text: $amount)
                         .keyboardType(.decimalPad)
                         .submitLabel(.done)
                         .onSubmit {
@@ -80,15 +80,39 @@ struct CurrencyConverterScreen: View {
                         }
                 }
                 
-                if viewModel.isLoading {
-                    ProgressView(localizationManager.localizedString("loading_rates"))
-                        .frame(maxWidth: .infinity)
+                // Статус подключения
+                if let status = viewModel.connectionStatus {
+                    let isNoConnection = status == L10n.noConnection
+                    HStack {
+                        Image(systemName: isNoConnection ? "wifi.slash" : "clock")
+                        Text(status)
+                        Spacer()
+                        if let lastUpdated = viewModel.lastUpdated {
+                            Text(lastUpdated, style: .relative)
+                                .font(.caption2)
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundColor(isNoConnection ? .red : .orange)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+                    .cornerRadius(8)
                 }
-                
+                // Ошибка (если есть)
                 if let error = viewModel.errorMessage {
-                    Text(String(format: localizationManager.localizedString("error_colon"), error))
-                        .foregroundColor(.red)
-                        .padding()
+                    let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
+                    HStack {
+                        Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
+                            .foregroundColor(isNoConnectionError ? .red : .orange)
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(isNoConnectionError ? .red : .orange)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(isNoConnectionError ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+                    .cornerRadius(8)
                 }
                 
                 // Выбор валют: ИЗ -> В
@@ -96,7 +120,7 @@ struct CurrencyConverterScreen: View {
                     // Базовая валюта (ИЗ)
                     CurrencyButton(
                         currency: serviceContainer.baseCurrencyManager.baseCurrency,
-                        label: localizationManager.localizedString(AppConfig.LocalizationKeys.fromCurrency),
+                        label: L10n.fromCurrency,
                         borderColor: .success
                     ) {
                         hideKeyboard()
@@ -122,7 +146,7 @@ struct CurrencyConverterScreen: View {
                     // Целевая валюта (В)
                     CurrencyButton(
                         currency: selectedCurrency,
-                        label: localizationManager.localizedString(AppConfig.LocalizationKeys.toCurrency),
+                        label: L10n.toCurrency,
                         borderColor: .info
                     ) {
                         hideKeyboard()
@@ -136,7 +160,7 @@ struct CurrencyConverterScreen: View {
                             .foregroundColor(.orange)
                             .font(.system(size: 14))
                         
-                        Text(localizationManager.localizedString("exchange_rate"))
+                        Text(L10n.exchangeRate)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.secondary)
                         
@@ -161,7 +185,7 @@ struct CurrencyConverterScreen: View {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .font(.system(size: 16, weight: .medium))
                         
-                        Text(localizationManager.localizedString("convert_button"))
+                        Text(L10n.convertButton)
                             .font(.system(size: 16, weight: .semibold))
                     }
                     .frame(maxWidth: .infinity)
@@ -187,7 +211,7 @@ struct CurrencyConverterScreen: View {
                                 .foregroundColor(.green)
                                 .font(.system(size: 20))
                             
-                            Text(localizationManager.localizedString("conversion_result"))
+                            Text(L10n.conversionResult)
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.primary)
                             
@@ -196,7 +220,7 @@ struct CurrencyConverterScreen: View {
                         
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(localizationManager.localizedString("from_amount"))
+                                Text(L10n.fromAmount)
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundColor(.secondary)
                                 
@@ -214,7 +238,7 @@ struct CurrencyConverterScreen: View {
                             Spacer()
                             
                             VStack(alignment: .trailing, spacing: 4) {
-                                Text(localizationManager.localizedString("to_amount"))
+                                Text(L10n.toAmount)
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundColor(.secondary)
                                 
@@ -257,7 +281,7 @@ struct CurrencyConverterScreen: View {
                     updateBaseCurrency(baseCurrency)
                 }
             }
-            .navigationTitle(localizationManager.localizedString("currency_converter_title"))
+            .navigationTitle(L10n.currencyConverterTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

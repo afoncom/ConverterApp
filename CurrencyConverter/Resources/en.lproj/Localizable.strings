@@ -40,6 +40,7 @@
 
 // MARK: - All Currency Screen
 "all_currencies" = "All Currencies";
+"all_currencies_with_count" = "All Currencies %@";
 
 // MARK: - Exchange Rate List Screen
 "select_currency" = "Select Currency";
@@ -59,8 +60,8 @@
 "loading_currencies" = "Loading currencies...";
 
 // MARK: - Language Names
-"language_russian" = "🇷🇺 Русский";
-"language_english" = "🇺🇸 English";
+"language.russian" = "🇷🇺 Русский";
+"language.english" = "🇺🇸 English";
 
 // MARK: - Currency Names
 // Main currencies
@@ -164,3 +165,9 @@
 "currency_TMT" = "Turkmenistani Manat";
 "currency_UAH" = "Ukrainian Hryvnia";
 "currency_UZS" = "Uzbekistani Som";
+
+// MARK: - API Errors
+"api_error_invalid_url" = "Invalid API URL";
+"api_error_no_data" = "No data from server";
+"api_error_no_data_and_no_connection" = "No internet connection. Internet connection is required for the first launch.";
+"api_error_decoding" = "Data decoding error";

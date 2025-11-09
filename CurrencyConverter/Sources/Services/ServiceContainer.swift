@@ -17,7 +17,6 @@ final class ServiceContainer {
     let cacheService: CacheServiceProtocol                      // Сервис для кэширования данных
     let networkService: CurrencyNetworkServiceProtocol
     let currencyService: CurrencyService                       // Сервис для работы с валютами
-    let currencyFormatter: CurrencyFormatterProtocol           // Сервис для форматирования валют
     
     init (
         baseCurrencyManager: BaseCurrencyManager,
@@ -25,8 +24,7 @@ final class ServiceContainer {
         localizationManager: LocalizationManager,
         cacheService: CacheServiceProtocol,
         networkService: CurrencyNetworkServiceProtocol,
-        currencyService: CurrencyService,
-        currencyFormatter: CurrencyFormatterProtocol
+        currencyService: CurrencyService
     ) {
         self.baseCurrencyManager = baseCurrencyManager
         self.themeManager = themeManager
@@ -34,7 +32,6 @@ final class ServiceContainer {
         self.cacheService = cacheService
         self.networkService = networkService
         self.currencyService = currencyService
-        self.currencyFormatter = currencyFormatter
     }
 }
 
@@ -46,7 +43,6 @@ extension ServiceContainer {
         let themeManager = ThemeManager()
         let localizationManager = LocalizationManager()
         let cacheService = CacheService()
-        let currencyFormatter = CurrencyFormatterService()
         let networkService = CurrencyNetworkService(cacheService: cacheService)
         let currencyService = CurrencyServiceImpl(
             networkService: networkService,
@@ -54,15 +50,13 @@ extension ServiceContainer {
             localizationManager: localizationManager
         )
         
-        
         return ServiceContainer(
             baseCurrencyManager: baseCurrencyManager,
             themeManager: themeManager,
             localizationManager: localizationManager,
             cacheService: cacheService,
             networkService: networkService,
-            currencyService: currencyService,
-            currencyFormatter: currencyFormatter
+            currencyService: currencyService
         )
     }
 }

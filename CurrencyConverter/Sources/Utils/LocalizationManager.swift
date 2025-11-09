@@ -7,14 +7,28 @@
 import SwiftUI
 import Foundation
 
+enum Language: String, CaseIterable {
+    case russian = "ru"
+    case english = "en"
+    
+    var displayName: String {
+        switch self {
+        case .russian:
+            return L10n.Language.russian
+        case .english:
+            return L10n.Language.english
+        }
+    }
+}
+
 /// Менеджер для управления локализацией приложения
 final class LocalizationManager: ObservableObject {
     
     // MARK: - Published Properties
     
-    @Published var currentLanguage: String {
+    @Published var currentLanguage: Language {
         didSet {
-            UserDefaults.standard.set(currentLanguage, forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
+            UserDefaults.standard.set(currentLanguage.rawValue, forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
             updateCurrentBundle()
         }
     }
@@ -26,13 +40,14 @@ final class LocalizationManager: ObservableObject {
     // MARK: - Initialization (Инициализация)
     
     init() {
-        let savedLanguage = UserDefaults.standard.string(forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
+        let savedLanguageCode = UserDefaults.standard.string(forKey: AppConfig.UserDefaultsKeys.selectedLanguage)
         
-        if let saved = savedLanguage {
-            self.currentLanguage = saved
+        if let code = savedLanguageCode,
+           let language = Language(rawValue: code) {
+            self.currentLanguage = language
         } else {
-            let systemLanguage = Locale.current.language.languageCode?.identifier ?? "en"
-            self.currentLanguage = systemLanguage == "ru" ? "Русский" : "English"
+            let systemLanguageCode = Locale.current.language.languageCode?.identifier ?? "en"
+            self.currentLanguage = Language(rawValue: systemLanguageCode) ?? .english
         }
         
         updateCurrentBundle()
@@ -40,32 +55,10 @@ final class LocalizationManager: ObservableObject {
     
     // MARK: - Public Methods (Публичные методы)
     
-    /// Локализует строку по ключу
-    func localizedString(_ key: String) -> String {
-        NSLocalizedString(key, bundle: bundle, comment: "")
-    }
-    
-    /// Получает локализованное название валюты по коду
-    func getCurrencyName(for currencyCode: String) -> String? {
-        let key = "currency_\(currencyCode)"
-        let localizedName = NSLocalizedString(key, bundle: bundle, comment: "")
-        
-        // Проверяем, что локализация найдена (не равен ключу)
-        return localizedName != key ? localizedName : nil
-    }
-    
     /// Получает код языка для API запросов
     var languageCode: String {
-        switch currentLanguage {
-        case "Русский":
-            return "ru"
-        case "English":
-            return "en"
-        default:
-            return "en"
-        }
+        currentLanguage.rawValue
     }
-    
     // MARK: - Private Methods (Приватные методы)
     
     private func updateCurrentBundle() {
@@ -82,14 +75,5 @@ final class LocalizationManager: ObservableObject {
         DispatchQueue.main.async {
             self.objectWillChange.send()
         }
-    }
-}
-
-// MARK: - Convenience Extension
-
-extension String {
-    /// Конвенция для быстрой локализации строк
-    func localized(using manager: LocalizationManager) -> String {
-        manager.localizedString(self)
     }
 }

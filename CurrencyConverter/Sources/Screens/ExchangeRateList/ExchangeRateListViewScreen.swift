@@ -46,22 +46,10 @@ struct ExchangeRateListViewScreen: View {
         NavigationStack {
             Group {
                 if viewModel.isLoading {
-                    ProgressView(localizationManager.localizedString("loading_rates"))
+                    ProgressView(L10n.loadingRates)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = viewModel.errorMessage {
-                    VStack(spacing: 10) {
-                        Text(String(format: localizationManager.localizedString("error_colon"), error))
-                            .foregroundColor(.red)
-                        Button(localizationManager.localizedString("retry")) {
-                            Task {
-                                await viewModel.reload()
-                            }
-                        }
-                        .padding()
-                        .background(Color.blue.opacity(0.2))
-                        .cornerRadius(10)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    errorView(error)
                 } else {
                     List(viewModel.items, id: \.toCurrency.code) { exchangeRate in
                         Button {
@@ -116,18 +104,18 @@ struct ExchangeRateListViewScreen: View {
                             Button {
                                 viewModel.removeCurrency(exchangeRate.toCurrency.code)
                             } label: {
-                                Label(localizationManager.localizedString("delete"), systemImage: "trash")
+                                Label(L10n.delete, systemImage: "trash")
                             }
                             .tint(.red)
                         }
                     }
                 }
             }
-            .navigationTitle(viewModel.title)
+            .navigationTitle(L10n.selectCurrency)
             .toolbar {
                 if let status = viewModel.connectionStatus {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        let isNoConnection = status.contains(localizationManager.localizedString("no_connection"))
+                        let isNoConnection = status == L10n.noConnection
                         Label(status, systemImage: isNoConnection ? "wifi.slash" : "clock")
                             .font(.caption)
                             .foregroundColor(isNoConnection ? .red : .orange)
@@ -137,7 +125,7 @@ struct ExchangeRateListViewScreen: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         AllCurrencyScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { selectedCurrency in
-                            print(String(format: localizationManager.localizedString("added_currency"), selectedCurrency.description))
+                            print(L10n.addedCurrency(selectedCurrency.description))
                             
                             Task {
                                 await viewModel.reload()
@@ -155,12 +143,41 @@ struct ExchangeRateListViewScreen: View {
                 viewModel.updateBaseCurrency(newBaseCurrency)
             }
             .onChange(of: localizationManager.currentLanguage) { _, _ in
-                viewModel.updateTitle()
                 Task {
                     await viewModel.reload()
                 }
             }
         }
+    }
+        
+        // MARK: - Private Views
+            
+            private func errorView(_ error: String) -> some View {
+                let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
+                
+                return VStack(spacing: 15) {
+                    Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
+                        .foregroundColor(isNoConnectionError ? .red : .orange)
+                        .font(.system(size: 48))
+                    
+                    Text(isNoConnectionError ? L10n.noConnection : L10n.loadingError)
+                        .font(.headline)
+                    
+                    Text(error)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    
+                    Button(L10n.retry) {
+                        Task {
+                            await viewModel.reload()
+                        }
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.2))
+                    .cornerRadius(10)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

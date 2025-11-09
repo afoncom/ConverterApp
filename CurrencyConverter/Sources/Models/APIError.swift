@@ -11,16 +11,19 @@ import Foundation
 enum APIError: Error, LocalizedError {
     case invalidURL
     case noData
-    case decodingError    
+    case noDataAndNoConnection
+    case decodingError
  
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Некорректный URL API"
+            return L10n.apiErrorInvalidUrl
         case .noData:
-            return "Нет данных от сервера"
+            return L10n.apiErrorNoData
+        case .noDataAndNoConnection:
+            return L10n.apiErrorNoDataAndNoConnection
         case .decodingError:
-            return "Ошибка декодирования данных"
+            return L10n.apiErrorDecoding
         }
     }
 }

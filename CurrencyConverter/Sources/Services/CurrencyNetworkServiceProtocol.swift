@@ -11,15 +11,11 @@ import Foundation
 // MARK: - API Response Model
 
 struct ExchangeRateAPIResponse: Codable {
-    let provider: String
     let base: String
-    let date: String
-    let timeLastUpdated: Int
     let rates: [String: Double]
     
     enum CodingKeys: String, CodingKey {
-        case provider, base, date, rates
-        case timeLastUpdated = "time_last_updated"
+        case base, rates
     }
 }
 
@@ -136,14 +132,11 @@ extension CurrencyNetworkService {
         }
         
         guard !cachedRates.isEmpty else {
-            throw APIError.noData
+            throw isNetworkError ? APIError.noDataAndNoConnection : APIError.noData
         }
         
         let fakeResponse = ExchangeRateAPIResponse(
-            provider: "Cache",
             base: baseCurrency.code,
-            date: "",
-            timeLastUpdated: 0,
             rates: cachedRates
         )
         
@@ -172,7 +165,9 @@ extension CurrencyNetworkService {
     
     func getAllFromCache(isNetworkError: Bool = false) throws -> DataResult<[String]> {
         let cached = cacheService.cachedCurrencies
-        guard !cached.isEmpty else { throw APIError.noData }
+        guard !cached.isEmpty else {
+            throw isNetworkError ? APIError.noDataAndNoConnection : APIError.noData
+        }
         
         let status: DataStatus = cacheService.isCacheValid() ? .fresh : (isNetworkError ? .noConnection : .stale)
         
