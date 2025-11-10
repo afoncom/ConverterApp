@@ -93,6 +93,7 @@ CurrencyConverter/
 - **UI Framework**: SwiftUI (100% native)
 - **Architecture**: MVVM
 - **Minimum iOS**: 18.5+
+- **Project Management**: Tuist (Project-as-code)
 - **Dependency Management**: Swift Package Manager
 - **Code Quality**: SwiftLint (v0.62.1+)
 - **Networking**: URLSession with async/await
@@ -138,6 +139,7 @@ Intelligent caching mechanism:
 - Xcode 16.4+
 - iOS 18.5+ device or simulator
 - Swift 5.0+
+- **Tuist** - Install via Homebrew: `brew install tuist`
 
 ### Installation
 
@@ -147,14 +149,27 @@ Intelligent caching mechanism:
    cd CurrencyConverter
    ```
 
-2. **Open in Xcode**
+2. **Generate Xcode project**
    ```bash
-   open CurrencyConverter.xcodeproj
+   tuist generate
+   ```
+   
+   This will:
+   - Generate `CurrencyConverter.xcodeproj` and `CurrencyConverter.xcworkspace`
+   - Resolve Swift Package Manager dependencies
+   - Set up the project structure
+
+3. **Open in Xcode**
+   ```bash
+   open CurrencyConverter.xcworkspace
    ```
 
-3. **Build and Run**
+4. **Build and Run**
    - Select your target device/simulator
    - Press `Cmd + R` to build and run
+
+> **Note**: The `.xcodeproj` and `.xcworkspace` files are not tracked in VCS. 
+> Always run `tuist generate` after pulling changes to regenerate the project.
 
 ### Configuration
 
