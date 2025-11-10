@@ -121,7 +121,7 @@ struct CurrencyConverterScreen: View {
                     CurrencyButton(
                         currency: serviceContainer.baseCurrencyManager.baseCurrency,
                         label: L10n.fromCurrency,
-                        borderColor: .success
+                        borderColor: Color("success")
                     ) {
                         hideKeyboard()
                         showBaseCurrencyPicker = true
@@ -147,7 +147,7 @@ struct CurrencyConverterScreen: View {
                     CurrencyButton(
                         currency: selectedCurrency,
                         label: L10n.toCurrency,
-                        borderColor: .info
+                        borderColor: Color("info")
                     ) {
                         hideKeyboard()
                         showCurrencyList = true
