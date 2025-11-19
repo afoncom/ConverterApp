@@ -226,6 +226,16 @@ struct AppConfig {
 
 The project includes unit tests for core functionality.
 
+### Code Quality
+
+```bash
+# Run SwiftLint to check code style
+swiftlint lint
+
+# Auto-fix issues where possible
+swiftlint --fix
+```
+
 ### Running Tests Locally
 
 ```bash
