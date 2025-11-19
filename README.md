@@ -224,13 +224,44 @@ struct AppConfig {
 
 ## 🧪 Testing
 
-```bash
-# Run SwiftLint
-swiftlint lint
+The project includes unit tests for core functionality.
 
-# Future: Unit tests
-# cmd + U to run tests
+### Running Tests Locally
+
+```bash
+# Generate project first
+tuist generate
+
+# Run tests in Xcode
+# Press Cmd + U
+
+# Or via command line
+xcodebuild test \
+  -workspace CurrencyConverter.xcworkspace \
+  -scheme CurrencyConverter \
+  -destination 'platform=iOS Simulator,name=iPhone 15'
 ```
+
+### GitHub Actions CI/CD
+
+The project uses GitHub Actions for continuous integration:
+
+**Manual Testing**
+- Go to Actions tab in GitHub
+- Select "Unit Tests" workflow
+- Click "Run workflow" button
+
+**Automatic Testing**
+- Tests run automatically on every Pull Request
+- Tests run on push to `main` and `develop` branches
+- All PRs must pass tests before merging
+
+### Test Coverage
+
+- `CurrencyNamesTests` - Tests for currency localization provider
+  - Mock implementation testing
+  - Localized name retrieval
+  - Edge cases handling
 
 ## 📱 Screenshots
 

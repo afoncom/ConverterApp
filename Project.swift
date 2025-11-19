@@ -36,7 +36,6 @@ let project = Project(
             resources: [
                 .glob(pattern: "CurrencyConverter/Resources/**", excluding: ["CurrencyConverter/Resources/Info.plist"])
             ],
-            resourceSynthesizers: [],
             dependencies: [
                 .package(product: "SwiftLintBuildToolPlugin", type: .plugin)
             ],
@@ -66,6 +65,19 @@ let project = Project(
                 configurations: [],
                 defaultSettings: .recommended
             )
+        ),
+        .target(
+            name: "CurrencyConverterTests",
+            destinations: [.iPhone],
+            product: .unitTests,
+            bundleId: "afon-com.CurrencyConverterTests",
+            deploymentTargets: .iOS("18.5"),
+            sources: [
+                "CСTests\"CurrencyNames\"/**"
+            ],
+            dependencies: [
+                .target(name: "CurrencyConverter")
+            ]
         )
     ],
     schemes: [
@@ -73,6 +85,7 @@ let project = Project(
             name: "CurrencyConverter",
             shared: true,
             buildAction: .buildAction(targets: ["CurrencyConverter"]),
+            testAction: .targets(["CurrencyConverterTests"]),
             runAction: .runAction(configuration: "Debug"),
             archiveAction: .archiveAction(configuration: "Release"),
             profileAction: .profileAction(configuration: "Release"),
