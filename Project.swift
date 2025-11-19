@@ -36,6 +36,7 @@ let project = Project(
             resources: [
                 .glob(pattern: "CurrencyConverter/Resources/**", excluding: ["CurrencyConverter/Resources/Info.plist"])
             ],
+            resourceSynthesizers: [],
             dependencies: [
                 .package(product: "SwiftLintBuildToolPlugin", type: .plugin)
             ],
