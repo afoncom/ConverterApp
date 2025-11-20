@@ -41,7 +41,7 @@ jobs:
         set -o pipefail && xcodebuild test \
           -workspace CurrencyConverter.xcworkspace \
           -scheme CurrencyConverter \
-          -destination 'platform=iOS Simulator,OS=latest' \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.4' \
           | tee xcodebuild.log
     
     - name: Upload build logs on failure
