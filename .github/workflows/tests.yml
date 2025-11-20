@@ -33,17 +33,20 @@ jobs:
     - name: Generate project with Tuist
       run: tuist generate
     
+    - name: List available simulators (for debugging)
+      run: xcrun simctl list devices available iPhone
+    
     - name: Run tests
       run: |
-        xcodebuild test \\
+        set -o pipefail && xcodebuild test \\
           -workspace CurrencyConverter.xcworkspace \\
           -scheme CurrencyConverter \\
-          -destination 'platform=iOS Simulator,name=iPhone 15' \\
-          -resultBundlePath TestResults
+          -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \\
+          | tee xcodebuild.log
     
-    - name: Upload test results
-      if: always()
+    - name: Upload build logs on failure
+      if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: test-results
-        path: TestResults
+        name: build-logs
+        path: xcodebuild.log
