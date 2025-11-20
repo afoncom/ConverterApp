@@ -93,6 +93,7 @@ CurrencyConverter/
 - **UI Framework**: SwiftUI (100% native)
 - **Architecture**: MVVM
 - **Minimum iOS**: 18.5+
+- **Project Management**: Tuist (Project-as-code)
 - **Dependency Management**: Swift Package Manager
 - **Code Quality**: SwiftLint (v0.62.1+)
 - **Networking**: URLSession with async/await
@@ -138,6 +139,7 @@ Intelligent caching mechanism:
 - Xcode 16.4+
 - iOS 18.5+ device or simulator
 - Swift 5.0+
+- **Tuist** - Install via Homebrew: `brew install tuist`
 
 ### Installation
 
@@ -147,14 +149,27 @@ Intelligent caching mechanism:
    cd CurrencyConverter
    ```
 
-2. **Open in Xcode**
+2. **Generate Xcode project**
    ```bash
-   open CurrencyConverter.xcodeproj
+   tuist generate
+   ```
+   
+   This will:
+   - Generate `CurrencyConverter.xcworkspace`
+   - Resolve Swift Package Manager dependencies
+   - Set up the project structure
+
+3. **Open in Xcode**
+   ```bash
+   open CurrencyConverter.xcworkspace
    ```
 
-3. **Build and Run**
+4. **Build and Run**
    - Select your target device/simulator
    - Press `Cmd + R` to build and run
+
+> **Note**: The `.xcworkspace` file is not tracked in VCS. 
+> Always run `tuist generate` after pulling changes to regenerate the project.
 
 ### Configuration
 
@@ -209,13 +224,54 @@ struct AppConfig {
 
 ## 🧪 Testing
 
+The project includes unit tests for core functionality.
+
+### Code Quality
+
 ```bash
-# Run SwiftLint
+# Run SwiftLint to check code style
 swiftlint lint
 
-# Future: Unit tests
-# cmd + U to run tests
+# Auto-fix issues where possible
+swiftlint --fix
 ```
+
+### Running Tests Locally
+
+```bash
+# Generate project first
+tuist generate
+
+# Run tests in Xcode
+# Press Cmd + U
+
+# Or via command line
+xcodebuild test \
+  -workspace CurrencyConverter.xcworkspace \
+  -scheme CurrencyConverter \
+  -destination 'platform=iOS Simulator,name=iPhone 15'
+```
+
+### GitHub Actions CI/CD
+
+The project uses GitHub Actions for continuous integration:
+
+**Manual Testing**
+- Go to Actions tab in GitHub
+- Select "Unit Tests" workflow
+- Click "Run workflow" button
+
+**Automatic Testing**
+- Tests run automatically on every Pull Request
+- Tests run on push to `main` and `develop` branches
+- All PRs must pass tests before merging
+
+### Test Coverage
+
+- `CurrencyNamesTests` - Tests for currency localization provider
+  - Mock implementation testing
+  - Localized name retrieval
+  - Edge cases handling
 
 ## 📱 Screenshots
 

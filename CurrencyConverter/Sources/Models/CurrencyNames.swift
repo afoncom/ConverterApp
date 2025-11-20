@@ -12,18 +12,40 @@ import Foundation
 struct CurrencyNames {
     
     /// Получить локализованное название валюты по коду языка (для совместимости)
-    static func getLocalizedName(for currencyCode: String, languageCode: String) -> String? {
+    static func getLocalizedName(for currencyCode: String, languageCode: String, in bundle: Bundle = .main) -> String? {
         let key = "currency_\(currencyCode)"
         
         // Получаем bundle для нужного языка
-        guard let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
-              let bundle = Bundle(path: path) else {
+        guard let path = bundle.path(forResource: languageCode, ofType: "lproj"),
+              let languageBundle = Bundle(path: path) else {
             return nil
         }
         
-        let localizedName = NSLocalizedString(key, bundle: bundle, comment: "")
+        let localizedName = NSLocalizedString(key, bundle: languageBundle, comment: "")
         
         // Проверяем, что локализация найдена (не равен ключу)
+        return localizedName != key ? localizedName : nil
+    }
+}
+
+
+protocol CurrencyNameProvider {
+    func localizedName(for currencyCode: String, languageCode: String) -> String?
+}
+
+final class BundleCurrencyNameProvider: CurrencyNameProvider {
+    private let bundle: Bundle
+    
+    init(bundle: Bundle) {
+        self.bundle = bundle
+    }
+    
+    func localizedName(for currencyCode: String, languageCode: String) -> String? {
+        let key = "currency_\(currencyCode)"
+        guard let path = bundle.path(forResource: languageCode, ofType: "lproj"),
+              let languageBundle = Bundle(path: path) else { return nil }
+        
+        let localizedName = NSLocalizedString(key, bundle: languageBundle, comment: "")
         return localizedName != key ? localizedName : nil
     }
 }

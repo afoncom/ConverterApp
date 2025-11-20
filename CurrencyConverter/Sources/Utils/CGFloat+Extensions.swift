@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // MARK: - UI Size Extensions
 
@@ -15,4 +16,16 @@ extension CGFloat {
     
     /// Размеры компонентов
     static let currencyButtonHeight: CGFloat = 80
+}
+
+// MARK: - Asset Catalog Colors
+
+extension ShapeStyle where Self == Color {
+    static var success: Color {
+        Color("success")
+    }
+    
+    static var info: Color {
+        Color("info")
+    }
 }
