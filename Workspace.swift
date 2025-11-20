@@ -5,9 +5,6 @@ let workspace = Workspace(
     projects: ["."],
     schemes: [],
     additionalFiles: [
-        ".gitignore",
-        ".swiftlint.yml",
-        "swiftgen.yml",
         "README.md"
     ]
 )

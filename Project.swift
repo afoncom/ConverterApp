@@ -30,8 +30,7 @@ let project = Project(
             deploymentTargets: .iOS("18.5"),
             infoPlist: .file(path: "CurrencyConverter/Resources/Info.plist"),
             sources: [
-                "CurrencyConverter/Sources/**",
-                "CurrencyConverter/Generated/**"
+                "CurrencyConverter/Sources/**"
             ],
             resources: [
                 .glob(pattern: "CurrencyConverter/Resources/**", excluding: ["CurrencyConverter/Resources/Info.plist"])

@@ -155,7 +155,7 @@ Intelligent caching mechanism:
    ```
    
    This will:
-   - Generate `CurrencyConverter.xcodeproj` and `CurrencyConverter.xcworkspace`
+   - Generate `CurrencyConverter.xcworkspace`
    - Resolve Swift Package Manager dependencies
    - Set up the project structure
 
@@ -168,7 +168,7 @@ Intelligent caching mechanism:
    - Select your target device/simulator
    - Press `Cmd + R` to build and run
 
-> **Note**: The `.xcodeproj` and `.xcworkspace` files are not tracked in VCS. 
+> **Note**: The `.xcworkspace` file is not tracked in VCS. 
 > Always run `tuist generate` after pulling changes to regenerate the project.
 
 ### Configuration
