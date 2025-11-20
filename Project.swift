@@ -12,7 +12,7 @@ let project = Project(
     settings: .settings(
         base: [
             "DEVELOPMENT_TEAM": "9282D5CGQH",
-            "IPHONEOS_DEPLOYMENT_TARGET": "18.5",
+            "IPHONEOS_DEPLOYMENT_TARGET": "17.0",
             "SWIFT_VERSION": "5.0",
             "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
         ],
@@ -27,7 +27,7 @@ let project = Project(
             destinations: [.iPhone],
             product: .app,
             bundleId: "afon-com.CurrencyConverter",
-            deploymentTargets: .iOS("18.5"),
+            deploymentTargets: .iOS("17.0"),
             infoPlist: .file(path: "CurrencyConverter/Resources/Info.plist"),
             sources: [
                 "CurrencyConverter/Sources/**"
@@ -70,7 +70,7 @@ let project = Project(
             destinations: [.iPhone],
             product: .unitTests,
             bundleId: "afon-com.CurrencyConverterTests",
-            deploymentTargets: .iOS("18.5"),
+            deploymentTargets: .iOS("17.0"),
             sources: [
                 "CСTests\"CurrencyNames\"/**"
             ],
