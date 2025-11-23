@@ -1,7 +1,16 @@
 strings:
-  inputs:
-    - CurrencyConverter/Resources/en.lproj/Localizable.strings
-    - CurrencyConverter/Resources/ru.lproj/Localizable.strings
-  outputs:
-    - templatePath: Templates/CustomStrings.stencil
-      output: CurrencyConverter/Sources/Generated/Localizable.swift
+  # Английский
+  en:
+    inputs:
+      - CurrencyConverter/Resources/en.lproj/Localizable.strings
+    outputs:
+      - templatePath: Templates/CustomStrings.stencil
+        output: CurrencyConverter/Sources/Generated/Localizable_en.swift
+
+  # Русский
+  ru:
+    inputs:
+      - CurrencyConverter/Resources/ru.lproj/Localizable.strings
+    outputs:
+      - templatePath: Templates/CustomStrings.stencil
+        output: CurrencyConverter/Sources/Generated/Localizable_ru.swift
