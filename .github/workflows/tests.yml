@@ -21,32 +21,34 @@ jobs:
       with:
         xcode-version: latest-stable
 
-    - name: Install Tuist
-      run: brew install tuist
+    - name: Install Homebrew dependencies
+      run: |
+        brew install tuist
+        brew install swiftgen
 
-    - name: Generate project with Tuist
+    - name: Generate Xcode project with Tuist
       run: tuist generate
 
-    - name: Install SwiftGen
-      run: brew install swiftgen
+    - name: Create Generated folder (SwiftGen output)
+      run: mkdir -p CurrencyConverter/Sources/Generated
 
     - name: Run SwiftGen
       run: swiftgen config run --config swiftgen.yml
 
-    - name: Show all simulators
+    - name: Show available simulators
       run: xcrun simctl list devices
 
-    - name: Run tests
+    - name: Run Unit Tests on stable iPhone 14 simulator
       run: |
         set -o pipefail && xcodebuild test \
           -workspace CurrencyConverter.xcworkspace \
           -scheme CurrencyConverter \
-          -destination "platform=iOS Simulator,name=iPhone 16" \
+          -destination "platform=iOS Simulator,name=iPhone 14" \
           | tee xcodebuild.log
 
-    - name: Upload build logs on failure
+    - name: Upload build logs if failed
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: build-logs
+        name: xcodebuild-log
         path: xcodebuild.log
