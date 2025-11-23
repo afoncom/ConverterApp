@@ -1,41 +1,41 @@
 name: Unit Tests
 
 on:
-  # Запуск по кнопке вручную
-  workflow_dispatch:
-  
-  # Запуск на каждый pull request
+  workflow_dispatch:   # Запуск по кнопке вручную
   pull_request:
-    branches: [ main, develop ]
-  
-  # Запуск на push в main/develop (опционально)
+    branches: [ main, develop ]   # Запуск на PR
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop ]   # Запуск на push (опционально)
 
 jobs:
   test:
     name: Run Unit Tests
     runs-on: macos-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Select Xcode version
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: latest-stable
-    
+
     - name: Install Tuist
-      run: |
-        brew install tuist
-    
+      run: brew install tuist
+
     - name: Generate project with Tuist
       run: tuist generate
-    
+
+    - name: Install SwiftGen
+      run: brew install swiftgen
+
+    - name: Run SwiftGen
+      run: swiftgen config run --config swiftgen.yml
+
     - name: List available simulators (for debugging)
       run: xcrun simctl list devices available iPhone
-    
+
     - name: Run tests
       run: |
         set -o pipefail && xcodebuild test \
@@ -43,7 +43,14 @@ jobs:
           -scheme CurrencyConverter \
           -destination 'platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro' \
           | tee xcodebuild.log
-    
+
+    - name: Upload build logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-logs
+        path: xcodebuild.log
+
     - name: Upload build logs on failure
       if: failure()
       uses: actions/upload-artifact@v4
