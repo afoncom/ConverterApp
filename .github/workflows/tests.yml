@@ -49,11 +49,11 @@ jobs:
     # 8. Run tests на гарантированно существующем симуляторе
     - name: Run tests
       run: |
-        set -o pipefail && xcodebuild test \
-          -workspace CurrencyConverter.xcworkspace \
-          -scheme CurrencyConverter \
-          -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.6' \
-          | tee xcodebuild.log
+          set -o pipefail && xcodebuild test \
+              -workspace CurrencyConverter.xcworkspace \
+              -scheme CurrencyConverter \
+              -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' \
+              | tee xcodebuild.log
 
     # 9. Upload logs, если тесты упали
     - name: Upload build logs on failure
