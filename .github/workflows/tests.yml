@@ -13,42 +13,54 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # 1. Клонируем репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Select Xcode version
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
+      # 2. Устанавливаем Xcode
+      - name: Select Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
-    - name: Install Homebrew dependencies
-      run: |
-        brew install tuist
-        brew install swiftgen
+      # 3. Устанавливаем Tuist и SwiftGen через Homebrew
+      - name: Install Homebrew dependencies
+        run: |
+          brew install tuist
+          brew install swiftgen
 
-    - name: Generate Xcode project with Tuist
-      run: tuist generate
+      # 4. Генерируем Xcode проект через Tuist
+      - name: Generate Xcode project with Tuist
+        run: tuist generate
 
-    - name: Create Generated folder (SwiftGen output)
-      run: mkdir -p CurrencyConverter/Sources/Generated
+      # 5. Создаём папку для SwiftGen (если её нет)
+      - name: Create Generated folder for SwiftGen
+        run: mkdir -p CurrencyConverter/Sources/Generated
 
-    - name: Run SwiftGen
-      run: swiftgen config run --config swiftgen.yml
+      # 6. Запускаем SwiftGen с проверкой конфигурации
+      - name: Run SwiftGen
+        run: |
+          swiftgen config lint --config swiftgen.yml
+          swiftgen config run --config swiftgen.yml
 
-    - name: Show available simulators
-      run: xcrun simctl list devices
+      # 7. Показываем список доступных симуляторов (для дебага)
+      - name: Show available simulators
+        run: xcrun simctl list devices available
 
-    - name: Run Unit Tests on stable iPhone 14 simulator
-      run: |
-        set -o pipefail && xcodebuild test \
-          -workspace CurrencyConverter.xcworkspace \
-          -scheme CurrencyConverter \
-          -destination "platform=iOS Simulator,name=iPhone 14" \
-          | tee xcodebuild.log
+      # 8. Запускаем тесты на подходящем симуляторе
+      - name: Run Unit Tests on iPhone 16 Pro (iOS 18.6)
+        run: |
+          set -o pipefail && xcodebuild test \
+            -workspace CurrencyConverter.xcworkspace \
+            -scheme CurrencyConverter \
+            -destination "platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro" \
+            -enableCodeCoverage YES \
+            | tee xcodebuild.log
 
-    - name: Upload build logs if failed
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: xcodebuild-log
-        path: xcodebuild.log
+      # 9. Загружаем логи, если тесты упали
+      - name: Upload build logs if failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: xcodebuild.log
