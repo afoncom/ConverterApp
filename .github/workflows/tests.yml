@@ -2,53 +2,45 @@ name: Unit Tests
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [ main, develop ]
-  push:
-    branches: [ main, develop ]
 
 jobs:
-  test:
-    name: Run Unit Tests
-    runs-on: macos-latest
+  build-and-test:
+    runs-on: macos-15
 
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Select Xcode version
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
-    - name: Install Homebrew dependencies
-      run: |
-        brew install tuist
-        brew install swiftgen
+    - name: Install SwiftGen
+      run: brew install swiftgen
 
-    - name: Generate Xcode project with Tuist
-      run: tuist generate
-
-    - name: Create Generated folder (SwiftGen output)
+    - name: Create Generated folder
       run: mkdir -p CurrencyConverter/Sources/Generated
 
     - name: Run SwiftGen
       run: swiftgen config run --config swiftgen.yml
 
-    - name: Show available simulators
-      run: xcrun simctl list devices
+    - name: Install Tuist
+      run: curl -Ls https://install.tuist.io | bash
 
-    - name: Run Unit Tests on stable iPhone 14 simulator
+    - name: Tuist generate
+      run: tuist generate --no-open
+
+    - name: Build and Test
       run: |
-        set -o pipefail && xcodebuild test \
-          -workspace CurrencyConverter.xcworkspace \
+        xcodebuild \
           -scheme CurrencyConverter \
-          -destination "platform=iOS Simulator,name=iPhone 14" \
-          | tee xcodebuild.log
+          -project CurrencyConverter.xcodeproj \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1' \
+          clean test \
+          | tee xcodebuild.log \
+          | xcbeautify
 
-    - name: Upload build logs if failed
-      if: failure()
+    - name: Upload Logs
       uses: actions/upload-artifact@v4
       with:
-        name: xcodebuild-log
+        name: xcode-logs
         path: xcodebuild.log
