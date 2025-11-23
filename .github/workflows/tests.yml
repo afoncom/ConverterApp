@@ -33,11 +33,9 @@ jobs:
     - name: Run SwiftGen
       run: swiftgen config run --config swiftgen.yml
 
-    # вывод всех симуляторов GitHub Actions
     - name: Show all simulators
       run: xcrun simctl list devices
 
-    # Временный запуск тестов на iPhone 16 (есть почти всегда)
     - name: Run tests
       run: |
         set -o pipefail && xcodebuild test \
@@ -50,8 +48,5 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: build-logs
-        path: xcodebuild.log
-
         name: build-logs
         path: xcodebuild.log
