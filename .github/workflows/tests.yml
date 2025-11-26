@@ -13,49 +13,54 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # 1. Клонируем репозиторий
+      # 1. Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Xcode
+      # 2. Install Xcode
       - name: Select Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-      # 3. Устанавливаем Homebrew зависимости
-      - name: Install dependencies
+      # 3. Install dependencies
+      - name: Install Homebrew dependencies
         run: |
           brew install tuist
           brew install swiftgen
 
-      # 4. Генерация проекта через Tuist
+      # 4. Generate project via Tuist
       - name: Generate Xcode project with Tuist
         run: tuist generate
 
-      # 5. Создаём папку для SwiftGen (если её нет)
+      # 5. Create SwiftGen output directory
       - name: Create Generated folder
         run: mkdir -p CurrencyConverter/Sources/Generated
 
-      # 6. Генерация кода SwiftGen
+      # 6. Run SwiftGen
       - name: Run SwiftGen
         run: |
           swiftgen config lint --config swiftgen.yml
           swiftgen config run --config swiftgen.yml
 
-      # 7. Показываем все симуляторы
+      # 7. List all simulators
       - name: List simulators
         run: xcrun simctl list devices
 
-      # 8. Находим первый доступный iPhone
+      # 8. Pick first available iPhone simulator (extract correct UDID)
       - name: Select available simulator
         id: select_sim
         run: |
-          DEVICE=$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([^)]+)\).*/\1/')
-          echo "Device found: $DEVICE"
+          DEVICE=$(xcrun simctl list devices available | grep "iPhone" | head -n 1 | sed -E 's/.*\(([A-F0-9\-]+)\).*/\1/')
+          echo "Selected UDID: $DEVICE"
           echo "UDID=$DEVICE" >> $GITHUB_OUTPUT
 
-      # 9. Запускаем тесты на найденном устройстве
+      # 9. Boot the simulator (no error if already booted)
+      - name: Boot simulator
+        run: |
+          xcrun simctl boot ${{ steps.select_sim.outputs.UDID }} || true
+
+      # 10. Run Unit Tests
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
@@ -65,7 +70,7 @@ jobs:
             -enableCodeCoverage YES \
             | tee xcodebuild.log
 
-      # 10. Загружаем логи, если тесты упали
+      # 11. Upload logs if failed
       - name: Upload logs if failed
         if: failure()
         uses: actions/upload-artifact@v4
