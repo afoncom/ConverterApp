@@ -1,0 +1,117 @@
+name: Unit Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          # Можно поменять на "latest" или "16.3" при необходимости
+          xcode-version: "16.2"
+
+      - name: Install Homebrew dependencies
+        run: |
+          brew install tuist
+          brew install swiftgen
+
+      - name: Generate Xcode project with Tuist
+        run: tuist generate
+
+      - name: Create SwiftGen output folder (if missing)
+        run: mkdir -p CurrencyConverter/Sources/Generated
+
+      - name: Run SwiftGen (lint + run)
+        run: |
+          swiftgen config lint --config swiftgen.yml || true
+          swiftgen config run --config swiftgen.yml
+
+      - name: Debug: dump simulators & runtimes (for logs)
+        run: |
+          echo "=== simctl runtimes ==="
+          xcrun simctl list runtimes
+          echo "=== simctl devices (summary) ==="
+          xcrun simctl list devices
+
+      - name: Select available simulator (robust JSON parsing)
+        id: select_sim
+        run: |
+          set -euo pipefail
+          echo "Querying available simulators (JSON)..."
+          SIM_INFO=$(python3 - <<'PY'
+import json,subprocess,sys
+out = subprocess.check_output(['xcrun','simctl','list','devices','available','-j'])
+data = json.loads(out)
+# devices keyed by runtime
+for runtime, devices in data.get('devices', {}).items():
+    # prefer iOS runtimes only
+    if 'iOS' not in runtime:
+        continue
+    # devices is a list of dicts
+    for d in devices:
+        name = d.get('name','')
+        udid = d.get('udid','')
+        is_available = d.get('isAvailable', True)
+        state = d.get('state','').lower()
+        if not udid or not name:
+            continue
+        if not is_available:
+            continue
+        if 'iPhone' not in name:
+            continue
+        # accept any state (Shutdown / Booted)
+        # format UDID|NAME|RUNTIME_LABEL
+        runtime_label = runtime.replace('com.apple.CoreSimulator.SimRuntime.','').replace('-', '.')
+        print(f"{udid}|{name}|{runtime_label}")
+        sys.exit(0)
+# nothing found
+sys.exit(1)
+PY
+)
+          if [ -z "$SIM_INFO" ]; then
+            echo "No available iPhone simulator found. Full list below for debugging:"
+            xcrun simctl list devices
+            exit 1
+          fi
+          UDID=$(echo "$SIM_INFO" | cut -d'|' -f1)
+          NAME=$(echo "$SIM_INFO" | cut -d'|' -f2)
+          RUNTIME=$(echo "$SIM_INFO" | cut -d'|' -f3)
+          echo "Selected simulator: $NAME ($RUNTIME) [$UDID]"
+          echo "UDID=$UDID" >> $GITHUB_OUTPUT
+          echo "NAME=$NAME" >> $GITHUB_OUTPUT
+          echo "RUNTIME=$RUNTIME" >> $GITHUB_OUTPUT
+
+      - name: Boot simulator (optional)
+        run: |
+          set -euo pipefail
+          echo "Booting simulator ${UDID:-${{ steps.select_sim.outputs.UDID }}} (may already be Shutdown)"
+          xcrun simctl boot "${{ steps.select_sim.outputs.UDID }}" || true
+          sleep 2
+
+      - name: Run Unit Tests on selected simulator (by id)
+        run: |
+          set -o pipefail && xcodebuild test \
+            -workspace CurrencyConverter.xcworkspace \
+            -scheme CurrencyConverter \
+            -destination "id=${{ steps.select_sim.outputs.UDID }}" \
+            -enableCodeCoverage YES \
+            | tee xcodebuild.log
+
+      - name: Upload build logs if failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: xcodebuild.log
