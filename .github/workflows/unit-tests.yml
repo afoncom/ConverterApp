@@ -12,7 +12,6 @@ test:
 name: Run Unit Tests
 runs-on: macos-latest
 
-```
 steps:
   # 1. Checkout
   - name: Checkout code
@@ -78,4 +77,3 @@ steps:
     with:
       name: xcodebuild-log
       path: xcodebuild.log
-```
