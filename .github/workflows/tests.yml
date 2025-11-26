@@ -14,53 +14,43 @@ runs-on: macos-latest
 
 ```
 steps:
-  # 1. Checkout repository
   - name: Checkout code
     uses: actions/checkout@v4
 
-  # 2. Select latest stable Xcode
   - name: Select Xcode version
     uses: maxim-lobanov/setup-xcode@v1
     with:
       xcode-version: latest-stable
 
-  # 3. Install dependencies
   - name: Install Homebrew dependencies
     run: |
       brew install tuist
       brew install swiftgen
 
-  # 4. Generate Xcode project with Tuist
-  - name: Generate Xcode project
+  - name: Generate Xcode project with Tuist
     run: tuist generate
 
-  # 5. Create SwiftGen output folder
-  - name: Create Generated folder
+  - name: Create SwiftGen output folder
     run: mkdir -p CurrencyConverter/Sources/Generated
 
-  # 6. Run SwiftGen
   - name: Run SwiftGen
     run: |
       swiftgen config lint --config swiftgen.yml
       swiftgen config run --config swiftgen.yml
 
-  # 7. List all available simulators (debug info)
-  - name: List simulators
+  - name: List available simulators
     run: xcrun simctl list devices
 
-  # 8. Select first available iPhone simulator
-  - name: Select available simulator
+  - name: Select first available iPhone simulator
     id: select_sim
     run: |
-      UDID=$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([A-F0-9\-]+)\).*/\1/')
+      UDID=$(xcrun simctl list devices available | grep "iPhone" | head -n1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
       echo "Selected UDID: $UDID"
       echo "UDID=$UDID" >> $GITHUB_OUTPUT
 
-  # 9. Boot the simulator (ignore error if already booted)
-  - name: Boot simulator
+  - name: Boot simulator (no error if already booted)
     run: xcrun simctl boot ${{ steps.select_sim.outputs.UDID }} || true
 
-  # 10. Run unit tests on selected simulator
   - name: Run Unit Tests
     run: |
       set -o pipefail && xcodebuild test \
@@ -70,10 +60,10 @@ steps:
         -enableCodeCoverage YES \
         | tee xcodebuild.log
 
-  # 11. Upload logs if tests failed
   - name: Upload logs if failed
     if: failure()
     uses: actions/upload-artifact@v4
     with:
       name: xcodebuild-log
       path: xcodebuild.log
+```
