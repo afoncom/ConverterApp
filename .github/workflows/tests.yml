@@ -10,16 +10,18 @@ on:
 jobs:
   test:
     name: Run Unit Tests
-    runs-on: macos-15
+    runs-on: macos-latest
 
     steps:
       # 1. Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Install Xcode 15.4 (стабильный и поддерживаемый GitHub)
+      # 2. Setup Xcode 16.2 (стабильный)
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.2"
 
       # 3. Install dependencies
       - name: Install Homebrew dependencies
@@ -41,17 +43,17 @@ jobs:
           swiftgen config lint --config swiftgen.yml
           swiftgen config run --config swiftgen.yml
 
-      # 7. List all simulators (для дебага)
+      # 7. List simulators (debug info)
       - name: List simulators
         run: xcrun simctl list devices
 
-      # 8. Run Unit Tests on fixed stable simulator
+      # 8. Run Unit Tests (используем гарантированный симулятор)
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
             -workspace CurrencyConverter.xcworkspace \
             -scheme CurrencyConverter \
-            -destination "platform=iOS Simulator,name=iPhone 14,OS=17.4" \
+            -destination "platform=iOS Simulator,OS=18.0,name=iPhone 15" \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
 
