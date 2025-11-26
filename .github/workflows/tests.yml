@@ -23,42 +23,50 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      # 3. Устанавливаем Tuist и SwiftGen через Homebrew
-      - name: Install Homebrew dependencies
+      # 3. Устанавливаем Homebrew зависимости
+      - name: Install dependencies
         run: |
           brew install tuist
           brew install swiftgen
 
-      # 4. Генерируем Xcode проект через Tuist
+      # 4. Генерация проекта через Tuist
       - name: Generate Xcode project with Tuist
         run: tuist generate
 
       # 5. Создаём папку для SwiftGen (если её нет)
-      - name: Create Generated folder for SwiftGen
+      - name: Create Generated folder
         run: mkdir -p CurrencyConverter/Sources/Generated
 
-      # 6. Запускаем SwiftGen с проверкой конфигурации
+      # 6. Генерация кода SwiftGen
       - name: Run SwiftGen
         run: |
           swiftgen config lint --config swiftgen.yml
           swiftgen config run --config swiftgen.yml
 
-      # 7. Показываем список доступных симуляторов (для дебага)
-      - name: Show available simulators
-        run: xcrun simctl list devices available
+      # 7. Показываем все симуляторы
+      - name: List simulators
+        run: xcrun simctl list devices
 
-      # 8. Запускаем тесты на подходящем симуляторе
-      - name: Run Unit Tests on iPhone 16 Pro (iOS 18.6)
+      # 8. Находим первый доступный iPhone
+      - name: Select available simulator
+        id: select_sim
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([^)]+)\).*/\1/')
+          echo "Device found: $DEVICE"
+          echo "UDID=$DEVICE" >> $GITHUB_OUTPUT
+
+      # 9. Запускаем тесты на найденном устройстве
+      - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
             -workspace CurrencyConverter.xcworkspace \
             -scheme CurrencyConverter \
-            -destination "platform=iOS Simulator,name=iPhone 14"
+            -destination "id=${{ steps.select_sim.outputs.UDID }}" \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
 
-      # 9. Загружаем логи, если тесты упали
-      - name: Upload build logs if failed
+      # 10. Загружаем логи, если тесты упали
+      - name: Upload logs if failed
         if: failure()
         uses: actions/upload-artifact@v4
         with:
