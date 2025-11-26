@@ -77,4 +77,3 @@ steps:
     with:
       name: xcodebuild-log
       path: xcodebuild.log
-```
