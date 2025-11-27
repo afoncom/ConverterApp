@@ -24,6 +24,7 @@ jobs:
       - name: Install SwiftGen and Tuist via Homebrew
         run: |
           brew install swiftgen
+          brew tap tuist/tuist
           brew install --formula [email protected]
 
       - name: Generate Xcode project with Tuist
