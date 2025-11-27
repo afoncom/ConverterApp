@@ -21,14 +21,15 @@ jobs:
         with:
           xcode-version: '16.2'
 
-      - name: Install Homebrew dependencies
+      - name: Install SwiftGen via Homebrew
         run: |
           brew install swiftgen
 
+      # Официальный action Tuist: ставит нужную версию и добавляет tuist в PATH
       - name: Install Tuist
-        run: |
-          curl -Ls https://get.tuist.io | bash
-          echo "$HOME/.tuist/bin" >> $GITHUB_PATH
+        uses: tuist/action@v1
+        with:
+          version: 4.63.0  # можно поменять на твой pinned version, если нужно
 
       - name: Generate Xcode project with Tuist
         run: tuist generate
