@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Tuist
         run: |
-          curl -Ls https://install.tuist.io | bash
+          curl -Ls https://get.tuist.io | bash
           echo "$HOME/.tuist/bin" >> $GITHUB_PATH
 
       - name: Generate Xcode project with Tuist
