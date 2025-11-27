@@ -10,7 +10,7 @@ on:
 jobs:
   test:
     name: Run Unit Tests
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Checkout code
