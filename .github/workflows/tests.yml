@@ -37,25 +37,12 @@ jobs:
           swiftgen config lint --config swiftgen.yml
           swiftgen config run --config swiftgen.yml
     
-      - name: List available simulators
-        run: xcrun simctl list devices
-    
-      - name: Select first available iPhone simulator
-        id: select_sim
-        run: |
-          UDID=$(xcrun simctl list devices available | grep "iPhone" | head -n1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
-          echo "Selected UDID: $UDID"
-          echo "UDID=$UDID" >> $GITHUB_OUTPUT
-    
-      - name: Boot simulator (no error if already booted)
-        run: xcrun simctl boot ${{ steps.select_sim.outputs.UDID }} || true
-    
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
             -workspace CurrencyConverter.xcworkspace \
             -scheme CurrencyConverter \
-            -destination "id=${{ steps.select_sim.outputs.UDID }}" \
+            -destination "platform=iOS Simulator,name=iPhone 15,OS=latest" \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
     
