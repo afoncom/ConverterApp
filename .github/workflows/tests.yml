@@ -19,7 +19,7 @@ jobs:
       - name: Select Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4'
+          xcode-version: '15.2.0'
 
       - name: Install SwiftGen and Tuist via Homebrew
         run: |
