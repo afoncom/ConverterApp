@@ -3,4 +3,5 @@ strings:
     - CurrencyConverter/Resources/en.lproj/Localizable.strings
   outputs:
     - templatePath: Templates/CustomStrings.stencil
-      output: CurrencyConverter/Generated/Localizable.swift
+      output: CurrencyConverter/Sources/Generated/Localizable.swift
+

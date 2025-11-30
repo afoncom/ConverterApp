@@ -94,9 +94,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     /// Удаляет валюту из выбранных
     func removeCurrency(_ currencyCode: String) {
         currencyManager.removeCurrency(currencyCode)
-        Task {
-            await reload()
-        }
+        items.removeAll { $0.toCurrency.code == currencyCode }
     }
     
     /// Обновляет базовую валюту и перезагружает данные
