@@ -32,12 +32,22 @@ jobs:
         run: |
           defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
 
+      - name: List available simulators
+        run: |
+          xcrun simctl list devices available
+
+      - name: Create and boot simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl create "Test Device" com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation com.apple.CoreSimulator.SimRuntime.iOS-18-1 2>&1 | tail -1)
+          echo "SIMULATOR_ID=$DEVICE_ID" >> $GITHUB_ENV
+          xcrun simctl boot "$DEVICE_ID" || true
+
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
             -workspace CurrencyConverter.xcworkspace \
             -scheme CurrencyConverter \
-            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.2' \
+            -destination 'generic/platform=iOS Simulator' \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
 
