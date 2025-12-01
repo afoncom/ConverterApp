@@ -1,310 +1,342 @@
-// swiftlint:disable:this file_name
 // swiftlint:disable all
-// swift-format-ignore-file
-// swiftformat:disable all
-// Generated using tuist — https://github.com/tuist/tuist
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
 import Foundation
 
-// swiftlint:disable superfluous_disable_command file_length implicit_return
+// swiftlint:disable superfluous_disable_command file_length implicit_return prefer_self_in_static_references
 
 // MARK: - Strings
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:disable nesting type_body_length type_name
-public enum CurrencyConverterStrings: Sendable {
+// swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
+public enum L10n {
   /// Added currency: %@
   public static func addedCurrency(_ p1: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "added_currency",String(describing: p1))
+    return L10n.tr("Localizable", "added_currency", String(describing: p1), fallback: "Added currency: %@")
   }
   /// All Currencies
-  public static let allCurrencies = CurrencyConverterStrings.tr("Localizable", "all_currencies")
+  public static var allCurrencies: String { return L10n.tr("Localizable", "all_currencies", fallback: "All Currencies") }
   /// All Currencies %@
   public static func allCurrenciesWithCount(_ p1: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "all_currencies_with_count",String(describing: p1))
+    return L10n.tr("Localizable", "all_currencies_with_count", String(describing: p1), fallback: "All Currencies %@")
   }
   /// Amount to convert
-  public static let amountInputLabel = CurrencyConverterStrings.tr("Localizable", "amount_input_label")
+  public static var amountInputLabel: String { return L10n.tr("Localizable", "amount_input_label", fallback: "Amount to convert") }
   /// Enter amount in %@
   public static func amountPlaceholder(_ p1: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "amount_placeholder",String(describing: p1))
+    return L10n.tr("Localizable", "amount_placeholder", String(describing: p1), fallback: "Enter amount in %@")
   }
   /// Data decoding error
-  public static let apiErrorDecoding = CurrencyConverterStrings.tr("Localizable", "api_error_decoding")
+  public static var apiErrorDecoding: String { return L10n.tr("Localizable", "api_error_decoding", fallback: "Data decoding error") }
   /// Invalid API URL
-  public static let apiErrorInvalidUrl = CurrencyConverterStrings.tr("Localizable", "api_error_invalid_url")
+  public static var apiErrorInvalidUrl: String { return L10n.tr("Localizable", "api_error_invalid_url", fallback: "Invalid API URL") }
   /// No data from server
-  public static let apiErrorNoData = CurrencyConverterStrings.tr("Localizable", "api_error_no_data")
+  public static var apiErrorNoData: String { return L10n.tr("Localizable", "api_error_no_data", fallback: "No data from server") }
   /// No internet connection. Internet connection is required for the first launch.
-  public static let apiErrorNoDataAndNoConnection = CurrencyConverterStrings.tr("Localizable", "api_error_no_data_and_no_connection")
+  public static var apiErrorNoDataAndNoConnection: String { return L10n.tr("Localizable", "api_error_no_data_and_no_connection", fallback: "No internet connection. Internet connection is required for the first launch.") }
   /// Conversion Result
-  public static let conversionResult = CurrencyConverterStrings.tr("Localizable", "conversion_result")
+  public static var conversionResult: String { return L10n.tr("Localizable", "conversion_result", fallback: "Conversion Result") }
   /// Convert
-  public static let convertButton = CurrencyConverterStrings.tr("Localizable", "convert_button")
+  public static var convertButton: String { return L10n.tr("Localizable", "convert_button", fallback: "Convert") }
   /// Currency added!
-  public static let currencyAdded = CurrencyConverterStrings.tr("Localizable", "currency_added")
-  /// %@ - %@\nadded to currency list
+  public static var currencyAdded: String { return L10n.tr("Localizable", "currency_added", fallback: "Currency added!") }
+  /// %@ - %@
+  /// added to currency list
   public static func currencyAddedMessage(_ p1: Any, _ p2: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "currency_added_message",String(describing: p1), String(describing: p2))
+    return L10n.tr("Localizable", "currency_added_message", String(describing: p1), String(describing: p2), fallback: "%@ - %@\nadded to currency list")
   }
   /// UAE Dirham
-  public static let currencyAED = CurrencyConverterStrings.tr("Localizable", "currency_AED")
+  public static var currencyAED: String { return L10n.tr("Localizable", "currency_AED", fallback: "UAE Dirham") }
   /// Afghan Afghani
-  public static let currencyAFN = CurrencyConverterStrings.tr("Localizable", "currency_AFN")
+  public static var currencyAFN: String { return L10n.tr("Localizable", "currency_AFN", fallback: "Afghan Afghani") }
   /// Albanian Lek
-  public static let currencyALL = CurrencyConverterStrings.tr("Localizable", "currency_ALL")
+  public static var currencyALL: String { return L10n.tr("Localizable", "currency_ALL", fallback: "Albanian Lek") }
   /// Armenian Dram
-  public static let currencyAMD = CurrencyConverterStrings.tr("Localizable", "currency_AMD")
+  public static var currencyAMD: String { return L10n.tr("Localizable", "currency_AMD", fallback: "Armenian Dram") }
   /// Argentine Peso
-  public static let currencyARS = CurrencyConverterStrings.tr("Localizable", "currency_ARS")
+  public static var currencyARS: String { return L10n.tr("Localizable", "currency_ARS", fallback: "Argentine Peso") }
   /// Australian Dollar
-  public static let currencyAUD = CurrencyConverterStrings.tr("Localizable", "currency_AUD")
+  public static var currencyAUD: String { return L10n.tr("Localizable", "currency_AUD", fallback: "Australian Dollar") }
   /// Azerbaijani Manat
-  public static let currencyAZN = CurrencyConverterStrings.tr("Localizable", "currency_AZN")
+  public static var currencyAZN: String { return L10n.tr("Localizable", "currency_AZN", fallback: "Azerbaijani Manat") }
   /// Bosnia and Herzegovina Convertible Mark
-  public static let currencyBAM = CurrencyConverterStrings.tr("Localizable", "currency_BAM")
+  public static var currencyBAM: String { return L10n.tr("Localizable", "currency_BAM", fallback: "Bosnia and Herzegovina Convertible Mark") }
   /// Bulgarian Lev
-  public static let currencyBGN = CurrencyConverterStrings.tr("Localizable", "currency_BGN")
+  public static var currencyBGN: String { return L10n.tr("Localizable", "currency_BGN", fallback: "Bulgarian Lev") }
   /// Bahraini Dinar
-  public static let currencyBHD = CurrencyConverterStrings.tr("Localizable", "currency_BHD")
+  public static var currencyBHD: String { return L10n.tr("Localizable", "currency_BHD", fallback: "Bahraini Dinar") }
   /// Bolivian Boliviano
-  public static let currencyBOB = CurrencyConverterStrings.tr("Localizable", "currency_BOB")
+  public static var currencyBOB: String { return L10n.tr("Localizable", "currency_BOB", fallback: "Bolivian Boliviano") }
   /// Brazilian Real
-  public static let currencyBRL = CurrencyConverterStrings.tr("Localizable", "currency_BRL")
+  public static var currencyBRL: String { return L10n.tr("Localizable", "currency_BRL", fallback: "Brazilian Real") }
   /// Belarusian Ruble
-  public static let currencyBYN = CurrencyConverterStrings.tr("Localizable", "currency_BYN")
+  public static var currencyBYN: String { return L10n.tr("Localizable", "currency_BYN", fallback: "Belarusian Ruble") }
   /// Canadian Dollar
-  public static let currencyCAD = CurrencyConverterStrings.tr("Localizable", "currency_CAD")
+  public static var currencyCAD: String { return L10n.tr("Localizable", "currency_CAD", fallback: "Canadian Dollar") }
   /// Swiss Franc
-  public static let currencyCHF = CurrencyConverterStrings.tr("Localizable", "currency_CHF")
+  public static var currencyCHF: String { return L10n.tr("Localizable", "currency_CHF", fallback: "Swiss Franc") }
   /// Chilean Peso
-  public static let currencyCLP = CurrencyConverterStrings.tr("Localizable", "currency_CLP")
+  public static var currencyCLP: String { return L10n.tr("Localizable", "currency_CLP", fallback: "Chilean Peso") }
   /// Chinese Yuan
-  public static let currencyCNY = CurrencyConverterStrings.tr("Localizable", "currency_CNY")
+  public static var currencyCNY: String { return L10n.tr("Localizable", "currency_CNY", fallback: "Chinese Yuan") }
   /// Currency Converter
-  public static let currencyConverterTitle = CurrencyConverterStrings.tr("Localizable", "currency_converter_title")
+  public static var currencyConverterTitle: String { return L10n.tr("Localizable", "currency_converter_title", fallback: "Currency Converter") }
   /// Colombian Peso
-  public static let currencyCOP = CurrencyConverterStrings.tr("Localizable", "currency_COP")
+  public static var currencyCOP: String { return L10n.tr("Localizable", "currency_COP", fallback: "Colombian Peso") }
   /// Czech Koruna
-  public static let currencyCZK = CurrencyConverterStrings.tr("Localizable", "currency_CZK")
+  public static var currencyCZK: String { return L10n.tr("Localizable", "currency_CZK", fallback: "Czech Koruna") }
   /// Danish Krone
-  public static let currencyDKK = CurrencyConverterStrings.tr("Localizable", "currency_DKK")
+  public static var currencyDKK: String { return L10n.tr("Localizable", "currency_DKK", fallback: "Danish Krone") }
   /// Egyptian Pound
-  public static let currencyEGP = CurrencyConverterStrings.tr("Localizable", "currency_EGP")
+  public static var currencyEGP: String { return L10n.tr("Localizable", "currency_EGP", fallback: "Egyptian Pound") }
   /// Ethiopian Birr
-  public static let currencyETB = CurrencyConverterStrings.tr("Localizable", "currency_ETB")
+  public static var currencyETB: String { return L10n.tr("Localizable", "currency_ETB", fallback: "Ethiopian Birr") }
   /// Euro
-  public static let currencyEUR = CurrencyConverterStrings.tr("Localizable", "currency_EUR")
+  public static var currencyEUR: String { return L10n.tr("Localizable", "currency_EUR", fallback: "Euro") }
   /// Fijian Dollar
-  public static let currencyFJD = CurrencyConverterStrings.tr("Localizable", "currency_FJD")
+  public static var currencyFJD: String { return L10n.tr("Localizable", "currency_FJD", fallback: "Fijian Dollar") }
   /// British Pound Sterling
-  public static let currencyGBP = CurrencyConverterStrings.tr("Localizable", "currency_GBP")
+  public static var currencyGBP: String { return L10n.tr("Localizable", "currency_GBP", fallback: "British Pound Sterling") }
   /// Georgian Lari
-  public static let currencyGEL = CurrencyConverterStrings.tr("Localizable", "currency_GEL")
+  public static var currencyGEL: String { return L10n.tr("Localizable", "currency_GEL", fallback: "Georgian Lari") }
   /// Ghanaian Cedi
-  public static let currencyGHS = CurrencyConverterStrings.tr("Localizable", "currency_GHS")
+  public static var currencyGHS: String { return L10n.tr("Localizable", "currency_GHS", fallback: "Ghanaian Cedi") }
   /// Hong Kong Dollar
-  public static let currencyHKD = CurrencyConverterStrings.tr("Localizable", "currency_HKD")
+  public static var currencyHKD: String { return L10n.tr("Localizable", "currency_HKD", fallback: "Hong Kong Dollar") }
   /// Croatian Kuna
-  public static let currencyHRK = CurrencyConverterStrings.tr("Localizable", "currency_HRK")
+  public static var currencyHRK: String { return L10n.tr("Localizable", "currency_HRK", fallback: "Croatian Kuna") }
   /// Hungarian Forint
-  public static let currencyHUF = CurrencyConverterStrings.tr("Localizable", "currency_HUF")
+  public static var currencyHUF: String { return L10n.tr("Localizable", "currency_HUF", fallback: "Hungarian Forint") }
   /// Indonesian Rupiah
-  public static let currencyIDR = CurrencyConverterStrings.tr("Localizable", "currency_IDR")
+  public static var currencyIDR: String { return L10n.tr("Localizable", "currency_IDR", fallback: "Indonesian Rupiah") }
   /// Israeli New Shekel
-  public static let currencyILS = CurrencyConverterStrings.tr("Localizable", "currency_ILS")
+  public static var currencyILS: String { return L10n.tr("Localizable", "currency_ILS", fallback: "Israeli New Shekel") }
   /// Indian Rupee
-  public static let currencyINR = CurrencyConverterStrings.tr("Localizable", "currency_INR")
+  public static var currencyINR: String { return L10n.tr("Localizable", "currency_INR", fallback: "Indian Rupee") }
   /// Icelandic Krona
-  public static let currencyISK = CurrencyConverterStrings.tr("Localizable", "currency_ISK")
+  public static var currencyISK: String { return L10n.tr("Localizable", "currency_ISK", fallback: "Icelandic Krona") }
   /// Jordanian Dinar
-  public static let currencyJOD = CurrencyConverterStrings.tr("Localizable", "currency_JOD")
+  public static var currencyJOD: String { return L10n.tr("Localizable", "currency_JOD", fallback: "Jordanian Dinar") }
   /// Japanese Yen
-  public static let currencyJPY = CurrencyConverterStrings.tr("Localizable", "currency_JPY")
+  public static var currencyJPY: String { return L10n.tr("Localizable", "currency_JPY", fallback: "Japanese Yen") }
   /// Kenyan Shilling
-  public static let currencyKES = CurrencyConverterStrings.tr("Localizable", "currency_KES")
+  public static var currencyKES: String { return L10n.tr("Localizable", "currency_KES", fallback: "Kenyan Shilling") }
   /// Kyrgystani Som
-  public static let currencyKGS = CurrencyConverterStrings.tr("Localizable", "currency_KGS")
+  public static var currencyKGS: String { return L10n.tr("Localizable", "currency_KGS", fallback: "Kyrgystani Som") }
   /// South Korean Won
-  public static let currencyKRW = CurrencyConverterStrings.tr("Localizable", "currency_KRW")
+  public static var currencyKRW: String { return L10n.tr("Localizable", "currency_KRW", fallback: "South Korean Won") }
   /// Kuwaiti Dinar
-  public static let currencyKWD = CurrencyConverterStrings.tr("Localizable", "currency_KWD")
+  public static var currencyKWD: String { return L10n.tr("Localizable", "currency_KWD", fallback: "Kuwaiti Dinar") }
   /// Kazakhstani Tenge
-  public static let currencyKZT = CurrencyConverterStrings.tr("Localizable", "currency_KZT")
+  public static var currencyKZT: String { return L10n.tr("Localizable", "currency_KZT", fallback: "Kazakhstani Tenge") }
   /// Lebanese Pound
-  public static let currencyLBP = CurrencyConverterStrings.tr("Localizable", "currency_LBP")
+  public static var currencyLBP: String { return L10n.tr("Localizable", "currency_LBP", fallback: "Lebanese Pound") }
   /// Moroccan Dirham
-  public static let currencyMAD = CurrencyConverterStrings.tr("Localizable", "currency_MAD")
+  public static var currencyMAD: String { return L10n.tr("Localizable", "currency_MAD", fallback: "Moroccan Dirham") }
   /// Moldovan Leu
-  public static let currencyMDL = CurrencyConverterStrings.tr("Localizable", "currency_MDL")
+  public static var currencyMDL: String { return L10n.tr("Localizable", "currency_MDL", fallback: "Moldovan Leu") }
   /// Macedonian Denar
-  public static let currencyMKD = CurrencyConverterStrings.tr("Localizable", "currency_MKD")
+  public static var currencyMKD: String { return L10n.tr("Localizable", "currency_MKD", fallback: "Macedonian Denar") }
   /// Mexican Peso
-  public static let currencyMXN = CurrencyConverterStrings.tr("Localizable", "currency_MXN")
+  public static var currencyMXN: String { return L10n.tr("Localizable", "currency_MXN", fallback: "Mexican Peso") }
   /// Malaysian Ringgit
-  public static let currencyMYR = CurrencyConverterStrings.tr("Localizable", "currency_MYR")
+  public static var currencyMYR: String { return L10n.tr("Localizable", "currency_MYR", fallback: "Malaysian Ringgit") }
   /// Nigerian Naira
-  public static let currencyNGN = CurrencyConverterStrings.tr("Localizable", "currency_NGN")
+  public static var currencyNGN: String { return L10n.tr("Localizable", "currency_NGN", fallback: "Nigerian Naira") }
   /// Norwegian Krone
-  public static let currencyNOK = CurrencyConverterStrings.tr("Localizable", "currency_NOK")
+  public static var currencyNOK: String { return L10n.tr("Localizable", "currency_NOK", fallback: "Norwegian Krone") }
   /// New Zealand Dollar
-  public static let currencyNZD = CurrencyConverterStrings.tr("Localizable", "currency_NZD")
+  public static var currencyNZD: String { return L10n.tr("Localizable", "currency_NZD", fallback: "New Zealand Dollar") }
   /// Omani Rial
-  public static let currencyOMR = CurrencyConverterStrings.tr("Localizable", "currency_OMR")
+  public static var currencyOMR: String { return L10n.tr("Localizable", "currency_OMR", fallback: "Omani Rial") }
   /// Peruvian Sol
-  public static let currencyPEN = CurrencyConverterStrings.tr("Localizable", "currency_PEN")
+  public static var currencyPEN: String { return L10n.tr("Localizable", "currency_PEN", fallback: "Peruvian Sol") }
   /// Papua New Guinean Kina
-  public static let currencyPGK = CurrencyConverterStrings.tr("Localizable", "currency_PGK")
+  public static var currencyPGK: String { return L10n.tr("Localizable", "currency_PGK", fallback: "Papua New Guinean Kina") }
   /// Philippine Peso
-  public static let currencyPHP = CurrencyConverterStrings.tr("Localizable", "currency_PHP")
+  public static var currencyPHP: String { return L10n.tr("Localizable", "currency_PHP", fallback: "Philippine Peso") }
   /// Polish Zloty
-  public static let currencyPLN = CurrencyConverterStrings.tr("Localizable", "currency_PLN")
+  public static var currencyPLN: String { return L10n.tr("Localizable", "currency_PLN", fallback: "Polish Zloty") }
   /// Paraguayan Guarani
-  public static let currencyPYG = CurrencyConverterStrings.tr("Localizable", "currency_PYG")
+  public static var currencyPYG: String { return L10n.tr("Localizable", "currency_PYG", fallback: "Paraguayan Guarani") }
   /// Qatari Rial
-  public static let currencyQAR = CurrencyConverterStrings.tr("Localizable", "currency_QAR")
+  public static var currencyQAR: String { return L10n.tr("Localizable", "currency_QAR", fallback: "Qatari Rial") }
   /// Romanian Leu
-  public static let currencyRON = CurrencyConverterStrings.tr("Localizable", "currency_RON")
+  public static var currencyRON: String { return L10n.tr("Localizable", "currency_RON", fallback: "Romanian Leu") }
   /// Serbian Dinar
-  public static let currencyRSD = CurrencyConverterStrings.tr("Localizable", "currency_RSD")
+  public static var currencyRSD: String { return L10n.tr("Localizable", "currency_RSD", fallback: "Serbian Dinar") }
   /// Russian Ruble
-  public static let currencyRUB = CurrencyConverterStrings.tr("Localizable", "currency_RUB")
+  public static var currencyRUB: String { return L10n.tr("Localizable", "currency_RUB", fallback: "Russian Ruble") }
   /// Saudi Riyal
-  public static let currencySAR = CurrencyConverterStrings.tr("Localizable", "currency_SAR")
+  public static var currencySAR: String { return L10n.tr("Localizable", "currency_SAR", fallback: "Saudi Riyal") }
   /// Solomon Islands Dollar
-  public static let currencySBD = CurrencyConverterStrings.tr("Localizable", "currency_SBD")
+  public static var currencySBD: String { return L10n.tr("Localizable", "currency_SBD", fallback: "Solomon Islands Dollar") }
   /// Swedish Krona
-  public static let currencySEK = CurrencyConverterStrings.tr("Localizable", "currency_SEK")
+  public static var currencySEK: String { return L10n.tr("Localizable", "currency_SEK", fallback: "Swedish Krona") }
   /// Singapore Dollar
-  public static let currencySGD = CurrencyConverterStrings.tr("Localizable", "currency_SGD")
+  public static var currencySGD: String { return L10n.tr("Localizable", "currency_SGD", fallback: "Singapore Dollar") }
   /// Thai Baht
-  public static let currencyTHB = CurrencyConverterStrings.tr("Localizable", "currency_THB")
+  public static var currencyTHB: String { return L10n.tr("Localizable", "currency_THB", fallback: "Thai Baht") }
   /// Tajikistani Somoni
-  public static let currencyTJS = CurrencyConverterStrings.tr("Localizable", "currency_TJS")
+  public static var currencyTJS: String { return L10n.tr("Localizable", "currency_TJS", fallback: "Tajikistani Somoni") }
   /// Turkmenistani Manat
-  public static let currencyTMT = CurrencyConverterStrings.tr("Localizable", "currency_TMT")
+  public static var currencyTMT: String { return L10n.tr("Localizable", "currency_TMT", fallback: "Turkmenistani Manat") }
   /// Tunisian Dinar
-  public static let currencyTND = CurrencyConverterStrings.tr("Localizable", "currency_TND")
+  public static var currencyTND: String { return L10n.tr("Localizable", "currency_TND", fallback: "Tunisian Dinar") }
   /// Tongan Pa'anga
-  public static let currencyTOP = CurrencyConverterStrings.tr("Localizable", "currency_TOP")
+  public static var currencyTOP: String { return L10n.tr("Localizable", "currency_TOP", fallback: "Tongan Pa'anga") }
   /// Turkish Lira
-  public static let currencyTRY = CurrencyConverterStrings.tr("Localizable", "currency_TRY")
+  public static var currencyTRY: String { return L10n.tr("Localizable", "currency_TRY", fallback: "Turkish Lira") }
   /// Tanzanian Shilling
-  public static let currencyTZS = CurrencyConverterStrings.tr("Localizable", "currency_TZS")
+  public static var currencyTZS: String { return L10n.tr("Localizable", "currency_TZS", fallback: "Tanzanian Shilling") }
   /// Ukrainian Hryvnia
-  public static let currencyUAH = CurrencyConverterStrings.tr("Localizable", "currency_UAH")
+  public static var currencyUAH: String { return L10n.tr("Localizable", "currency_UAH", fallback: "Ukrainian Hryvnia") }
   /// Ugandan Shilling
-  public static let currencyUGX = CurrencyConverterStrings.tr("Localizable", "currency_UGX")
+  public static var currencyUGX: String { return L10n.tr("Localizable", "currency_UGX", fallback: "Ugandan Shilling") }
   /// US Dollar
-  public static let currencyUSD = CurrencyConverterStrings.tr("Localizable", "currency_USD")
+  public static var currencyUSD: String { return L10n.tr("Localizable", "currency_USD", fallback: "US Dollar") }
   /// Uruguayan Peso
-  public static let currencyUYU = CurrencyConverterStrings.tr("Localizable", "currency_UYU")
+  public static var currencyUYU: String { return L10n.tr("Localizable", "currency_UYU", fallback: "Uruguayan Peso") }
   /// Uzbekistani Som
-  public static let currencyUZS = CurrencyConverterStrings.tr("Localizable", "currency_UZS")
+  public static var currencyUZS: String { return L10n.tr("Localizable", "currency_UZS", fallback: "Uzbekistani Som") }
   /// Vietnamese Dong
-  public static let currencyVND = CurrencyConverterStrings.tr("Localizable", "currency_VND")
+  public static var currencyVND: String { return L10n.tr("Localizable", "currency_VND", fallback: "Vietnamese Dong") }
   /// Vanuatu Vatu
-  public static let currencyVUV = CurrencyConverterStrings.tr("Localizable", "currency_VUV")
+  public static var currencyVUV: String { return L10n.tr("Localizable", "currency_VUV", fallback: "Vanuatu Vatu") }
   /// Samoan Tala
-  public static let currencyWST = CurrencyConverterStrings.tr("Localizable", "currency_WST")
+  public static var currencyWST: String { return L10n.tr("Localizable", "currency_WST", fallback: "Samoan Tala") }
   /// Central African CFA Franc
-  public static let currencyXAF = CurrencyConverterStrings.tr("Localizable", "currency_XAF")
+  public static var currencyXAF: String { return L10n.tr("Localizable", "currency_XAF", fallback: "Central African CFA Franc") }
   /// East Caribbean Dollar
-  public static let currencyXCD = CurrencyConverterStrings.tr("Localizable", "currency_XCD")
+  public static var currencyXCD: String { return L10n.tr("Localizable", "currency_XCD", fallback: "East Caribbean Dollar") }
   /// West African CFA Franc
-  public static let currencyXOF = CurrencyConverterStrings.tr("Localizable", "currency_XOF")
+  public static var currencyXOF: String { return L10n.tr("Localizable", "currency_XOF", fallback: "West African CFA Franc") }
   /// CFP Franc
-  public static let currencyXPF = CurrencyConverterStrings.tr("Localizable", "currency_XPF")
+  public static var currencyXPF: String { return L10n.tr("Localizable", "currency_XPF", fallback: "CFP Franc") }
   /// South African Rand
-  public static let currencyZAR = CurrencyConverterStrings.tr("Localizable", "currency_ZAR")
+  public static var currencyZAR: String { return L10n.tr("Localizable", "currency_ZAR", fallback: "South African Rand") }
   /// Dark Mode
-  public static let darkMode = CurrencyConverterStrings.tr("Localizable", "dark_mode")
+  public static var darkMode: String { return L10n.tr("Localizable", "dark_mode", fallback: "Dark Mode") }
   /// Data outdated
-  public static let dataOutdated = CurrencyConverterStrings.tr("Localizable", "data_outdated")
+  public static var dataOutdated: String { return L10n.tr("Localizable", "data_outdated", fallback: "Data outdated") }
   /// Decimal Precision
-  public static let decimalPrecision = CurrencyConverterStrings.tr("Localizable", "decimal_precision")
+  public static var decimalPrecision: String { return L10n.tr("Localizable", "decimal_precision", fallback: "Decimal Precision") }
   /// Delete
-  public static let delete = CurrencyConverterStrings.tr("Localizable", "delete")
+  public static var delete: String { return L10n.tr("Localizable", "delete", fallback: "Delete") }
   /// Done
-  public static let done = CurrencyConverterStrings.tr("Localizable", "done")
+  public static var done: String { return L10n.tr("Localizable", "done", fallback: "Done") }
   /// Error: %@
   public static func errorColon(_ p1: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "error_colon",String(describing: p1))
+    return L10n.tr("Localizable", "error_colon", String(describing: p1), fallback: "Error: %@")
   }
   /// Error: %@
   public static func errorPrefix(_ p1: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "error_prefix",String(describing: p1))
+    return L10n.tr("Localizable", "error_prefix", String(describing: p1), fallback: "Error: %@")
   }
   /// Rate:
-  public static let exchangeRate = CurrencyConverterStrings.tr("Localizable", "exchange_rate")
+  public static var exchangeRate: String { return L10n.tr("Localizable", "exchange_rate", fallback: "Rate:") }
   /// From
-  public static let fromAmount = CurrencyConverterStrings.tr("Localizable", "from_amount")
+  public static var fromAmount: String { return L10n.tr("Localizable", "from_amount", fallback: "From") }
   /// FROM
-  public static let fromCurrency = CurrencyConverterStrings.tr("Localizable", "from_currency")
+  public static var fromCurrency: String { return L10n.tr("Localizable", "from_currency", fallback: "FROM") }
   /// Language
-  public static let language = CurrencyConverterStrings.tr("Localizable", "language")
+  public static var language: String { return L10n.tr("Localizable", "language", fallback: "Language") }
   /// Loading currencies...
-  public static let loadingCurrencies = CurrencyConverterStrings.tr("Localizable", "loading_currencies")
+  public static var loadingCurrencies: String { return L10n.tr("Localizable", "loading_currencies", fallback: "Loading currencies...") }
   /// Loading error
-  public static let loadingError = CurrencyConverterStrings.tr("Localizable", "loading_error")
+  public static var loadingError: String { return L10n.tr("Localizable", "loading_error", fallback: "Loading error") }
   /// Loading rates...
-  public static let loadingRates = CurrencyConverterStrings.tr("Localizable", "loading_rates")
+  public static var loadingRates: String { return L10n.tr("Localizable", "loading_rates", fallback: "Loading rates...") }
   /// No connection
-  public static let noConnection = CurrencyConverterStrings.tr("Localizable", "no_connection")
+  public static var noConnection: String { return L10n.tr("Localizable", "no_connection", fallback: "No connection") }
   /// OK
-  public static let ok = CurrencyConverterStrings.tr("Localizable", "ok")
+  public static var ok: String { return L10n.tr("Localizable", "ok", fallback: "OK") }
   /// Preferences
-  public static let preferencesSection = CurrencyConverterStrings.tr("Localizable", "preferences_section")
+  public static var preferencesSection: String { return L10n.tr("Localizable", "preferences_section", fallback: "Preferences") }
   /// Rate App
-  public static let rateApp = CurrencyConverterStrings.tr("Localizable", "rate_app")
+  public static var rateApp: String { return L10n.tr("Localizable", "rate_app", fallback: "Rate App") }
   /// Retry
-  public static let retry = CurrencyConverterStrings.tr("Localizable", "retry")
+  public static var retry: String { return L10n.tr("Localizable", "retry", fallback: "Retry") }
   /// Search currencies
-  public static let searchCurrencies = CurrencyConverterStrings.tr("Localizable", "search_currencies")
+  public static var searchCurrencies: String { return L10n.tr("Localizable", "search_currencies", fallback: "Search currencies") }
   /// Select Currency
-  public static let selectCurrency = CurrencyConverterStrings.tr("Localizable", "select_currency")
+  public static var selectCurrency: String { return L10n.tr("Localizable", "select_currency", fallback: "Select Currency") }
   /// Send Feedback
-  public static let sendFeedback = CurrencyConverterStrings.tr("Localizable", "send_feedback")
+  public static var sendFeedback: String { return L10n.tr("Localizable", "send_feedback", fallback: "Send Feedback") }
   /// Settings
-  public static let settingsTitle = CurrencyConverterStrings.tr("Localizable", "settings_title")
+  public static var settingsTitle: String { return L10n.tr("Localizable", "settings_title", fallback: "Settings") }
   /// Support
-  public static let supportSection = CurrencyConverterStrings.tr("Localizable", "support_section")
+  public static var supportSection: String { return L10n.tr("Localizable", "support_section", fallback: "Support") }
   /// To
-  public static let toAmount = CurrencyConverterStrings.tr("Localizable", "to_amount")
+  public static var toAmount: String { return L10n.tr("Localizable", "to_amount", fallback: "To") }
   /// TO
-  public static let toCurrency = CurrencyConverterStrings.tr("Localizable", "to_currency")
+  public static var toCurrency: String { return L10n.tr("Localizable", "to_currency", fallback: "TO") }
   /// Unknown currency
-  public static let unknownCurrency = CurrencyConverterStrings.tr("Localizable", "unknown_currency")
+  public static var unknownCurrency: String { return L10n.tr("Localizable", "unknown_currency", fallback: "Unknown currency") }
   /// Updated: %@
   public static func updatedColon(_ p1: Any) -> String {
-    return CurrencyConverterStrings.tr("Localizable", "updated_colon",String(describing: p1))
+    return L10n.tr("Localizable", "updated_colon", String(describing: p1), fallback: "Updated: %@")
   }
   /// Version
-  public static let version = CurrencyConverterStrings.tr("Localizable", "version")
+  public static var version: String { return L10n.tr("Localizable", "version", fallback: "Version") }
   /// Welcome!
-  public static let welcomeSubtitle = CurrencyConverterStrings.tr("Localizable", "welcome_subtitle")
-  /// Currency Converter
-  public static let welcomeTitle = CurrencyConverterStrings.tr("Localizable", "welcome_title")
-
-  public enum Language: Sendable {
-  /// 🇺🇸 English
-    public static let english = CurrencyConverterStrings.tr("Localizable", "language.english")
+  public static var welcomeSubtitle: String { return L10n.tr("Localizable", "welcome_subtitle", fallback: "Welcome!") }
+  /// Localizable.strings (English)
+  ///   CurrencyConverter
+  ///   Created by afon.com on 13.10.2025.
+  public static var welcomeTitle: String { return L10n.tr("Localizable", "welcome_title", fallback: "Currency Converter") }
+  public enum Language {
+    /// 🇺🇸 English
+    public static var english: String { return L10n.tr("Localizable", "language.english", fallback: "🇺🇸 English") }
     /// 🇷🇺 Русский
-    public static let russian = CurrencyConverterStrings.tr("Localizable", "language.russian")
+    public static var russian: String { return L10n.tr("Localizable", "language.russian", fallback: "🇷🇺 Русский") }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:enable nesting type_body_length type_name
+// swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
 
 // MARK: - Implementation Details
 
-extension CurrencyConverterStrings {
-  private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
+extension L10n {
+  private static func tr(_ table: String, _ key: String, _ args: CVarArg..., fallback value: String) -> String {
+    let format = BundleToken.bundle.localizedString(forKey: key, value: value, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
 
 // swiftlint:disable convenience_type
-// swiftformat:enable all
+private enum LanguageCode: String {
+  case russian = "ru"
+  case english = "en"
+  
+  static var current: LanguageCode {
+    let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage")
+    
+    if let saved = savedLanguage,
+       let language = LanguageCode(rawValue: saved) {
+      return language
+    }
+    
+    return .english
+  }
+}
+
+private final class BundleToken {
+  static var bundle: Bundle {
+    let languageCode = LanguageCode.current.rawValue
+
+    if let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
+       let bundle = Bundle(path: path) {
+      return bundle
+    }
+
+    #if SWIFT_PACKAGE
+    return Bundle.module
+    #else
+    return Bundle(for: BundleToken.self)
+    #endif
+  }
+}
+// swiftlint:enable convenience_type
+
 // swiftlint:enable all

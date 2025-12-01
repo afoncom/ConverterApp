@@ -57,7 +57,7 @@ import Foundation
 {% endmacro %}
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
-{% set enumName %}{{param.enumName|default:"L10n"}}{% endset %}
+{% set enumName %}L10n{% endset %}
 {{accessModifier}} enum {{enumName}} {
   {% if tables.count > 1 or param.forceFileNameEnum %}
   {% for table in tables %}
@@ -76,15 +76,10 @@ import Foundation
 
 extension {{enumName}} {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg..., fallback value: String) -> String {
-    {% if param.lookupFunction %}
-    let format = {{ param.lookupFunction }}(key, table, value)
-    {% else %}
-    let format = {{param.bundle|default:"BundleToken.bundle"}}.localizedString(forKey: key, value: value, table: table)
-    {% endif %}
+    let format = BundleToken.bundle.localizedString(forKey: key, value: value, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
-{% if not param.bundle and not param.lookupFunction %}
 
 // swiftlint:disable convenience_type
 private enum LanguageCode: String {
@@ -120,8 +115,8 @@ private final class BundleToken {
   }
 }
 // swiftlint:enable convenience_type
-{% endif %}
 {% else %}
 // No string found
 {% endif %}
 
+// swiftlint:enable all

@@ -68,7 +68,7 @@ struct AllCurrencyScreen: View {
                 searchBar
                 listView
             }
-            .navigationTitle(L10n.allCurrenciesWithCount(viewModel.filteredCurrencies.count))
+            .navigationTitle(L10n.allCurrenciesWithCount(String(viewModel.filteredCurrencies.count)))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 
