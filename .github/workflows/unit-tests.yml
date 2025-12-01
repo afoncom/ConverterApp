@@ -21,36 +21,35 @@ jobs:
         with:
           xcode-version: 'latest-stable'
 
-      - name: Install Tuist via Homebrew
+      - name: Install SwiftGen and Tuist via Homebrew
         run: |
+          brew install swiftgen
           brew install --cask tuist
+      - name: Create SwiftGen output folder
+        run: mkdir -p CurrencyConverter/Sources/Generated
 
+      - name: Run SwiftGen
+        run: |
+          swiftgen config lint --config swiftgen.yml
+          swiftgen config run --config swiftgen.yml
       - name: Generate Xcode project with Tuist
         run: tuist generate
 
       - name: Trust SwiftLint plugin
         run: |
           defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
-
-      - name: List available simulators
+      - name: List runtimes and devices
         run: |
+          xcrun simctl list runtimes
           xcrun simctl list devices available
-
-      - name: Create and boot simulator
-        run: |
-          DEVICE_ID=$(xcrun simctl create "Test Device" com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation com.apple.CoreSimulator.SimRuntime.iOS-18-1 2>&1 | tail -1)
-          echo "SIMULATOR_ID=$DEVICE_ID" >> $GITHUB_ENV
-          xcrun simctl boot "$DEVICE_ID" || true
-
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
             -workspace CurrencyConverter.xcworkspace \
             -scheme CurrencyConverter \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.4' \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
-
       - name: Upload logs if failed
         if: failure()
         uses: actions/upload-artifact@v4
