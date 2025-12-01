@@ -9,7 +9,7 @@
 import XCTest
 @testable import CurrencyConverter
 
-class CurrencyNameProviderMock: CurrencyNameProvider {
+class CurrencyNameProviderMocks: CurrencyNameProvider {
     var mockNames: [String: String] = [:]
     
     func localizedName(for currencyCode: String, languageCode: String) -> String? {
@@ -19,10 +19,10 @@ class CurrencyNameProviderMock: CurrencyNameProvider {
 
 final class CurrencyNamesTests: XCTestCase {
 
-    var provider: CurrencyNameProviderMock!
+    var provider: CurrencyNameProviderMocks!
     
     override func setUpWithError() throws {
-        provider = CurrencyNameProviderMock()
+        provider = CurrencyNameProviderMocks()
     }
 
     override func tearDownWithError() throws {
