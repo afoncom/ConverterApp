@@ -9,47 +9,36 @@
 import XCTest
 @testable import CurrencyConverter
 
-class CurrencyNameProviderMock: CurrencyNameProvider {
-    var mockNames: [String: String] = [:]
-    
-    func localizedName(for currencyCode: String, languageCode: String) -> String? {
-        return mockNames[currencyCode]
-    }
-}
+final class CurrencyNameProviderTests: XCTestCase {
 
-class C_Tests_localizedName_: XCTestCase {
-
-    var provider: CurrencyNameProviderMock!
+    private var provider: CurrencyNameProvider!
     
     override func setUpWithError() throws {
-        provider = CurrencyNameProviderMock()
+        let appBundle = Bundle(for: CurrencyManager.self)
+        provider = BundleCurrencyNameProvider(bundle: appBundle)
     }
 
     override func tearDownWithError() throws {
         provider = nil
     }
 
-    func testLocalizedName_returnsCorrectValue_whenCurrencyExists() {
-        provider.mockNames["USD"] = "Test Dollar"
-        provider.mockNames["EUR"] = "Test Euro"
-        
-        let usd = provider.localizedName(for: "USD", languageCode: "en")
-        let eur = provider.localizedName(for: "EUR", languageCode: "en")
-        
-        XCTAssertEqual(usd, "Test Dollar")
-        XCTAssertEqual(eur, "Test Euro")
+    func testLocalizedName_returnsEnglishName_whenCurrencyExists() {
+        let name = provider.localizedName(for: "USD", languageCode: "en")
+        XCTAssertEqual(name, "US Dollar")
     }
 
-    func testLocalizedName_ignoresLanguageCode()  {
-        provider.mockNames["RUB"] = "Test Ruble"
-        
-        XCTAssertEqual(provider.localizedName(for: "RUB", languageCode: "en"), "Test Ruble")
-        XCTAssertEqual(provider.localizedName(for: "RUB", languageCode: "ru"), "Test Ruble")
-        XCTAssertEqual(provider.localizedName(for: "RUB", languageCode: "de"), "Test Ruble")
+    func testLocalizedName_returnsRussianName_whenCurrencyExists() {
+        let name = provider.localizedName(for: "USD", languageCode: "ru")
+        XCTAssertEqual(name, "Доллар США")
     }
     
     func testLocalizedName_returnsNil_whenCurrencyDoesNotExist() {
-        XCTAssertNil(provider.localizedName(for: "JPY", languageCode: "en"))
+        let name = provider.localizedName(for: "ZZZ", languageCode: "en")
+        XCTAssertNil(name)
     }
-
+    
+    func testLocalizedName_returnsNil_whenLanguageNotSupported () {
+        let name = provider.localizedName(for: "USD", languageCode: "xyz")
+        XCTAssertNil(name)
+    }
 }
