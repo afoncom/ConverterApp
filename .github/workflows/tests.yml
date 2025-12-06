@@ -21,18 +21,9 @@ jobs:
         with:
           xcode-version: 'latest-stable'
 
-      - name: Install SwiftGen and Tuist via Homebrew
+      - name: Install Tuist via Homebrew
         run: |
-          brew install swiftgen
           brew install --cask tuist
-
-      - name: Create SwiftGen output folder
-        run: mkdir -p CurrencyConverter/Sources/Generated
-
-      - name: Run SwiftGen
-        run: |
-          swiftgen config lint --config swiftgen.yml
-          swiftgen config run --config swiftgen.yml
 
       - name: Generate Xcode project with Tuist
         run: tuist generate
