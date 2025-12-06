@@ -93,12 +93,13 @@ CurrencyConverter/
 - **UI Framework**: SwiftUI (100% native)
 - **Architecture**: MVVM
 - **Minimum iOS**: 18.5+
-- **Project Management**: Tuist (Project-as-code)
+- **Project Management**: Tuist (Project-as-code, generates resources)
 - **Dependency Management**: Swift Package Manager
 - **Code Quality**: SwiftLint (v0.62.1+)
 - **Networking**: URLSession with async/await
 - **Storage**: UserDefaults for preferences
 - **API**: [ExchangeRate-API](https://api.exchangerate-api.com)
+- **Resource Generation**: Tuist (replaces SwiftGen)
 
 ## 📦 Dependencies
 
@@ -268,10 +269,15 @@ The project uses GitHub Actions for continuous integration:
 
 ### Test Coverage
 
-- `CurrencyNamesTests` - Tests for currency localization provider
-  - Mock implementation testing
-  - Localized name retrieval
-  - Edge cases handling
+- `CurrencyNameProviderTests` - Tests for real `BundleCurrencyNameProvider`
+  - English and Russian localization
+  - Non-existent currency handling
+  - Unsupported language handling
+
+- `CurrencyNamesTests` - Tests for `CurrencyNames.getLocalizedName()`
+  - Real bundle resource testing
+  - Multi-language support
+  - Error cases
 
 ## 📱 Screenshots
 
