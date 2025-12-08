@@ -73,7 +73,7 @@ let project = Project(
             bundleId: "afon-com.CurrencyConverterTests",
             deploymentTargets: .iOS("17.0"),
             sources: [
-                "CСTests\"CurrencyNames\"/**"
+                "Tests/CurrencyConverterTests/**"
             ],
             dependencies: [
                 .target(name: "CurrencyConverter")
