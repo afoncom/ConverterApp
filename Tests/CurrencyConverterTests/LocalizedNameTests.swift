@@ -9,7 +9,7 @@
 import XCTest
 @testable import CurrencyConverter
 
-final class CurrencyNameProviderTests: XCTestCase {
+final class LocalizedNameTests: XCTestCase {
 
     private var provider: CurrencyNameProvider!
     
