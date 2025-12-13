@@ -27,13 +27,6 @@ jobs:
       - name: Generate Xcode project with Tuist
         run: tuist generate
 
-      - name: Trust SwiftLint plugin
-        run: |
-          defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
-      - name: List runtimes and devices
-        run: |
-          xcrun simctl list runtimes
-          xcrun simctl list devices available
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
