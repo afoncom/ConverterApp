@@ -21,11 +21,30 @@ jobs:
         with:
           xcode-version: 'latest-stable'
 
-      - name: Install Tuist via Homebrew
-        run: brew install --cask tuist
+      - name: Install SwiftGen and Tuist via Homebrew
+        run: |
+          brew install swiftgen
+          brew install --cask tuist
+
+      - name: Create SwiftGen output folder
+        run: mkdir -p CurrencyConverter/Sources/Generated
+
+      - name: Run SwiftGen
+        run: |
+          swiftgen config lint --config swiftgen.yml
+          swiftgen config run --config swiftgen.yml
 
       - name: Generate Xcode project with Tuist
         run: tuist generate
+
+      - name: Trust SwiftLint plugin
+        run: |
+          defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
+
+      - name: List runtimes and devices
+        run: |
+          xcrun simctl list runtimes
+          xcrun simctl list devices available
 
       - name: Run Unit Tests
         run: |
@@ -35,6 +54,7 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.4' \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
+
       - name: Upload logs if failed
         if: failure()
         uses: actions/upload-artifact@v4
