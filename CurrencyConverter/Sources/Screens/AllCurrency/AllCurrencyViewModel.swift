@@ -63,7 +63,7 @@ final class AllCurrencyViewModel: ObservableObject {
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyService: CurrencyService, currencyManager: CurrencyManager) {
+    init(currencyService: CurrencyService, currencyManager: any CurrencyManager) {
         self.currencyService = currencyService
         self.currencyManager = currencyManager
     }

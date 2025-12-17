@@ -9,7 +9,13 @@ import Foundation
 
 // MARK: - Currency Manager для управления списком валют
 
-final class CurrencyManager {
+protocol CurrencyManager {
+    func addCurrency(_ currencyCode: String)
+    
+}
+
+
+final class CurrencyManagerImpl: CurrencyManager {
 
     var selectedCurrencies: [String] = []
     
