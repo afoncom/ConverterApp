@@ -25,7 +25,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     private let currencyService: CurrencyService
     
     /// Менеджер выбранных пользователем валют
-    private let currencyManager: CurrencyManager
+    private let currencyManager: CurrencyManagerImpl
     
     /// Базовая валюта (теперь динамическая)
     private var baseCurrency: Currency
@@ -37,7 +37,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     
     init(
         currencyService: CurrencyService,
-        currencyManager: CurrencyManager,
+        currencyManager: CurrencyManagerImpl,
         baseCurrency: Currency,
         localizationManager: LocalizationManager
     ) {

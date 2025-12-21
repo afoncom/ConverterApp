@@ -15,7 +15,7 @@ struct AllCurrencyScreen: View {
     @StateObject private var viewModel: AllCurrencyViewModel
     @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
     
-    let currencyManager: CurrencyManager                 // Менеджер выбранных валют
+    let currencyManager: CurrencyManagerImpl                 // Менеджер выбранных валют
     let serviceContainer: ServiceContainer               // Контейнер сервисов
     let onCurrencySelected: ((String) -> Void)?          // Callback при выборе валюты
     
@@ -28,7 +28,7 @@ struct AllCurrencyScreen: View {
     // MARK: - Initialization (Инициализация)
     
     init(
-        currencyManager: CurrencyManager,
+        currencyManager: CurrencyManagerImpl,
         serviceContainer: ServiceContainer,
         onCurrencySelected: ((String) -> Void)? = nil
     ) {
@@ -236,5 +236,5 @@ struct AllCurrencyScreen: View {
 
 
 #Preview {
-    AllCurrencyScreen(currencyManager: CurrencyManager(), serviceContainer: .makePreview(), onCurrencySelected: nil)
+    AllCurrencyScreen(currencyManager: CurrencyManagerImpl(), serviceContainer: .makePreview(), onCurrencySelected: nil)
 }

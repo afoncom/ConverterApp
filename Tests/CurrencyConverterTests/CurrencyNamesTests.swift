@@ -15,7 +15,7 @@ final class CurrencyNamesTests: XCTestCase {
     private var provider: CurrencyNameProvider!
     
     override func setUpWithError() throws {
-        appBundle = Bundle(for: CurrencyManager.self)
+        appBundle = Bundle(for: CurrencyManagerImpl.self)
         provider = BundleCurrencyNameProvider(bundle: appBundle)
     }
 

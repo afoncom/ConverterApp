@@ -10,8 +10,10 @@ import Foundation
 // MARK: - Currency Manager для управления списком валют
 
 protocol CurrencyManager {
+    var selectedCurrencies: [String] { get }
     func addCurrency(_ currencyCode: String)
-    
+    func removeCurrency(_ currencyCode: String)
+    func getAvailableCurrencies(from allCurrencies: [String]) -> [String]
 }
 
 
