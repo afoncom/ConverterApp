@@ -7,6 +7,12 @@
 
 import Foundation
 
+// MARK: - Base Currency Manager Protocol
+protocol BaseCurrencyManagerProtocol: AnyObject {
+    var baseCurrency: Currency { get }
+    func setBaseCurrency(_ currency: Currency)
+}
+
 // MARK: - Storage Protocol (для инверсии зависимостей)
 protocol StorageProtocol {
     func string(forKey: String) -> String?
@@ -21,7 +27,7 @@ extension UserDefaults: StorageProtocol {
 
 
 // MARK: - Base Currency Manager
-final class BaseCurrencyManager: ObservableObject {
+final class BaseCurrencyManager: ObservableObject, BaseCurrencyManagerProtocol {
     
     // MARK: - Published Properties
     @Published private(set) var baseCurrency: Currency

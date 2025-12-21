@@ -56,14 +56,14 @@ final class AllCurrencyViewModel: ObservableObject {
     private var currencyService: CurrencyService
     
     /// Менеджер выбранных пользователем валют
-    private var currencyManager: CurrencyManager
+    private var currencyManager: CurrencyManagerImpl
     
     /// Менеджер локализации
     private var localizationManager: LocalizationManager?
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyService: CurrencyService, currencyManager: CurrencyManager) {
+    init(currencyService: CurrencyService, currencyManager: CurrencyManagerImpl) {
         self.currencyService = currencyService
         self.currencyManager = currencyManager
     }
