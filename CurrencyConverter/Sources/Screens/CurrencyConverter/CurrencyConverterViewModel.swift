@@ -23,7 +23,7 @@ final class CurrencyConverterViewModel: ObservableObject {
     /// Сервис для работы с валютами
     private var currencyService: CurrencyService
     /// Менеджер базовой валюты
-    private var baseCurrencyManager: BaseCurrencyManager
+    private var baseCurrencyManager: BaseCurrencyManagerProtocol
     /// Менеджер темы для отслеживания изменений форматирования
     private var themeManager: ThemeManager?
     /// Менеджер локализации
@@ -31,7 +31,7 @@ final class CurrencyConverterViewModel: ObservableObject {
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyService: CurrencyService, baseCurrencyManager: BaseCurrencyManager, themeManager: ThemeManager? = nil, localizationManager: LocalizationManager? = nil) {
+    init(currencyService: CurrencyService, baseCurrencyManager: BaseCurrencyManagerProtocol, themeManager: ThemeManager? = nil, localizationManager: LocalizationManager? = nil) {
         self.currencyService = currencyService
         self.baseCurrencyManager = baseCurrencyManager
         self.themeManager = themeManager
@@ -76,7 +76,7 @@ final class CurrencyConverterViewModel: ObservableObject {
     // MARK: - Public Methods (Публичные методы)
 
     /// Метод - устанавливаем сервисы
-    func setServices(currencyService: CurrencyService, baseCurrencyManager: BaseCurrencyManager) {
+    func setServices(currencyService: CurrencyService, baseCurrencyManager: BaseCurrencyManagerProtocol) {
         self.currencyService = currencyService
         self.baseCurrencyManager = baseCurrencyManager
     }
