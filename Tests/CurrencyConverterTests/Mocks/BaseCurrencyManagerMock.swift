@@ -9,7 +9,7 @@
 import Foundation
 @testable import CurrencyConverter
 
-final class BaseCurrencyManagerMock: BaseCurrencyManagerProtocol {
+final class BaseCurrencyManagerMock: BaseCurrencyManager {
     @Published var baseCurrency: Currency
     
     init(baseCurrency: Currency = Currency(code: "USD", name: "US Dollar", symbol: "$")) {

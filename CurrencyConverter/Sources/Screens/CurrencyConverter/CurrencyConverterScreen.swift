@@ -17,7 +17,7 @@ struct CurrencyConverterScreen: View {
     @State private var showSettings = false
     @StateObject private var viewModel: CurrencyConverterViewModel
     @ObservedObject private var localizationManager: LocalizationManager
-    let currencyManager: CurrencyManagerImpl
+    let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
     
     // MARK: - Computed Properties (Вычисленные свойства)
@@ -38,7 +38,7 @@ struct CurrencyConverterScreen: View {
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyManager: CurrencyManagerImpl, serviceContainer: ServiceContainer) {
+    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.localizationManager = serviceContainer.localizationManager

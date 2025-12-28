@@ -40,7 +40,7 @@ protocol CurrencyService {
 
 final class CurrencyServiceImpl: CurrencyService {
     
-    private let networkService: CurrencyNetworkServiceProtocol
+    private let networkService: CurrencyNetworkService
     private weak var themeManager: ThemeManager?
     private weak var localizationManager: LocalizationManager?
     
@@ -53,7 +53,7 @@ final class CurrencyServiceImpl: CurrencyService {
     }()
     
     init(
-        networkService: CurrencyNetworkServiceProtocol,
+        networkService: CurrencyNetworkService,
         themeManager: ThemeManager? = nil,
         localizationManager: LocalizationManager? = nil
     ) {
