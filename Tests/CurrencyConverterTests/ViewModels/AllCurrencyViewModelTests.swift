@@ -26,19 +26,19 @@ final class AllCurrencyViewModelTests: XCTestCase {
     //    MARK: - Tests
     
     func test_addCurrency() {
-        XCTAssertNil(currencyManager.currencyCode)
+        XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
         
         viewModel.addCurrency("USD")
         
-        XCTAssertEqual(currencyManager.currencyCode, "USD")
+        XCTAssertEqual(currencyManager.selectedCurrencies, ["USD"])
     }
     
     func test_removeCurrency() {
-        currencyManager.currencyCode = "USD"
+        currencyManager.selectedCurrencies = ["USD"]
         
         currencyManager.removeCurrency("USD")
         
-        XCTAssertNil(currencyManager.currencyCode)
+        XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
     }
         
     func test_clearSearch() {
