@@ -2,7 +2,7 @@
 //  CurrencyManagerMock.swift
 //  CurrencyConverter
 //
-//  Created by afon.com on 21.12.2025.
+//  Created by afon.com on 20.12.2025.
 //  Copyright © 2025 afon-com. All rights reserved.
 //
 
@@ -11,20 +11,18 @@ import XCTest
 
 final class CurrencyManagerMock: CurrencyManager {
     var selectedCurrencies: [String] = []
-    var currencyCode: String?
     
     func removeCurrency(_ currencyCode: String) {
-        if self.currencyCode == currencyCode {
-            self.currencyCode = nil
-        }
+        selectedCurrencies.removeAll { $0 == currencyCode}
     }
     
     func getAvailableCurrencies(from allCurrencies: [String]) -> [String] {
-        return allCurrencies.filter { !selectedCurrencies.contains($0) }
+        allCurrencies.filter { !selectedCurrencies.contains($0) }
     }
     
     func addCurrency(_ currencyCode: String) {
-        self.currencyCode?.append(currencyCode)
-        self.currencyCode = currencyCode
+        guard !selectedCurrencies.contains(currencyCode) else { return }
+        selectedCurrencies.append(currencyCode)
     }
 }
+

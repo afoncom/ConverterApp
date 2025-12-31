@@ -46,4 +46,3 @@ final class CurrencyServiceMock: CurrencyService {
         case networkError
     }
 }
-
