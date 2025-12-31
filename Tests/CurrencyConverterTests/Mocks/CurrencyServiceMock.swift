@@ -12,6 +12,7 @@ import XCTest
 final class CurrencyServiceMock: CurrencyService {
     var shouldFail = false
     var mockCurrencies = ["USD", "EUR", "RUB"]
+    var mockConversionResult: ConversionResult?
     
     func getExchangeRates(
         baseCurrency: Currency,
@@ -34,11 +35,11 @@ final class CurrencyServiceMock: CurrencyService {
     }
     
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult? {
-        nil
+        return mockConversionResult
     }
     
     func getFormattedAmount(_ amount: Double, currency: Currency, decimalPrecision: Int?) -> String {
-        ""
+        return ""
     }
     
     enum TestError: Error {

@@ -8,7 +8,7 @@ import Foundation
 
 // MARK: - Cache Service Protocol
 
-protocol CacheServiceProtocol {
+protocol CacheService {
     var cachedRates: [String: Double] { get }
     var cachedBaseCurrency: String { get }
     var cachedCurrencies: [String] { get }
@@ -22,7 +22,7 @@ protocol CacheServiceProtocol {
 
 // MARK: - Cache Service для курсов валют из CacheManager
 
-final class CacheService: CacheServiceProtocol {
+final class CacheServiceImpl: CacheService {
     
     // MARK: - Initialization (Инициализация)
     init() {}

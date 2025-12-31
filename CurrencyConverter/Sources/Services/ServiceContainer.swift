@@ -11,19 +11,19 @@ import Foundation
 
 final class ServiceContainer {
     
-    let baseCurrencyManager: BaseCurrencyManager                // Менеджер базовой валюты
+    let baseCurrencyManager: BaseCurrencyManager        // Менеджер базовой валюты
     let themeManager: ThemeManager                              // Менеджер темы приложения
     let localizationManager: LocalizationManager                // Менеджер локализации приложения
-    let cacheService: CacheServiceProtocol                      // Сервис для кэширования данных
-    let networkService: CurrencyNetworkServiceProtocol
+    let cacheService: CacheService                      // Сервис для кэширования данных
+    let networkService: CurrencyNetworkService
     let currencyService: CurrencyService                       // Сервис для работы с валютами
     
     init (
         baseCurrencyManager: BaseCurrencyManager,
         themeManager: ThemeManager,
         localizationManager: LocalizationManager,
-        cacheService: CacheServiceProtocol,
-        networkService: CurrencyNetworkServiceProtocol,
+        cacheService: CacheService,
+        networkService: CurrencyNetworkService,
         currencyService: CurrencyService
     ) {
         self.baseCurrencyManager = baseCurrencyManager
@@ -39,11 +39,11 @@ final class ServiceContainer {
 
 extension ServiceContainer {
     static func makePreview() -> ServiceContainer {
-        let baseCurrencyManager = BaseCurrencyManager()
+        let baseCurrencyManager = BaseCurrencyManagerImpl()
         let themeManager = ThemeManager()
         let localizationManager = LocalizationManager()
-        let cacheService = CacheService()
-        let networkService = CurrencyNetworkService(cacheService: cacheService)
+        let cacheService = CacheServiceImpl()
+        let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
         let currencyService = CurrencyServiceImpl(
             networkService: networkService,
             themeManager: themeManager,

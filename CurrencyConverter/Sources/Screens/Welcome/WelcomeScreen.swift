@@ -10,11 +10,11 @@ struct WelcomeScreen: View {
     
     @State private var showWelcome = true
     
-    let currencyManager: CurrencyManagerImpl
+    let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
     @ObservedObject private var localizationManager: LocalizationManager
     
-    init(currencyManager: CurrencyManagerImpl, serviceContainer: ServiceContainer) {
+    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.localizationManager = serviceContainer.localizationManager

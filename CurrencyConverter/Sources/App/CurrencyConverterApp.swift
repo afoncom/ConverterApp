@@ -9,15 +9,17 @@ import SwiftUI
 @main
 struct CurrencyConverterApp: App {
     private let serviceContainer: ServiceContainer
-    private let currencyManager = CurrencyManagerImpl()
+    private let currencyManager: CurrencyManager
     
     init() {
+       self.currencyManager = CurrencyManagerImpl()
+        
        self.serviceContainer = {
-            let baseCurrencyManager = BaseCurrencyManager()
+            let baseCurrencyManager = BaseCurrencyManagerImpl()
             let themeManager = ThemeManager()
             let localizationManager = LocalizationManager()
-            let cacheService = CacheService()
-            let networkService = CurrencyNetworkService(cacheService: cacheService)
+            let cacheService = CacheServiceImpl()
+            let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
             
             let currencyService = CurrencyServiceImpl(
                 networkService: networkService,
@@ -46,12 +48,12 @@ struct CurrencyConverterApp: App {
 // MARK: - Content View с динамической темой
 
 struct ContentView: View {
-    let currencyManager: CurrencyManagerImpl
+    let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
     @ObservedObject private var themeManager: ThemeManager
     @ObservedObject private var localizationManager: LocalizationManager
     
-    init(currencyManager: CurrencyManagerImpl, serviceContainer: ServiceContainer) {
+    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.themeManager = serviceContainer.themeManager
