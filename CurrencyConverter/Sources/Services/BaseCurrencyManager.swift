@@ -14,12 +14,12 @@ protocol BaseCurrencyManager: AnyObject {
 }
 
 // MARK: - Storage Protocol (для инверсии зависимостей)
-protocol KeyValueStorageManager {
+protocol CurrencyStorage {
     func string(forKey: String) -> String?
     func set(_ value: String, forKey: String)
 }
 
-extension UserDefaults: KeyValueStorageManager {
+extension UserDefaults: CurrencyStorage {
     func set(_ value: String, forKey key: String) {
         self.set(value as Any, forKey: key)
     }
@@ -33,12 +33,12 @@ final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
     @Published private(set) var baseCurrency: Currency
     
     // MARK: - Private Properties
-    private let storage: KeyValueStorageManager
+    private let storage: CurrencyStorage
     private let baseCurrencyKey = AppConfig.UserDefaultsKeys.baseCurrency
     private let defaultBaseCurrencyCode = AppConfig.Currency.defaultBaseCurrency
     
     // MARK: - Initialization
-    init(storage: KeyValueStorageManager = UserDefaults.standard) {
+    init(storage: CurrencyStorage = UserDefaults.standard) {
         self.storage = storage
         
         let currency = if let savedCode = storage.string(forKey: baseCurrencyKey),

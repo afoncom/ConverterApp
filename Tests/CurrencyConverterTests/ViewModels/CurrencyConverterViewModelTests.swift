@@ -19,7 +19,7 @@ final class CurrencyConverterViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         currencyServiceMock = CurrencyServiceMock()
-        baseCurrencyManagerMock = BaseCurrencyManagerMock()
+        baseCurrencyManagerMock = BaseCurrencyManagerMock(baseCurrency: Currency(code: "USD", name: "US Dollar", symbol: "$"))
         viewModel = CurrencyConverterViewModel(currencyService: currencyServiceMock, baseCurrencyManager: baseCurrencyManagerMock)
     }
     

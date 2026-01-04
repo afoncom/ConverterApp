@@ -12,8 +12,8 @@ import Foundation
 final class BaseCurrencyManagerMock: BaseCurrencyManager {
     @Published var baseCurrency: Currency
     
-    init(baseCurrency: Currency = Currency(code: "USD", name: "US Dollar", symbol: "$")) {
-        self.baseCurrency = baseCurrency
+    init(baseCurrency: Currency?) {
+        self.baseCurrency = baseCurrency ?? Currency(code: "", name: "", symbol: "")
     }
     
     func setBaseCurrency(_ currency: Currency) {
