@@ -1,5 +1,5 @@
 //
-//  CurrencyNetworkServiceProtocol.swift
+//  CurrencyNetworkService.swift
 //  CurrencyConverter
 //
 //  Created by afon.com on 18.10.2025.
@@ -21,8 +21,8 @@ struct ExchangeRateAPIResponse: Codable {
 
 // MARK: - Protocol
 
-protocol CurrencyNetworkServiceProtocol {
-    var cacheService: CacheServiceProtocol { get }
+protocol CurrencyNetworkService {
+    var cacheService: CacheService { get }
     func fetchExchangeRates(
         baseCurrency: Currency,
         selectedCurrencies: [String],
@@ -35,11 +35,11 @@ protocol CurrencyNetworkServiceProtocol {
 
 // MARK: - Implementation
 
-final class CurrencyNetworkService: CurrencyNetworkServiceProtocol {
+final class CurrencyNetworkServiceImpl: CurrencyNetworkService {
     
-    let cacheService: CacheServiceProtocol
+    let cacheService: CacheService
     
-    init(cacheService: CacheServiceProtocol) {
+    init(cacheService: CacheService) {
         self.cacheService = cacheService
     }
     

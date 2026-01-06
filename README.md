@@ -55,7 +55,7 @@ CurrencyConverter/
 │   │   ├── CurrencyNetworkServiceProtocol.swift   # API protocol
 │   │   ├── CacheService.swift              # Caching layer
 │   │   ├── BaseCurrencyManager.swift       # Base currency management
-│   │   ├── CurrencyManager.swift           # Currency state management
+│   │   ├── CurrencyManagerImpl.swift           # Currency state management
 │   │   ├── CurrencyFormatter.swift         # Number formatting
 │   │   └── ServiceContainer.swift          # Dependency injection
 │   └── Utils/

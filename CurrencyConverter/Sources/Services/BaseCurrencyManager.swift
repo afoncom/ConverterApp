@@ -7,13 +7,19 @@
 
 import Foundation
 
+// MARK: - Base Currency Manager Protocol
+protocol BaseCurrencyManager: AnyObject {
+    var baseCurrency: Currency { get }
+    func setBaseCurrency(_ currency: Currency)
+}
+
 // MARK: - Storage Protocol (для инверсии зависимостей)
-protocol StorageProtocol {
+protocol CurrencyStorage {
     func string(forKey: String) -> String?
     func set(_ value: String, forKey: String)
 }
 
-extension UserDefaults: StorageProtocol {
+extension UserDefaults: CurrencyStorage {
     func set(_ value: String, forKey key: String) {
         self.set(value as Any, forKey: key)
     }
@@ -21,18 +27,18 @@ extension UserDefaults: StorageProtocol {
 
 
 // MARK: - Base Currency Manager
-final class BaseCurrencyManager: ObservableObject {
+final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
     
     // MARK: - Published Properties
     @Published private(set) var baseCurrency: Currency
     
     // MARK: - Private Properties
-    private let storage: StorageProtocol
+    private let storage: CurrencyStorage
     private let baseCurrencyKey = AppConfig.UserDefaultsKeys.baseCurrency
     private let defaultBaseCurrencyCode = AppConfig.Currency.defaultBaseCurrency
     
     // MARK: - Initialization
-    init(storage: StorageProtocol = UserDefaults.standard) {
+    init(storage: CurrencyStorage = UserDefaults.standard) {
         self.storage = storage
         
         let currency = if let savedCode = storage.string(forKey: baseCurrencyKey),
