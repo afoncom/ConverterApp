@@ -107,3 +107,4 @@ Generated/
 *.xcodeproj
 *.xcworkspace
 .tuist
+Derived/
