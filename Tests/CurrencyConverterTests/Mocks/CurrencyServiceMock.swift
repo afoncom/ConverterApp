@@ -35,11 +35,11 @@ final class CurrencyServiceMock: CurrencyService {
     }
     
     func convert(amount: Double, from: Currency, to: Currency) -> ConversionResult? {
-        return mockConversionResult
+        mockConversionResult
     }
     
     func getFormattedAmount(_ amount: Double, currency: Currency, decimalPrecision: Int?) -> String {
-        return ""
+        ""
     }
     
     enum TestError: Error {
