@@ -13,30 +13,6 @@ protocol BaseCurrencyManager: AnyObject {
     func setBaseCurrency(_ currency: Currency)
 }
 
-// MARK: - LocalStorage Protocol (для инверсии зависимостей)
-protocol LocalStorage {
-    func save(currency: Currency)
-    func getCurrency(for key: String) -> String?
-}
-
-// MARK: - UserDefaultsStorage Implementation
-final class UserDefaultsStorage: LocalStorage {
-    private let userDefaults: UserDefaults
-    
-    init(userDefaults: UserDefaults = .standard) {
-        self.userDefaults = userDefaults
-    }
-    
-    func save(currency: Currency) {
-        userDefaults.set(currency.code, forKey: "baseCurrency")
-    }
-    
-    func getCurrency(for key: String) -> String? {
-        userDefaults.string(forKey: key)
-    }
-}
-
-
 // MARK: - Base Currency Manager
 final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
     
