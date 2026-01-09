@@ -23,7 +23,7 @@ final class AllCurrencyViewModelTests: XCTestCase {
         viewModel = AllCurrencyViewModel(currencyService: service, currencyManager: currencyManager)
     }
     
-    //    MARK: - Tests
+    // MARK: - Tests
     
     func test_addCurrency() {
         XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
@@ -75,4 +75,3 @@ final class AllCurrencyViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.availableCurrencies.isEmpty)
     }
 }
-

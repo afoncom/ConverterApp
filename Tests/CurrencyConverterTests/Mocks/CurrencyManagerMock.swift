@@ -25,4 +25,3 @@ final class CurrencyManagerMock: CurrencyManager {
         selectedCurrencies.append(currencyCode)
     }
 }
-

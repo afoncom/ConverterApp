@@ -36,6 +36,13 @@ let project = Project(
             resources: [
                 .glob(pattern: "CurrencyConverter/Resources/**", excluding: ["CurrencyConverter/Resources/Info.plist"])
             ],
+            scripts: [
+                .pre(
+                    script: "if which swiftlint > /dev/null; then\n  swiftlint lint --config .swiftlint.yml\nelse\n  echo \"error: SwiftLint not installed\"\nfi",
+                    name: "SwiftLint",
+                    basedOnDependencyAnalysis: false
+                )
+            ],
             dependencies: [
                 .package(product: "SwiftLintBuildToolPlugin", type: .plugin)
             ],
@@ -74,6 +81,13 @@ let project = Project(
             deploymentTargets: .iOS("17.0"),
             sources: [
                 "Tests/CurrencyConverterTests/**"
+            ],
+            scripts: [
+                .pre(
+                    script: "if which swiftlint > /dev/null; then\n  swiftlint lint --config .swiftlint.yml\nelse\n  echo \"error: SwiftLint not installed\"\nfi",
+                    name: "SwiftLint",
+                    basedOnDependencyAnalysis: false
+                )
             ],
             dependencies: [
                 .target(name: "CurrencyConverter")
