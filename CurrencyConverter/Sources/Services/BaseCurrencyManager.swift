@@ -13,19 +13,6 @@ protocol BaseCurrencyManager: AnyObject {
     func setBaseCurrency(_ currency: Currency)
 }
 
-// MARK: - Storage Protocol (для инверсии зависимостей)
-protocol CurrencyStorage {
-    func string(forKey: String) -> String?
-    func set(_ value: String, forKey: String)
-}
-
-extension UserDefaults: CurrencyStorage {
-    func set(_ value: String, forKey key: String) {
-        self.set(value as Any, forKey: key)
-    }
-}
-
-
 // MARK: - Base Currency Manager
 final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
     
@@ -33,15 +20,15 @@ final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
     @Published private(set) var baseCurrency: Currency
     
     // MARK: - Private Properties
-    private let storage: CurrencyStorage
+    private let storage: LocalStorage
     private let baseCurrencyKey = AppConfig.UserDefaultsKeys.baseCurrency
     private let defaultBaseCurrencyCode = AppConfig.Currency.defaultBaseCurrency
     
     // MARK: - Initialization
-    init(storage: CurrencyStorage = UserDefaults.standard) {
+    init(storage: LocalStorage = UserDefaultsStorage()) {
         self.storage = storage
         
-        let currency = if let savedCode = storage.string(forKey: baseCurrencyKey),
+        let currency = if let savedCode = storage.getCurrency(for: baseCurrencyKey),
                           let newCurrency = CurrencyFactory.createCurrency(for: savedCode) {
             newCurrency
         } else {
@@ -49,7 +36,9 @@ final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
             ?? Currency(code: "USD", name: "US Dollar", symbol: "$")
         }
         
-        storage.set(defaultBaseCurrencyCode, forKey: baseCurrencyKey)
+        let currencyToSave = CurrencyFactory.createCurrency(for: defaultBaseCurrencyCode)
+        ?? Currency(code: "USD", name: "US Dollar", symbol: "$")
+        storage.save(currency: currencyToSave)
         self.baseCurrency = currency
     }
     
@@ -58,6 +47,6 @@ final class BaseCurrencyManagerImpl: ObservableObject, BaseCurrencyManager {
     /// Установить новую базовую валюту
     func setBaseCurrency(_ currency: Currency) {
         baseCurrency = currency
-        storage.set(currency.code, forKey: baseCurrencyKey)
+        storage.save(currency: currency)
     }
 }
