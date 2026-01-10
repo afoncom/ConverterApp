@@ -1,5 +1,5 @@
 //
-//  LocalStorageProtocol.swift
+//  LocalStorage.swift
 //  CurrencyConverter
 //
 //  Created by afon.com on 09.01.2026.
