@@ -107,4 +107,4 @@ Generated/
 # Tuist
 *.xcodeproj
 *.xcworkspace
-.tuist
+.tuist.swiftlint.yml
