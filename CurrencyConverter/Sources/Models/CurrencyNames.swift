@@ -27,25 +27,3 @@ struct CurrencyNames {
         return localizedName != key ? localizedName : nil
     }
 }
-
-
-protocol CurrencyNameProvider {
-    func localizedName(for currencyCode: String, languageCode: String) -> String?
-}
-
-final class BundleCurrencyNameProvider: CurrencyNameProvider {
-    private let bundle: Bundle
-    
-    init(bundle: Bundle) {
-        self.bundle = bundle
-    }
-    
-    func localizedName(for currencyCode: String, languageCode: String) -> String? {
-        let key = "currency_\(currencyCode)"
-        guard let path = bundle.path(forResource: languageCode, ofType: "lproj"),
-              let languageBundle = Bundle(path: path) else { return nil }
-        
-        let localizedName = NSLocalizedString(key, bundle: languageBundle, comment: "")
-        return localizedName != key ? localizedName : nil
-    }
-}

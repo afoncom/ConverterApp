@@ -12,16 +12,13 @@ import XCTest
 final class CurrencyNamesTests: XCTestCase {
 
     private var appBundle: Bundle!
-    private var provider: CurrencyNameProvider!
     
     override func setUpWithError() throws {
         appBundle = Bundle(for: CurrencyManagerImpl.self)
-        provider = BundleCurrencyNameProvider(bundle: appBundle)
     }
 
     override func tearDownWithError() throws {
         appBundle = nil
-        provider = nil
     }
     // MARK: - CurrencyNames.getLocalizedName() tests
     func testGetLocalizedName_returnsName_whenCurrencyAndLanguageExist() {
@@ -39,20 +36,4 @@ final class CurrencyNamesTests: XCTestCase {
         XCTAssertNil(name)
     }
     
-    // MARK: - CurrencyNameProvider.localizedName() tests
-    
-    func testLocalizedName_returnsName_whenCurrencyAndLanguageExists() {
-        let name = provider.localizedName(for: "USD", languageCode: "en")
-        XCTAssertNotNil(name)
-    }
-    
-    func testLocalizedName_returnsNil_whenCurrencyDoesNotExist() {
-        let name = provider.localizedName(for: "ZZZ", languageCode: "en")
-        XCTAssertNil(name)
-    }
-    
-    func testLocalizedName_returnsNil_whenLanguageNotSupported () {
-        let name = provider.localizedName(for: "USD", languageCode: "xyz")
-        XCTAssertNil(name)
-    }
 }
