@@ -38,7 +38,7 @@ struct CurrencyConverterApp: App {
             )
         }()
         
-        self._themeManager = ObservedObject(wrappedValue: serviceContainer.themeManager)
+        self.themeManager = serviceContainer.themeManager
     }
     
     var body: some Scene {
