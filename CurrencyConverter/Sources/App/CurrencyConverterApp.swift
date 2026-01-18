@@ -10,6 +10,7 @@ import SwiftUI
 struct CurrencyConverterApp: App {
     private let serviceContainer: ServiceContainer
     private let currencyManager: CurrencyManager
+    @ObservedObject private var themeManager: ThemeManager
     
     init() {
        self.currencyManager = CurrencyManagerImpl()
@@ -36,32 +37,14 @@ struct CurrencyConverterApp: App {
                 currencyService: currencyService
             )
         }()
+        
+        self.themeManager = serviceContainer.themeManager
     }
     
     var body: some Scene {
         WindowGroup {
-            ContentView(currencyManager: currencyManager, serviceContainer: serviceContainer)
+            WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
+                .preferredColorScheme(themeManager.colorScheme)
         }
-    }
-}
-
-// MARK: - Content View с динамической темой
-
-struct ContentView: View {
-    let currencyManager: CurrencyManager
-    let serviceContainer: ServiceContainer
-    @ObservedObject private var themeManager: ThemeManager
-    @ObservedObject private var localizationManager: LocalizationManager
-    
-    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
-        self.currencyManager = currencyManager
-        self.serviceContainer = serviceContainer
-        self.themeManager = serviceContainer.themeManager
-        self.localizationManager = serviceContainer.localizationManager
-    }
-    
-    var body: some View {
-        WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
-            .preferredColorScheme(themeManager.colorScheme)
     }
 }
