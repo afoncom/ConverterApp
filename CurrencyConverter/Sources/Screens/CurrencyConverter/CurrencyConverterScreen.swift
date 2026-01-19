@@ -56,12 +56,20 @@ struct CurrencyConverterScreen: View {
         NavigationStack {
             VStack(spacing: 20) {
                 amountInputView
-                connectionStatusView
-                errorMessageView
+                if let status = viewModel.connectionStatus {
+                    connectionStatusView(status: status)
+                }
+                if let error = viewModel.errorMessage {
+                    errorMessageView(error: error)
+                }
                 currencySelectionView
-                exchangeRateInfoView
+                if let result = viewModel.conversionResult {
+                    exchangeRateInfoView(result: result)
+                }
                 convertButton
-                conversionResultView
+                if let result = viewModel.conversionResult {
+                    conversionResultView(result: result)
+                }
                 Spacer()
             }
             .accessibilityHidden(true)
@@ -112,9 +120,7 @@ struct CurrencyConverterScreen: View {
         }
     }
     
-    // MARK: - View Components
-    
-    // MARK: Amount Input
+    // MARK: - Amount Input
     private var amountInputView: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(L10n.amountInputLabel)
@@ -141,49 +147,43 @@ struct CurrencyConverterScreen: View {
         }
     }
     
-    // MARK: Connection Status
-    @ViewBuilder
-    private var connectionStatusView: some View {
-        if let status = viewModel.connectionStatus {
-            let isNoConnection = status == L10n.noConnection
-            HStack {
-                Image(systemName: isNoConnection ? "wifi.slash" : "clock")
-                Text(status)
-                Spacer()
-                if let lastUpdated = viewModel.lastUpdated {
-                    Text(lastUpdated, style: .relative)
-                        .font(.caption2)
-                }
+    // MARK: - Connection Status
+    private func connectionStatusView(status: String) -> some View {
+        let isNoConnection = status == L10n.noConnection
+        return HStack {
+            Image(systemName: isNoConnection ? "wifi.slash" : "clock")
+            Text(status)
+            Spacer()
+            if let lastUpdated = viewModel.lastUpdated {
+                Text(lastUpdated, style: .relative)
+                    .font(.caption2)
             }
-            .font(.caption)
-            .foregroundColor(isNoConnection ? .red : .orange)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
-            .cornerRadius(8)
         }
+        .font(.caption)
+        .foregroundColor(isNoConnection ? .red : .orange)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+        .cornerRadius(8)
     }
     
-    // MARK: Error Message
-    @ViewBuilder
-    private var errorMessageView: some View {
-        if let error = viewModel.errorMessage {
-            let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
-            HStack {
-                Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
-                    .foregroundColor(isNoConnectionError ? .red : .orange)
-                Text(error)
-                    .font(.caption)
-                    .foregroundColor(isNoConnectionError ? .red : .orange)
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isNoConnectionError ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
-            .cornerRadius(8)
+    // MARK: - Error Message
+    private func errorMessageView(error: String) -> some View {
+        let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
+        return HStack {
+            Image(systemName: isNoConnectionError ? "wifi.slash" : "exclamationmark.triangle")
+                .foregroundColor(isNoConnectionError ? .red : .orange)
+            Text(error)
+                .font(.caption)
+                .foregroundColor(isNoConnectionError ? .red : .orange)
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(isNoConnectionError ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
+        .cornerRadius(8)
     }
     
-    // MARK: Currency Selection
+    // MARK: - Currency Selection
     private var currencySelectionView: some View {
         HStack(spacing: 16) {
             // Базовая валюта (ИЗ)
@@ -223,35 +223,32 @@ struct CurrencyConverterScreen: View {
         }
     }
     
-    // MARK: Exchange Rate Info
-    @ViewBuilder
-    private var exchangeRateInfoView: some View {
-        if let result = viewModel.conversionResult {
-            HStack {
-                Image(systemName: "chart.line.uptrend.xyaxis")
-                    .foregroundColor(.orange)
-                    .font(.system(size: 14))
-                
-                Text(L10n.exchangeRate)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.secondary)
-                
-                Text("1 \(result.fromCurrency.code) = \(String(format: "%.*f", serviceContainer.themeManager.decimalPrecision, result.exchangeRate)) \(result.toCurrency.code)")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.primary)
-                
-                Spacer()
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.secondarySystemBackground))
-            }
+    // MARK: - Exchange Rate Info
+    private func exchangeRateInfoView(result: ConversionResult) -> some View {
+        HStack {
+            Image(systemName: "chart.line.uptrend.xyaxis")
+                .foregroundColor(.orange)
+                .font(.system(size: 14))
+            
+            Text(L10n.exchangeRate)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.secondary)
+            
+            Text("1 \(result.fromCurrency.code) = \(String(format: "%.*f", serviceContainer.themeManager.decimalPrecision, result.exchangeRate)) \(result.toCurrency.code)")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.primary)
+            
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(.secondarySystemBackground))
         }
     }
     
-    // MARK: Convert Button
+    // MARK: - Convert Button
     private var convertButton: some View {
         Button {
             convertCurrency()
@@ -280,63 +277,60 @@ struct CurrencyConverterScreen: View {
         }
     }
     
-    // MARK: Conversion Result
-    @ViewBuilder
-    private var conversionResultView: some View {
-        if let result = viewModel.conversionResult {
-            VStack(spacing: 16) {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
-                        .font(.system(size: 20))
-                    
-                    Text(L10n.conversionResult)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.primary)
-                    
-                    Spacer()
-                }
+    // MARK: - Conversion Result
+    private func conversionResultView(result: ConversionResult) -> some View {
+        VStack(spacing: 16) {
+            HStack {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.green)
+                    .font(.system(size: 20))
                 
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(L10n.fromAmount)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
-                        
-                        Text(result.formattedOriginal)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.primary)
-                    }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "equal")
-                        .font(.system(size: 16, weight: .semibold))
+                Text(L10n.conversionResult)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.primary)
+                
+                Spacer()
+            }
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(L10n.fromAmount)
+                        .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.secondary)
                     
-                    Spacer()
+                    Text(result.formattedOriginal)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.primary)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "equal")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(L10n.toAmount)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.secondary)
                     
-                    VStack(alignment: .trailing, spacing: 4) {
-                        Text(L10n.toAmount)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
-                        
-                        Text(result.formattedConverted)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.green)
-                    }
+                    Text(result.formattedConverted)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.green)
                 }
             }
-            .padding(20)
-            .background {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(.systemBackground))
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.green.opacity(0.2), lineWidth: 1)
-            }
+        }
+        .padding(20)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemBackground))
+                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.green.opacity(0.2), lineWidth: 1)
         }
     }
     // MARK: - Private Methods (Приватные методы)
