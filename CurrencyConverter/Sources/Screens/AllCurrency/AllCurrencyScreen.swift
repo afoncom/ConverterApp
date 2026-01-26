@@ -233,8 +233,3 @@ struct AllCurrencyScreen: View {
     }
     
 }
-
-
-#Preview {
-    AllCurrencyScreen(currencyManager: CurrencyManagerImpl(), serviceContainer: .makePreview(), onCurrencySelected: nil)
-}

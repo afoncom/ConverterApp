@@ -9,23 +9,22 @@ import SwiftUI
 struct SettingScreen: View {
     
     // MARK: - Dependencies
-    
-    let serviceContainer: ServiceContainer
+    @ObservedObject private var viewModel: SettingViewModel
+    private let presenter: SettingPresenter
     
     // MARK: - State Variables
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     
-    @ObservedObject private var themeManager: ThemeManager
-    @ObservedObject private var localizationManager: LocalizationManager
-    
     // MARK: - Initialization (Инициализация)
     
-    init(serviceContainer: ServiceContainer) {
-        self.serviceContainer = serviceContainer
-        self.themeManager = serviceContainer.themeManager
-        self.localizationManager = serviceContainer.localizationManager
+    init(
+        viewModel: SettingViewModel,
+        presenter: SettingPresenter
+    ) {
+        self.viewModel = viewModel
+        self.presenter = presenter
     }
     
     // MARK: - Body
@@ -45,7 +44,7 @@ struct SettingScreen: View {
                         
                         Spacer()
                         
-                        Toggle("", isOn: $themeManager.isDarkMode)
+                        Toggle("", isOn: $viewModel.themeManager.isDarkMode)
                     }
                     
                     // Decimal Precision Picker
@@ -56,7 +55,7 @@ struct SettingScreen: View {
                         
                         Spacer()
                         
-                        Picker(L10n.decimalPrecision, selection: $themeManager.decimalPrecision) {
+                        Picker(L10n.decimalPrecision, selection: $viewModel.themeManager.decimalPrecision) {
                             ForEach(1...5, id: \.self) { precision in
                                 Text("\(precision)").tag(precision)
                             }
@@ -71,7 +70,7 @@ struct SettingScreen: View {
                         
                         Spacer()
                         
-                        Picker(L10n.language, selection: $localizationManager.currentLanguage) {
+                        Picker(L10n.language, selection: $viewModel.localizationManager.currentLanguage) {
                             ForEach(Language.allCases, id: \.self) { language in
                                 Text(language.displayName).tag(language)
                             }
@@ -147,12 +146,7 @@ struct SettingScreen: View {
                 }
             }
         }
-        .preferredColorScheme(themeManager.colorScheme)
+        .preferredColorScheme(viewModel.themeManager.colorScheme)
     }
 }
 
-// MARK: - Preview
-
-#Preview {
-    SettingScreen(serviceContainer: .makePreview())
-}
