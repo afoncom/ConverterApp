@@ -105,7 +105,7 @@ struct CurrencyConverterScreen: View {
             }
             
             .sheet(isPresented: $showSettings) {
-                SettingScreen(serviceContainer: serviceContainer)
+                SettingModule.build(serviceContainer: serviceContainer)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.visible)
             }
@@ -374,8 +374,4 @@ struct CurrencyConverterScreen: View {
         
         convertCurrency()
     }
-}
-
-#Preview {
-    CurrencyConverterScreen(currencyManager: CurrencyManagerImpl(), serviceContainer: .makePreview())
 }

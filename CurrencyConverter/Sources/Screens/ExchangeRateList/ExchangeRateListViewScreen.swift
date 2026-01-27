@@ -180,8 +180,3 @@ struct ExchangeRateListViewScreen: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
-
-
-#Preview {
-    ExchangeRateListViewScreen(currencyManager: CurrencyManagerImpl(), serviceContainer: .makePreview())
-}
