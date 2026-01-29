@@ -36,7 +36,7 @@ jobs:
           set -o pipefail && xcodebuild test \
             -workspace CurrencyConverter.xcworkspace \
             -scheme CurrencyConverter \
-            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.5' \
+            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.1' \
             -enableCodeCoverage YES \
             | tee xcodebuild.log
       - name: Upload logs if failed
