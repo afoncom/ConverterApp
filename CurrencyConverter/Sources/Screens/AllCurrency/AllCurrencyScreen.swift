@@ -8,38 +8,18 @@
 import SwiftUI
 
 struct AllCurrencyScreen: View {
-    
-    // MARK: - Screen states (Состояния экрана)
-    
-    @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
     @StateObject private var viewModel: AllCurrencyViewModel
-    @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
+    private let presenter: AllCurrencyPresenter
     
-    let currencyManager: CurrencyManager                // Менеджер выбранных валют
-    let serviceContainer: ServiceContainer               // Контейнер сервисов
-    let onCurrencySelected: ((String) -> Void)?          // Callback при выборе валюты
-    
-    // MARK: - Computed Properties (Вычисленные свойства)
-    
-    private var localizationManager: LocalizationManager {
-        serviceContainer.localizationManager
-    }
-    
-    // MARK: - Initialization (Инициализация)
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var isSearchFocused: Bool
     
     init(
-        currencyManager: CurrencyManager,
-        serviceContainer: ServiceContainer,
-        onCurrencySelected: ((String) -> Void)? = nil
+        viewModel: AllCurrencyViewModel,
+        presenter: AllCurrencyPresenter
     ) {
-        self.currencyManager = currencyManager
-        self.serviceContainer = serviceContainer
-        self.onCurrencySelected = onCurrencySelected
-        
-        _viewModel = StateObject(wrappedValue: AllCurrencyViewModel(
-            currencyService: serviceContainer.currencyService,
-            currencyManager: currencyManager
-        ))
+        self.presenter = presenter
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     // MARK: - Body экрана
@@ -71,10 +51,6 @@ struct AllCurrencyScreen: View {
             .navigationTitle(L10n.allCurrenciesWithCount(String(viewModel.filteredCurrencies.count)))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                
-                
-                viewModel.setServices(currencyService: serviceContainer.currencyService, localizationManager: localizationManager)
-                
                 if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
                     Task {
                         await viewModel.loadAllCurrencies()
@@ -224,12 +200,10 @@ struct AllCurrencyScreen: View {
     
     // MARK: - Добавление валюты в список
     
-    /// Добавляет выбранную валюту, скрывает клавиатуру, показывает алерт и вызывает callback
+    /// Добавляет выбранную валюту, скрывает клавиатуру, показывает алерт
     private func addCurrency(_ currency: String) {
         isSearchFocused = false
         viewModel.addCurrency(currency)
         viewModel.showCurrencyAddedAlert(currency: currency)
-        onCurrencySelected?(currency)
     }
-    
 }

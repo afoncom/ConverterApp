@@ -17,6 +17,7 @@ final class ServiceContainer {
     let cacheService: CacheService                      // Сервис для кэширования данных
     let networkService: CurrencyNetworkService
     let currencyService: CurrencyService                       // Сервис для работы с валютами
+    let currencyManager: CurrencyManager
     
     init (
         baseCurrencyManager: BaseCurrencyManager,
@@ -24,7 +25,8 @@ final class ServiceContainer {
         localizationManager: LocalizationManager,
         cacheService: CacheService,
         networkService: CurrencyNetworkService,
-        currencyService: CurrencyService
+        currencyService: CurrencyService,
+        currencyManager: CurrencyManager
     ) {
         self.baseCurrencyManager = baseCurrencyManager
         self.themeManager = themeManager
@@ -32,6 +34,7 @@ final class ServiceContainer {
         self.cacheService = cacheService
         self.networkService = networkService
         self.currencyService = currencyService
+        self.currencyManager = currencyManager
     }
 }
 
@@ -44,6 +47,7 @@ extension ServiceContainer {
         let localizationManager = LocalizationManager()
         let cacheService = CacheServiceImpl()
         let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
+        let currencyManager = CurrencyManagerImpl()
         let currencyService = CurrencyServiceImpl(
             networkService: networkService,
             themeManager: themeManager,
@@ -56,7 +60,8 @@ extension ServiceContainer {
             localizationManager: localizationManager,
             cacheService: cacheService,
             networkService: networkService,
-            currencyService: currencyService
+            currencyService: currencyService,
+            currencyManager: currencyManager
         )
     }
 }
