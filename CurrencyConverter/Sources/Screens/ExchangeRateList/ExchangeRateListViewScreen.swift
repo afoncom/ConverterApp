@@ -51,64 +51,7 @@ struct ExchangeRateListViewScreen: View {
                 } else if let error = viewModel.errorMessage {
                     errorView(error)
                 } else {
-                    List(viewModel.items, id: \.toCurrency.code) { exchangeRate in
-                        Button {
-                            onCurrencySelected?(exchangeRate.toCurrency)
-                            dismiss()
-                        } label: {
-                            HStack(spacing: 16) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color(.systemBlue).opacity(0.1))
-                                        .frame(width: 50, height: 50)
-                                    
-                                    Text(exchangeRate.toCurrency.symbol)
-                                        .font(.system(size: 20, weight: .semibold))
-                                        .foregroundColor(.blue)
-                                }
-                                
-                                VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
-                                        Text(exchangeRate.toCurrency.code)
-                                            .font(.system(size: 16, weight: .semibold))
-                                            .foregroundColor(.primary)
-                                        
-                                        Spacer()
-                                        
-                                        Text(String(format: "%.*f", serviceContainer.themeManager.decimalPrecision, exchangeRate.rate))
-                                            .font(.system(size: 16, weight: .medium))
-                                            .foregroundColor(.primary)
-                                    }
-                                    
-                                    HStack {
-                                        Text(exchangeRate.toCurrency.name)
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.secondary)
-                                            .lineLimit(1)
-                                        
-                                        Spacer()
-                                        
-                                        Text("1 \(exchangeRate.fromCurrency.code)")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding(.vertical, 8)
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button {
-                                viewModel.removeCurrency(exchangeRate.toCurrency.code)
-                            } label: {
-                                Label(L10n.delete, systemImage: "trash")
-                            }
-                            .tint(.red)
-                        }
-                    }
+                    currencyListView
                 }
             }
             .navigationTitle(L10n.selectCurrency)
@@ -124,13 +67,12 @@ struct ExchangeRateListViewScreen: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
-                        AllCurrencyScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { selectedCurrency in
-                            print(L10n.addedCurrency(selectedCurrency.description))
-                            
-                            Task {
-                                await viewModel.reload()
+                        AllCurrencyModule.build(serviceContainer: serviceContainer)
+                            .onAppear {
+                                Task {
+                                    await viewModel.reload()
+                                }
                             }
-                        }
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -150,9 +92,74 @@ struct ExchangeRateListViewScreen: View {
         }
     }
         
-        // MARK: - Private Views
-            
-            private func errorView(_ error: String) -> some View {
+    // MARK: - Private Views
+    
+    private var currencyListView: some View {
+        List(viewModel.items, id: \.toCurrency.code) { exchangeRate in
+            currencyRowView(exchangeRate)
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button {
+                        viewModel.removeCurrency(exchangeRate.toCurrency.code)
+                    } label: {
+                        Label(L10n.delete, systemImage: "trash")
+                    }
+                    .tint(.red)
+                }
+        }
+    }
+    
+    private func currencyRowView(_ exchangeRate: ExchangeRate) -> some View {
+        Button {
+            onCurrencySelected?(exchangeRate.toCurrency)
+            dismiss()
+        } label: {
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(Color(.systemBlue).opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    
+                    Text(exchangeRate.toCurrency.symbol)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.blue)
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(exchangeRate.toCurrency.code)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        Text(String(format: "%.*f", serviceContainer.themeManager.decimalPrecision, exchangeRate.rate))
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.primary)
+                    }
+                    
+                    HStack {
+                        Text(exchangeRate.toCurrency.name)
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                        
+                        Spacer()
+                        
+                        Text("1 \(exchangeRate.fromCurrency.code)")
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.vertical, 8)
+        }
+    }
+    
+    private func errorView(_ error: String) -> some View {
                 let isNoConnectionError = error.contains(L10n.apiErrorNoDataAndNoConnection)
                 
                 return VStack(spacing: 15) {
