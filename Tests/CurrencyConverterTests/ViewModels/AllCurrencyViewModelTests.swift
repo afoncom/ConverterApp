@@ -18,9 +18,14 @@ final class AllCurrencyViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         let service = CurrencyServiceMock()
+        let localizationManager = LocalizationManager()
         
         currencyManager = CurrencyManagerMock()
-        viewModel = AllCurrencyViewModel(currencyService: service, currencyManager: currencyManager)
+        viewModel = AllCurrencyViewModel(
+            currencyService: service,
+            currencyManager: currencyManager,
+            localizationManager: localizationManager
+        )
     }
     
     // MARK: - Tests
@@ -66,12 +71,10 @@ final class AllCurrencyViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.pressedCurrency, "USD")
     }
     
-    func test_setServices() async {
-        let newService = CurrencyServiceMock()
+    func test_loadAllCurrencies() async {
         await viewModel.loadAllCurrencies()
         
-        viewModel.setServices(currencyService: newService, localizationManager: nil)
-        
         XCTAssertFalse(viewModel.availableCurrencies.isEmpty)
+        XCTAssertFalse(viewModel.isLoading)
     }
 }
