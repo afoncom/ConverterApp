@@ -13,14 +13,15 @@ struct CurrencyConverterApp: App {
     @ObservedObject private var themeManager: ThemeManager
     
     init() {
-       self.currencyManager = CurrencyManagerImpl()
+        self.currencyManager = CurrencyManagerImpl()
         
-       self.serviceContainer = {
+        self.serviceContainer = {
             let baseCurrencyManager = BaseCurrencyManagerImpl()
             let themeManager = ThemeManager()
             let localizationManager = LocalizationManager()
             let cacheService = CacheServiceImpl()
             let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
+            let currencyManager = CurrencyManagerImpl()
             
             let currencyService = CurrencyServiceImpl(
                 networkService: networkService,
@@ -34,7 +35,8 @@ struct CurrencyConverterApp: App {
                 localizationManager: localizationManager,
                 cacheService: cacheService,
                 networkService: networkService,
-                currencyService: currencyService
+                currencyService: currencyService,
+                currencyManager: currencyManager
             )
         }()
         
