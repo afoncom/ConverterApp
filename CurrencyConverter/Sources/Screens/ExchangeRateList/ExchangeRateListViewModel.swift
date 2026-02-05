@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-@MainActor
 final class ExchangeRateListViewModel: ObservableObject {
     
     // MARK: - Состояния экрана
@@ -54,6 +52,7 @@ final class ExchangeRateListViewModel: ObservableObject {
     // MARK: - Загрузка курсов валют
     
     /// Загружает курсы валют относительно базовой и выбранных пользователем валют
+    @MainActor
     func reload() async {
         isLoading = true
         errorMessage = nil

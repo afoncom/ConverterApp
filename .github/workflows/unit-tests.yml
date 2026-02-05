@@ -30,7 +30,6 @@ jobs:
       - name: Trust SwiftLint plugin
         run: |
           defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
-
       - name: Run Unit Tests
         run: |
           set -o pipefail && xcodebuild test \
