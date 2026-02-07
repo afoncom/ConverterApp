@@ -43,7 +43,12 @@ struct CurrencyConverterApp: App {
     
     var body: some Scene {
         WindowGroup {
-            WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
+            WelcomeScreen(
+                currencyManager: currencyManager,
+                serviceContainer: serviceContainer,
+                baseCurrency: serviceContainer.baseCurrencyManager.baseCurrency
+                
+            )
                 .preferredColorScheme(themeManager.colorScheme)
         }
     }
