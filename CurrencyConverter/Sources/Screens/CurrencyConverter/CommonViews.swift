@@ -23,7 +23,7 @@ struct CurrencyButton: View {
                     .fontWeight(.medium)
                     .foregroundColor(.secondary)
                 
-                Text(currency.symbol)
+                Text(currency.code)
                     .font(.largeTitle)
                     .fontWeight(.bold)
             }

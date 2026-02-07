@@ -12,12 +12,18 @@ struct WelcomeScreen: View {
     
     let currencyManager: CurrencyManager
     let serviceContainer: ServiceContainer
+    let baseCurrency: Currency
     @ObservedObject private var localizationManager: LocalizationManager
     
-    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
+    init(
+        currencyManager: CurrencyManager,
+        serviceContainer: ServiceContainer,
+        baseCurrency: Currency
+    ) {
         self.currencyManager = currencyManager
         self.serviceContainer = serviceContainer
         self.localizationManager = serviceContainer.localizationManager
+        self.baseCurrency = baseCurrency
     }
     
     var body: some View {
@@ -41,11 +47,11 @@ struct WelcomeScreen: View {
                 }
             }
         } else {
-            CurrencyConverterScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
+            CurrencyConverterModul.build(
+                serviceContainer: serviceContainer,
+                currencyManager: currencyManager,
+                baseCurrency: baseCurrency
+            )
         }
     }
-}
-
-#Preview {
-    WelcomeScreen(currencyManager: CurrencyManagerImpl(), serviceContainer: .makePreview())
 }

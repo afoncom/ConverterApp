@@ -1,5 +1,5 @@
 //
-//  CurrencyConverterViewModelTests.swift
+//  CurrencyConverterPresenterTests.swift
 //  CurrencyConverter
 //
 //  Created by afon.com on 21.12.2025.
@@ -10,8 +10,9 @@ import XCTest
 @testable import CurrencyConverter
 
 @MainActor
-final class CurrencyConverterViewModelTests: XCTestCase {
+final class CurrencyConverterPresenterTests: XCTestCase {
     
+    private var presenter: CurrencyConverterPresenterImpl!
     private var viewModel: CurrencyConverterViewModel!
     private var currencyServiceMock: CurrencyServiceMock!
     private var baseCurrencyManagerMock: BaseCurrencyManagerMock!
@@ -20,7 +21,19 @@ final class CurrencyConverterViewModelTests: XCTestCase {
         super.setUp()
         currencyServiceMock = CurrencyServiceMock()
         baseCurrencyManagerMock = BaseCurrencyManagerMock(baseCurrency: Currency(code: "USD", name: "US Dollar", symbol: "$"))
-        viewModel = CurrencyConverterViewModel(currencyService: currencyServiceMock, baseCurrencyManager: baseCurrencyManagerMock)
+        let baseCurrency = Currency(code: "USD", name: "US Dollar", symbol: "$")
+        viewModel = CurrencyConverterViewModel(themeManager: ThemeManager(), localizationManager: LocalizationManager(), baseCurrency: baseCurrency)
+        let cacheServiceMock = CacheServiceImpl()
+        let networkServiceMock = CurrencyNetworkServiceImpl(cacheService: cacheServiceMock)
+        let serviceContainer = ServiceContainer(
+            baseCurrencyManager: baseCurrencyManagerMock,
+            themeManager: ThemeManager(),
+            localizationManager: LocalizationManager(),
+            cacheService: cacheServiceMock,
+            networkService: networkServiceMock,
+            currencyService: currencyServiceMock
+        )
+        presenter = CurrencyConverterPresenterImpl(viewModel: viewModel, serviceContainer: serviceContainer)
     }
     
     func test_convert() {
@@ -38,32 +51,19 @@ final class CurrencyConverterViewModelTests: XCTestCase {
         )
         currencyServiceMock.mockConversionResult = expectedResult
         
-        viewModel.convert(amount: amount, to: toCurrency)
+        presenter.convert(amount: amount, to: toCurrency)
         
         XCTAssertNotNil(viewModel.conversionResult)
         XCTAssertEqual(viewModel.conversionResult?.convertedAmount, 92.0)
         XCTAssertEqual(viewModel.conversionResult?.toCurrency.code, "EUR")
     }
     
-    func test_refreshResultFormatting() {
-        let amount = 100.0
-        let fromCurrency = Currency(code: "USD", name: "US Dollar", symbol: "$")
+    func test_swapCurrencies() {
         let toCurrency = Currency(code: "EUR", name: "Euro", symbol: "€")
-        let result = ConversionResult(
-            originalAmount: amount,
-            convertedAmount: 92.0,
-            fromCurrency: fromCurrency,
-            toCurrency: toCurrency,
-            exchangeRate: 0.92,
-            formattedOriginal: "$100.00",
-            formattedConverted: "€92.00"
-        )
-        viewModel.conversionResult = result
-        currencyServiceMock.mockConversionResult = result
         
-        viewModel.refreshResultFormatting()
+        presenter.swapCurrencies(with: toCurrency)
         
-        XCTAssertNotNil(viewModel.conversionResult)
-        XCTAssertEqual(viewModel.conversionResult?.originalAmount, 100.0)
+        XCTAssertEqual(viewModel.selectedCurrencyCode, "USD")
+        XCTAssertEqual(baseCurrencyManagerMock.baseCurrency.code, "EUR")
     }
 }
