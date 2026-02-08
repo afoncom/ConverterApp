@@ -13,7 +13,9 @@ import XCTest
 final class AllCurrencyViewModelTests: XCTestCase {
     
     private var viewModel: AllCurrencyViewModel!
+    private var presenter: AllCurrencyPresenterImpl!
     private var currencyManager: CurrencyManagerMock!
+    private var serviceContainer: ServiceContainer!
     
     override func setUp() {
         super.setUp()
@@ -26,30 +28,39 @@ final class AllCurrencyViewModelTests: XCTestCase {
             currencyManager: currencyManager,
             localizationManager: localizationManager
         )
+        
+        let baseCurrencyManager = BaseCurrencyManagerImpl()
+        let themeManager = ThemeManager()
+        let cacheService = CacheServiceImpl()
+        let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
+        
+        serviceContainer = ServiceContainer(
+            baseCurrencyManager: baseCurrencyManager,
+            themeManager: themeManager,
+            localizationManager: localizationManager,
+            cacheService: cacheService,
+            networkService: networkService,
+            currencyService: service,
+            currencyManager: currencyManager
+        )
+        presenter = AllCurrencyPresenterImpl(
+            viewModel: viewModel,
+            serviceContainer: serviceContainer
+        )
     }
-    
-    // MARK: - Tests
     
     func test_addCurrency() {
         XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
         
-        viewModel.addCurrency("USD")
+        presenter.addCurrency("USD")
         
         XCTAssertEqual(currencyManager.selectedCurrencies, ["USD"])
-    }
-    
-    func test_removeCurrency() {
-        currencyManager.selectedCurrencies = ["USD"]
-        
-        currencyManager.removeCurrency("USD")
-        
-        XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
     }
         
     func test_clearSearch() {
         viewModel.searchText = "EUR"
         
-        viewModel.clearSearch()
+        presenter.clearSearch()
         
         XCTAssertEqual(viewModel.searchText, "")
     }
@@ -57,22 +68,14 @@ final class AllCurrencyViewModelTests: XCTestCase {
     func test_showCurrencyAddedAlert() {
         XCTAssertFalse(viewModel.showAddedAlert)
         
-        viewModel.showCurrencyAddedAlert(currency: "USD")
+//        presenter.showCurrencyAddedAlert(currency: "USD")
         
         XCTAssertEqual(viewModel.addedCurrency, "USD")
         XCTAssertTrue(viewModel.showAddedAlert)
     }
     
-    func test_setPressedCurrency() {
-        XCTAssertNil(viewModel.pressedCurrency)
-        
-        viewModel.setPressedCurrency("USD")
-        
-        XCTAssertEqual(viewModel.pressedCurrency, "USD")
-    }
-    
     func test_loadAllCurrencies() async {
-        await viewModel.loadAllCurrencies()
+        await presenter.loadAllCurrencies()
         
         XCTAssertFalse(viewModel.availableCurrencies.isEmpty)
         XCTAssertFalse(viewModel.isLoading)

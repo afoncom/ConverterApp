@@ -53,7 +53,7 @@ struct AllCurrencyScreen: View {
             .onAppear {
                 if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
                     Task {
-                        await viewModel.loadAllCurrencies()
+                        await presenter.loadAllCurrencies()
                     }
                 }
             }
@@ -67,7 +67,7 @@ struct AllCurrencyScreen: View {
                     Text(
                         L10n.currencyAddedMessage(
                             currency,
-                            viewModel.getLocalizedName(for: currency) ?? L10n.unknownCurrency
+                            presenter.getLocalizedName(for: currency) ?? L10n.unknownCurrency
                         )
                     )
                 }
@@ -89,7 +89,7 @@ struct AllCurrencyScreen: View {
                 
                 if !viewModel.searchText.isEmpty {
                     Button {
-                        viewModel.clearSearch()
+                        presenter.clearSearch()
                         isSearchFocused = false
                     } label: {
                         Image(systemName: "xmark.circle.fill")
@@ -138,7 +138,7 @@ struct AllCurrencyScreen: View {
                 .padding(.horizontal)
             Button(L10n.retry) {
                 Task {
-                    await viewModel.reload()
+                    await presenter.reload()
                 }
             }
             .padding()
@@ -157,7 +157,6 @@ struct AllCurrencyScreen: View {
         .listStyle(PlainListStyle())
         .animation(.easeInOut(duration: 0.3), value: viewModel.filteredCurrencies)
         .onTapGesture { isSearchFocused = false }
-        .accessibilityAddTraits(.isButton)
     }
     
     private func currencyRow(_ currency: String) -> some View {
@@ -166,7 +165,7 @@ struct AllCurrencyScreen: View {
                 Text(currency)
                     .font(.headline)
                     .fontWeight(.semibold)
-                Text(viewModel.getLocalizedName(for: currency) ?? L10n.unknownCurrency)
+                Text(presenter.getLocalizedName(for: currency) ?? L10n.unknownCurrency)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
@@ -193,7 +192,7 @@ struct AllCurrencyScreen: View {
             minimumDuration: 0,
             maximumDistance: .infinity,
             pressing: { isPressing in
-                viewModel.setPressedCurrency(isPressing ? currency : nil)
+                presenter.setPressedCurrency(isPressing ? currency : nil)
             }, perform: {}
         )
     }
@@ -203,7 +202,7 @@ struct AllCurrencyScreen: View {
     /// Добавляет выбранную валюту, скрывает клавиатуру, показывает алерт
     private func addCurrency(_ currency: String) {
         isSearchFocused = false
-        viewModel.addCurrency(currency)
-        viewModel.showCurrencyAddedAlert(currency: currency)
+        presenter.addCurrency(currency)
+        presenter.showCurrencyAddedAlert(currency: currency)
     }
 }

@@ -22,6 +22,8 @@ final class AllCurrencyModule {
             viewModel: viewModel,
             serviceContainer: serviceContainer
         )
-        return AllCurrencyScreen(viewModel: viewModel, presenter: presenter)
+        
+        let view = AllCurrencyScreen(viewModel: viewModel, presenter: presenter)
+        return view
     }
 }
