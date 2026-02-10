@@ -149,4 +149,3 @@ struct SettingScreen: View {
         .preferredColorScheme(viewModel.themeManager.colorScheme)
     }
 }
-

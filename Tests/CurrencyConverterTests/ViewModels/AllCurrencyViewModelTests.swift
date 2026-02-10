@@ -23,11 +23,7 @@ final class AllCurrencyViewModelTests: XCTestCase {
         let localizationManager = LocalizationManager()
         
         currencyManager = CurrencyManagerMock()
-        viewModel = AllCurrencyViewModel(
-            currencyService: service,
-            currencyManager: currencyManager,
-            localizationManager: localizationManager
-        )
+        viewModel = AllCurrencyViewModel()
         
         let baseCurrencyManager = BaseCurrencyManagerImpl()
         let themeManager = ThemeManager()
@@ -68,7 +64,6 @@ final class AllCurrencyViewModelTests: XCTestCase {
     func test_showCurrencyAddedAlert() {
         XCTAssertFalse(viewModel.showAddedAlert)
         
-//        presenter.showCurrencyAddedAlert(currency: "USD")
         
         XCTAssertEqual(viewModel.addedCurrency, "USD")
         XCTAssertTrue(viewModel.showAddedAlert)

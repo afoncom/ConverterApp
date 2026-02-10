@@ -41,7 +41,7 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
         viewModel.connectionStatus = nil
         
         do {
-            let result = try await viewModel.currencyService.getAllAvailableCurrencies(requestType: .networkOrCache)
+            let result = try await serviceContainer.currencyService.getAllAvailableCurrencies(requestType: .networkOrCache)
             viewModel.allCurrencies = result.data
             viewModel.lastUpdated = result.lastUpdated
             
@@ -72,7 +72,7 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
     
     /// Добавляет валюту в список выбранных
     func addCurrency(_ currencyCode: String) {
-        viewModel.currencyManager.addCurrency(currencyCode)
+        serviceContainer.currencyManager.addCurrency(currencyCode)
     }
     
     /// Показывает алерт о добавленной валюте
@@ -93,6 +93,6 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
     
     /// Возвращает локализованное название валюты
     func getLocalizedName(for currencyCode: String) -> String? {
-        viewModel.getLocalizedName(for: currencyCode)
+        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: serviceContainer.localizationManager.languageCode)
     }
 }

@@ -61,7 +61,9 @@ struct AllCurrencyScreen: View {
                 L10n.currencyAdded,
                 isPresented: $viewModel.showAddedAlert
             ) {
-                Button(L10n.ok) {}
+                Button(L10n.ok) {
+                    viewModel.showAddedAlert = false
+                }
             } message: {
                 if let currency = viewModel.addedCurrency {
                     Text(
