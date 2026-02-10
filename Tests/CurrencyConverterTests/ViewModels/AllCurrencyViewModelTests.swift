@@ -64,6 +64,7 @@ final class AllCurrencyViewModelTests: XCTestCase {
     func test_showCurrencyAddedAlert() {
         XCTAssertFalse(viewModel.showAddedAlert)
         
+        presenter.showCurrencyAddedAlert(currency: "USD")
         
         XCTAssertEqual(viewModel.addedCurrency, "USD")
         XCTAssertTrue(viewModel.showAddedAlert)
