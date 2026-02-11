@@ -13,7 +13,8 @@ final class AllCurrencyModule {
     static func build(
         serviceContainer: ServiceContainer
     ) -> some View {
-        let viewModel = AllCurrencyViewModel(languageCode: serviceContainer.localizationManager.languageCode)
+        let lang = AllCurrencyPresenterImpl.languageCode(from: serviceContainer)
+        let viewModel = AllCurrencyViewModel(languageCode: lang)
         let presenter = AllCurrencyPresenterImpl(
             viewModel: viewModel,
             serviceContainer: serviceContainer

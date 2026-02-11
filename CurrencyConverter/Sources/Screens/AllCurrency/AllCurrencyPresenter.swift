@@ -10,9 +10,7 @@ import Foundation
 
 protocol AllCurrencyPresenter {
     func loadAllCurrencies() async
-    func reload() async
     func addCurrency(_ currencyCode: String)
-    func showCurrencyAddedAlert(currency: String)
 }
 
 final class AllCurrencyPresenterImpl {
@@ -61,20 +59,14 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
         viewModel.isLoading = false
     }
     
-    /// Перезагружка валют
-    @MainActor
-    func reload() async {
-        await loadAllCurrencies()
-    }
-    
     /// Добавляет валюту в список выбранных
     func addCurrency(_ currencyCode: String) {
         serviceContainer.currencyManager.addCurrency(currencyCode)
     }
-    
-    /// Показывает алерт о добавленной валюте
-    func showCurrencyAddedAlert(currency: String) {
-        viewModel.addedCurrency = currency
-        viewModel.showAddedAlert = true
+}
+
+extension AllCurrencyPresenterImpl {
+    static func languageCode(from container: ServiceContainer) -> String {
+        container.localizationManager.languageCode
     }
 }

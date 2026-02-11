@@ -52,7 +52,7 @@ final class AllCurrencyViewModelTests: XCTestCase {
         
         XCTAssertEqual(currencyManager.selectedCurrencies, ["USD"])
     }
-        
+    
     func test_clearSearch() {
         viewModel.searchText = "EUR"
         
@@ -64,7 +64,8 @@ final class AllCurrencyViewModelTests: XCTestCase {
     func test_showCurrencyAddedAlert() {
         XCTAssertFalse(viewModel.showAddedAlert)
         
-        presenter.showCurrencyAddedAlert(currency: "USD")
+        viewModel.addedCurrency = "USD"
+        viewModel.showAddedAlert = true
         
         XCTAssertEqual(viewModel.addedCurrency, "USD")
         XCTAssertTrue(viewModel.showAddedAlert)

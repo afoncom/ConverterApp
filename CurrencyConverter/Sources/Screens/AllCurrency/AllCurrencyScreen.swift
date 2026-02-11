@@ -140,7 +140,7 @@ struct AllCurrencyScreen: View {
                 .padding(.horizontal)
             Button(L10n.retry) {
                 Task {
-                    await presenter.reload()
+                    await presenter.loadAllCurrencies()
                 }
             }
             .padding()
@@ -205,6 +205,7 @@ struct AllCurrencyScreen: View {
     private func addCurrency(_ currency: String) {
         isSearchFocused = false
         presenter.addCurrency(currency)
-        presenter.showCurrencyAddedAlert(currency: currency)
+        viewModel.addedCurrency = currency
+        viewModel.showAddedAlert = true
     }
 }
