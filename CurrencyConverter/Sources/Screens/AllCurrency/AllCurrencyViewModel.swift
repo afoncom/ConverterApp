@@ -21,8 +21,17 @@ final class AllCurrencyViewModel: ObservableObject {
     @Published var addedCurrency: String?
     @Published var showAddedAlert = false
     @Published var pressedCurrency: String?
+    private let languageCode: String
+    
+    init(languageCode: String) {
+        self.languageCode = languageCode
+    }
     
     var filteredCurrencies: [String] {
         availableCurrencies
+    }
+    
+    func getLocalizedName(for currencyCode: String) -> String? {
+        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: languageCode)
     }
 }

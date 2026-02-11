@@ -69,7 +69,7 @@ struct AllCurrencyScreen: View {
                     Text(
                         L10n.currencyAddedMessage(
                             currency,
-                            presenter.getLocalizedName(for: currency) ?? L10n.unknownCurrency
+                            viewModel.getLocalizedName(for: currency) ?? L10n.unknownCurrency
                         )
                     )
                 }
@@ -91,7 +91,7 @@ struct AllCurrencyScreen: View {
                 
                 if !viewModel.searchText.isEmpty {
                     Button {
-                        presenter.clearSearch()
+                        viewModel.searchText = ""
                         isSearchFocused = false
                     } label: {
                         Image(systemName: "xmark.circle.fill")
@@ -167,7 +167,7 @@ struct AllCurrencyScreen: View {
                 Text(currency)
                     .font(.headline)
                     .fontWeight(.semibold)
-                Text(presenter.getLocalizedName(for: currency) ?? L10n.unknownCurrency)
+                Text(viewModel.getLocalizedName(for: currency) ?? L10n.unknownCurrency)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
@@ -194,7 +194,7 @@ struct AllCurrencyScreen: View {
             minimumDuration: 0,
             maximumDistance: .infinity,
             pressing: { isPressing in
-                presenter.setPressedCurrency(isPressing ? currency : nil)
+                viewModel.pressedCurrency = isPressing ? currency : nil
             }, perform: {}
         )
     }

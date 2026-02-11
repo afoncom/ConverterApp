@@ -13,9 +13,6 @@ protocol AllCurrencyPresenter {
     func reload() async
     func addCurrency(_ currencyCode: String)
     func showCurrencyAddedAlert(currency: String)
-    func setPressedCurrency(_ currency: String?)
-    func clearSearch()
-    func getLocalizedName(for currencyCode: String) -> String?
 }
 
 final class AllCurrencyPresenterImpl {
@@ -79,20 +76,5 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
     func showCurrencyAddedAlert(currency: String) {
         viewModel.addedCurrency = currency
         viewModel.showAddedAlert = true
-    }
-    
-    /// Устанавливает нажатую валюту для анимации
-    func setPressedCurrency(_ currency: String?) {
-        viewModel.pressedCurrency = currency
-    }
-    
-    /// Очищает текст поиска
-    func clearSearch() {
-        viewModel.searchText = ""
-    }
-    
-    /// Возвращает локализованное название валюты
-    func getLocalizedName(for currencyCode: String) -> String? {
-        CurrencyNames.getLocalizedName(for: currencyCode, languageCode: serviceContainer.localizationManager.languageCode)
     }
 }

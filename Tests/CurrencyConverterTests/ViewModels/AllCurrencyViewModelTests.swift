@@ -23,8 +23,6 @@ final class AllCurrencyViewModelTests: XCTestCase {
         let localizationManager = LocalizationManager()
         
         currencyManager = CurrencyManagerMock()
-        viewModel = AllCurrencyViewModel()
-        
         let baseCurrencyManager = BaseCurrencyManagerImpl()
         let themeManager = ThemeManager()
         let cacheService = CacheServiceImpl()
@@ -39,6 +37,8 @@ final class AllCurrencyViewModelTests: XCTestCase {
             currencyService: service,
             currencyManager: currencyManager
         )
+        
+        viewModel = AllCurrencyViewModel(languageCode: serviceContainer.localizationManager.languageCode)
         presenter = AllCurrencyPresenterImpl(
             viewModel: viewModel,
             serviceContainer: serviceContainer
@@ -56,7 +56,7 @@ final class AllCurrencyViewModelTests: XCTestCase {
     func test_clearSearch() {
         viewModel.searchText = "EUR"
         
-        presenter.clearSearch()
+        viewModel.searchText = ""
         
         XCTAssertEqual(viewModel.searchText, "")
     }
