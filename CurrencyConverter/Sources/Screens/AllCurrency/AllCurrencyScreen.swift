@@ -45,13 +45,22 @@ struct AllCurrencyScreen: View {
                     .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
                 }
                 
-                searchBar
-                listView
+                switch viewModel.state {
+                case .loading:
+                    loadingView
+                case .loaded:
+                    VStack(spacing: 0) {
+                        searchBar
+                        listView
+                    }
+                case .error(let error):
+                    errorView(error)
+                }
             }
-            .navigationTitle(L10n.allCurrenciesWithCount(String(viewModel.filteredCurrencies.count)))
+            .navigationTitle(L10n.allCurrenciesWithCount(String(viewModel.availableCurrencies.count)))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
+                if viewModel.availableCurrencies.isEmpty {
                     Task {
                         await presenter.loadAllCurrencies()
                     }
@@ -109,15 +118,8 @@ struct AllCurrencyScreen: View {
         .padding(.bottom, 5)
     }
     
-    @ViewBuilder
     private var listView: some View {
-        if viewModel.isLoading {
-            loadingView
-        } else if let error = viewModel.errorMessage {
-            errorView(error)
-        } else {
-            currencyList
-        }
+        currencyList
     }
     
     private var loadingView: some View {
@@ -152,12 +154,12 @@ struct AllCurrencyScreen: View {
     
     private var currencyList: some View {
         List {
-            ForEach(viewModel.filteredCurrencies, id: \.self) { currency in
+            ForEach(viewModel.availableCurrencies, id: \.self) { currency in
                 currencyRow(currency)
             }
         }
         .listStyle(PlainListStyle())
-        .animation(.easeInOut(duration: 0.3), value: viewModel.filteredCurrencies)
+        .animation(.easeInOut(duration: 0.3), value: viewModel.availableCurrencies)
         .onTapGesture { isSearchFocused = false }
     }
     

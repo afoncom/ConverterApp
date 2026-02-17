@@ -68,11 +68,6 @@ struct ExchangeRateListViewScreen: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         AllCurrencyModule.build(serviceContainer: serviceContainer)
-                            .onAppear {
-                                Task {
-                                    await viewModel.reload()
-                                }
-                            }
                     } label: {
                         Image(systemName: "plus")
                     }

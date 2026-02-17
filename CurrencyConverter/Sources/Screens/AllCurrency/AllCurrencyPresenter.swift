@@ -31,13 +31,11 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
     /// Загружает все доступные валюты с сервера
     @MainActor
     func loadAllCurrencies() async {
-        viewModel.isLoading = true
-        viewModel.errorMessage = nil
+        viewModel.state = .loading
         viewModel.connectionStatus = nil
         
         do {
             let result = try await serviceContainer.currencyService.getAllAvailableCurrencies(requestType: .networkOrCache)
-            viewModel.allCurrencies = result.data
             viewModel.lastUpdated = result.lastUpdated
             
             // Обновляем статус подключения
@@ -51,12 +49,11 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
             }
             
             viewModel.availableCurrencies = result.data
+            viewModel.state = .loaded
         } catch {
-            viewModel.errorMessage = error.localizedDescription
+            viewModel.state = .error(error.localizedDescription)
             viewModel.availableCurrencies = []
         }
-        
-        viewModel.isLoading = false
     }
     
     /// Добавляет валюту в список выбранных

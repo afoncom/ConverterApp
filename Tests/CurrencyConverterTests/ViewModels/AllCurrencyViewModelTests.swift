@@ -75,6 +75,10 @@ final class AllCurrencyViewModelTests: XCTestCase {
         await presenter.loadAllCurrencies()
         
         XCTAssertFalse(viewModel.availableCurrencies.isEmpty)
-        XCTAssertFalse(viewModel.isLoading)
+        if case .loaded = viewModel.state {
+            XCTAssertTrue(true)
+        } else {
+            XCTFail("Expected state to be .loaded")
+        }
     }
 }

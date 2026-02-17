@@ -7,14 +7,18 @@
 
 import SwiftUI
 
+enum AllCurrencyState {
+    case loading
+    case loaded
+    case error(String)
+}
+
 final class AllCurrencyViewModel: ObservableObject {
     
     // MARK: - Screen states (Состояния экрана)
     
-    @Published var allCurrencies: [String] = []
+    @Published var state: AllCurrencyState = .loading
     @Published var availableCurrencies: [String] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
     @Published var connectionStatus: String?
     @Published var lastUpdated: Date?
     @Published var searchText = ""
@@ -25,10 +29,6 @@ final class AllCurrencyViewModel: ObservableObject {
     
     init(languageCode: String) {
         self.languageCode = languageCode
-    }
-    
-    var filteredCurrencies: [String] {
-        availableCurrencies
     }
     
     func getLocalizedName(for currencyCode: String) -> String? {
