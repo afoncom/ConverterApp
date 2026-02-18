@@ -17,9 +17,9 @@ protocol CurrencyManager {
 }
 
 
-final class CurrencyManagerImpl: CurrencyManager {
+final class CurrencyManagerImpl: ObservableObject, CurrencyManager {
 
-    var selectedCurrencies: [String] = []
+    @Published private(set) var selectedCurrencies: [String] = []
     
     // MARK: - Private Properties
     private let userDefaults = UserDefaults.standard

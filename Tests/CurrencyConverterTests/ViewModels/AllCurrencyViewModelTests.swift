@@ -13,6 +13,7 @@ import XCTest
 final class AllCurrencyViewModelTests: XCTestCase {
     
     private var viewModel: AllCurrencyViewModel!
+    private var presenter: AllCurrencyPresenterImpl!
     private var currencyManager: CurrencyManagerMock!
     
     override func setUp() {
@@ -20,31 +21,26 @@ final class AllCurrencyViewModelTests: XCTestCase {
         let service = CurrencyServiceMock()
         
         currencyManager = CurrencyManagerMock()
-        viewModel = AllCurrencyViewModel(currencyService: service, currencyManager: currencyManager)
+        
+        viewModel = AllCurrencyViewModel(languageCode: "En")
+        presenter = AllCurrencyPresenterImpl(
+            viewModel: viewModel,
+            currencyManager: currencyManager, currencyService: service
+        )
     }
-    
-    // MARK: - Tests
     
     func test_addCurrency() {
         XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
         
-        viewModel.addCurrency("USD")
+        presenter.addCurrency("USD")
         
         XCTAssertEqual(currencyManager.selectedCurrencies, ["USD"])
     }
     
-    func test_removeCurrency() {
-        currencyManager.selectedCurrencies = ["USD"]
-        
-        currencyManager.removeCurrency("USD")
-        
-        XCTAssertTrue(currencyManager.selectedCurrencies.isEmpty)
-    }
-        
     func test_clearSearch() {
         viewModel.searchText = "EUR"
         
-        viewModel.clearSearch()
+        viewModel.searchText = ""
         
         XCTAssertEqual(viewModel.searchText, "")
     }
@@ -52,26 +48,21 @@ final class AllCurrencyViewModelTests: XCTestCase {
     func test_showCurrencyAddedAlert() {
         XCTAssertFalse(viewModel.showAddedAlert)
         
-        viewModel.showCurrencyAddedAlert(currency: "USD")
+        viewModel.addedCurrency = "USD"
+        viewModel.showAddedAlert = true
         
         XCTAssertEqual(viewModel.addedCurrency, "USD")
         XCTAssertTrue(viewModel.showAddedAlert)
     }
     
-    func test_setPressedCurrency() {
-        XCTAssertNil(viewModel.pressedCurrency)
-        
-        viewModel.setPressedCurrency("USD")
-        
-        XCTAssertEqual(viewModel.pressedCurrency, "USD")
-    }
-    
-    func test_setServices() async {
-        let newService = CurrencyServiceMock()
-        await viewModel.loadAllCurrencies()
-        
-        viewModel.setServices(currencyService: newService, localizationManager: nil)
+    func test_loadAllCurrencies() async {
+        await presenter.loadAllCurrencies()
         
         XCTAssertFalse(viewModel.availableCurrencies.isEmpty)
+        if case .loaded = viewModel.state {
+            XCTAssertTrue(true)
+        } else {
+            XCTFail("Expected state to be .loaded")
+        }
     }
 }

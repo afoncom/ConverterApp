@@ -8,38 +8,18 @@
 import SwiftUI
 
 struct AllCurrencyScreen: View {
-    
-    // MARK: - Screen states (Состояния экрана)
-    
-    @Environment(\.dismiss) private var dismiss          // Для закрытия экрана
     @StateObject private var viewModel: AllCurrencyViewModel
-    @FocusState private var isSearchFocused: Bool        // Фокус на поле поиска
+    private let presenter: AllCurrencyPresenter
     
-    let currencyManager: CurrencyManager                // Менеджер выбранных валют
-    let serviceContainer: ServiceContainer               // Контейнер сервисов
-    let onCurrencySelected: ((String) -> Void)?          // Callback при выборе валюты
-    
-    // MARK: - Computed Properties (Вычисленные свойства)
-    
-    private var localizationManager: LocalizationManager {
-        serviceContainer.localizationManager
-    }
-    
-    // MARK: - Initialization (Инициализация)
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var isSearchFocused: Bool
     
     init(
-        currencyManager: CurrencyManager,
-        serviceContainer: ServiceContainer,
-        onCurrencySelected: ((String) -> Void)? = nil
+        viewModel: AllCurrencyViewModel,
+        presenter: AllCurrencyPresenter
     ) {
-        self.currencyManager = currencyManager
-        self.serviceContainer = serviceContainer
-        self.onCurrencySelected = onCurrencySelected
-        
-        _viewModel = StateObject(wrappedValue: AllCurrencyViewModel(
-            currencyService: serviceContainer.currencyService,
-            currencyManager: currencyManager
-        ))
+        self.presenter = presenter
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     // MARK: - Body экрана
@@ -65,19 +45,24 @@ struct AllCurrencyScreen: View {
                     .background(isNoConnection ? Color.red.opacity(0.1) : Color.orange.opacity(0.1))
                 }
                 
-                searchBar
-                listView
+                switch viewModel.state {
+                case .loading:
+                    loadingView
+                case .loaded:
+                    VStack(spacing: 0) {
+                        searchBar
+                        currencyList
+                    }
+                case .error(let error):
+                    errorView(error)
+                }
             }
-            .navigationTitle(L10n.allCurrenciesWithCount(String(viewModel.filteredCurrencies.count)))
+            .navigationTitle(L10n.allCurrenciesWithCount(String(viewModel.availableCurrencies.count)))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                
-                
-                viewModel.setServices(currencyService: serviceContainer.currencyService, localizationManager: localizationManager)
-                
-                if viewModel.availableCurrencies.isEmpty && !viewModel.isLoading {
+                if viewModel.availableCurrencies.isEmpty {
                     Task {
-                        await viewModel.loadAllCurrencies()
+                        await presenter.loadAllCurrencies()
                     }
                 }
             }
@@ -85,7 +70,9 @@ struct AllCurrencyScreen: View {
                 L10n.currencyAdded,
                 isPresented: $viewModel.showAddedAlert
             ) {
-                Button(L10n.ok) {}
+                Button(L10n.ok) {
+                    viewModel.showAddedAlert = false
+                }
             } message: {
                 if let currency = viewModel.addedCurrency {
                     Text(
@@ -113,7 +100,7 @@ struct AllCurrencyScreen: View {
                 
                 if !viewModel.searchText.isEmpty {
                     Button {
-                        viewModel.clearSearch()
+                        viewModel.searchText = ""
                         isSearchFocused = false
                     } label: {
                         Image(systemName: "xmark.circle.fill")
@@ -129,17 +116,6 @@ struct AllCurrencyScreen: View {
         .padding(.horizontal)
         .padding(.top, 8)
         .padding(.bottom, 5)
-    }
-    
-    @ViewBuilder
-    private var listView: some View {
-        if viewModel.isLoading {
-            loadingView
-        } else if let error = viewModel.errorMessage {
-            errorView(error)
-        } else {
-            currencyList
-        }
     }
     
     private var loadingView: some View {
@@ -162,7 +138,7 @@ struct AllCurrencyScreen: View {
                 .padding(.horizontal)
             Button(L10n.retry) {
                 Task {
-                    await viewModel.reload()
+                    await presenter.loadAllCurrencies()
                 }
             }
             .padding()
@@ -181,7 +157,6 @@ struct AllCurrencyScreen: View {
         .listStyle(PlainListStyle())
         .animation(.easeInOut(duration: 0.3), value: viewModel.filteredCurrencies)
         .onTapGesture { isSearchFocused = false }
-        .accessibilityAddTraits(.isButton)
     }
     
     private func currencyRow(_ currency: String) -> some View {
@@ -217,19 +192,18 @@ struct AllCurrencyScreen: View {
             minimumDuration: 0,
             maximumDistance: .infinity,
             pressing: { isPressing in
-                viewModel.setPressedCurrency(isPressing ? currency : nil)
+                viewModel.pressedCurrency = isPressing ? currency : nil
             }, perform: {}
         )
     }
     
     // MARK: - Добавление валюты в список
     
-    /// Добавляет выбранную валюту, скрывает клавиатуру, показывает алерт и вызывает callback
+    /// Добавляет выбранную валюту, скрывает клавиатуру, показывает алерт
     private func addCurrency(_ currency: String) {
         isSearchFocused = false
-        viewModel.addCurrency(currency)
-        viewModel.showCurrencyAddedAlert(currency: currency)
-        onCurrencySelected?(currency)
+        presenter.addCurrency(currency)
+        viewModel.addedCurrency = currency
+        viewModel.showAddedAlert = true
     }
-    
 }
