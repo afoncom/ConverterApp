@@ -38,8 +38,8 @@ struct CurrencyConverterScreen: View {
     
     // MARK: - Initialization (Инициализация)
     
-    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
-        self.currencyManager = currencyManager
+    init(serviceContainer: ServiceContainer) {
+        self.currencyManager = serviceContainer.currencyManager
         self.serviceContainer = serviceContainer
         self.localizationManager = serviceContainer.localizationManager
         self._viewModel = StateObject(wrappedValue: CurrencyConverterViewModel(

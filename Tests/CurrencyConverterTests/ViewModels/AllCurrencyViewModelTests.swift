@@ -15,33 +15,17 @@ final class AllCurrencyViewModelTests: XCTestCase {
     private var viewModel: AllCurrencyViewModel!
     private var presenter: AllCurrencyPresenterImpl!
     private var currencyManager: CurrencyManagerMock!
-    private var serviceContainer: ServiceContainer!
     
     override func setUp() {
         super.setUp()
         let service = CurrencyServiceMock()
-        let localizationManager = LocalizationManager()
         
         currencyManager = CurrencyManagerMock()
-        let baseCurrencyManager = BaseCurrencyManagerImpl()
-        let themeManager = ThemeManager()
-        let cacheService = CacheServiceImpl()
-        let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
         
-        serviceContainer = ServiceContainer(
-            baseCurrencyManager: baseCurrencyManager,
-            themeManager: themeManager,
-            localizationManager: localizationManager,
-            cacheService: cacheService,
-            networkService: networkService,
-            currencyService: service,
-            currencyManager: currencyManager
-        )
-        
-        viewModel = AllCurrencyViewModel(languageCode: serviceContainer.localizationManager.languageCode, currencyManager: currencyManager)
+        viewModel = AllCurrencyViewModel(languageCode: "En")
         presenter = AllCurrencyPresenterImpl(
             viewModel: viewModel,
-            serviceContainer: serviceContainer
+            currencyManager: currencyManager, currencyService: service
         )
     }
     

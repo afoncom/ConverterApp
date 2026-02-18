@@ -15,14 +15,17 @@ protocol AllCurrencyPresenter {
 
 final class AllCurrencyPresenterImpl {
     private let viewModel: AllCurrencyViewModel
-    private let serviceContainer: ServiceContainer
+    private let currencyManager: CurrencyManager
+    private let currencyService: CurrencyService
     
     init(
         viewModel: AllCurrencyViewModel,
-        serviceContainer: ServiceContainer
+        currencyManager: CurrencyManager,
+        currencyService: CurrencyService
     ) {
         self.viewModel = viewModel
-        self.serviceContainer = serviceContainer
+        self.currencyManager = currencyManager
+        self.currencyService = currencyService
     }
 }
 
@@ -35,7 +38,7 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
         viewModel.connectionStatus = nil
         
         do {
-            let result = try await serviceContainer.currencyService.getAllAvailableCurrencies(requestType: .networkOrCache)
+            let result = try await currencyService.getAllAvailableCurrencies(requestType: .networkOrCache)
             viewModel.lastUpdated = result.lastUpdated
             
             // Обновляем статус подключения
@@ -49,6 +52,7 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
             }
             
             viewModel.availableCurrencies = result.data
+            viewModel.selectedCurrencies = currencyManager.selectedCurrencies
             viewModel.state = .loaded
         } catch {
             viewModel.state = .error(error.localizedDescription)
@@ -58,7 +62,7 @@ extension AllCurrencyPresenterImpl: AllCurrencyPresenter {
     
     /// Добавляет валюту в список выбранных
     func addCurrency(_ currencyCode: String) {
-        serviceContainer.currencyManager.addCurrency(currencyCode)
+        currencyManager.addCurrency(currencyCode)
     }
 }
 

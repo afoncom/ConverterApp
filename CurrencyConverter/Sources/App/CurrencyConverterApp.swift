@@ -9,13 +9,9 @@ import SwiftUI
 @main
 struct CurrencyConverterApp: App {
     private let serviceContainer: ServiceContainer
-    private let currencyManager: CurrencyManagerImpl
     @ObservedObject private var themeManager: ThemeManager
     
     init() {
-        let currencyManager = CurrencyManagerImpl()
-        
-        self.currencyManager = currencyManager
         
         self.serviceContainer = {
             let baseCurrencyManager = BaseCurrencyManagerImpl()
@@ -23,6 +19,7 @@ struct CurrencyConverterApp: App {
             let localizationManager = LocalizationManager()
             let cacheService = CacheServiceImpl()
             let networkService = CurrencyNetworkServiceImpl(cacheService: cacheService)
+            let currencyManager = CurrencyManagerImpl()
             
             let currencyService = CurrencyServiceImpl(
                 networkService: networkService,
@@ -46,7 +43,7 @@ struct CurrencyConverterApp: App {
     
     var body: some Scene {
         WindowGroup {
-            WelcomeScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
+            WelcomeScreen(serviceContainer: serviceContainer)
                 .preferredColorScheme(themeManager.colorScheme)
         }
     }

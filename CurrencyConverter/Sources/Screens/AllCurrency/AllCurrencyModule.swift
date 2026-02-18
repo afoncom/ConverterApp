@@ -14,13 +14,11 @@ final class AllCurrencyModule {
         serviceContainer: ServiceContainer
     ) -> some View {
         let lang = AllCurrencyPresenterImpl.languageCode(from: serviceContainer)
-        let viewModel = AllCurrencyViewModel(
-            languageCode: lang,
-            currencyManager: serviceContainer.currencyManager
-        )
+        let viewModel = AllCurrencyViewModel(languageCode: lang)
         let presenter = AllCurrencyPresenterImpl(
             viewModel: viewModel,
-            serviceContainer: serviceContainer
+            currencyManager: serviceContainer.currencyManager,
+            currencyService: serviceContainer.currencyService
         )
         
         let view = AllCurrencyScreen(viewModel: viewModel, presenter: presenter)

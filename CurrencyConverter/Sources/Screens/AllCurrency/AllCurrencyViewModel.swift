@@ -19,6 +19,7 @@ final class AllCurrencyViewModel: ObservableObject {
     
     @Published var state: AllCurrencyState = .loading
     @Published var availableCurrencies: [String] = []
+    @Published var selectedCurrencies: [String] = []
     @Published var connectionStatus: String?
     @Published var lastUpdated: Date?
     @Published var searchText = ""
@@ -26,15 +27,14 @@ final class AllCurrencyViewModel: ObservableObject {
     @Published var showAddedAlert = false
     @Published var pressedCurrency: String?
     private let languageCode: String
-    private let currencyManager: CurrencyManager
+
     
-    init(languageCode: String, currencyManager: CurrencyManager) {
+    init(languageCode: String) {
         self.languageCode = languageCode
-        self.currencyManager = currencyManager
     }
     
     var filteredCurrencies: [String] {
-        let notSelected = availableCurrencies.filter { !currencyManager.selectedCurrencies.contains($0) }
+        let notSelected = availableCurrencies.filter { !selectedCurrencies.contains($0) }
         
         if searchText.isEmpty {
             return notSelected

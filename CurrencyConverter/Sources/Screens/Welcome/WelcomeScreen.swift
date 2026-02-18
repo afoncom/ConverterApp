@@ -9,15 +9,10 @@ import SwiftUI
 struct WelcomeScreen: View {
     
     @State private var showWelcome = true
+    private let serviceContainer: ServiceContainer
     
-    let currencyManager: CurrencyManager
-    let serviceContainer: ServiceContainer
-    @ObservedObject private var localizationManager: LocalizationManager
-    
-    init(currencyManager: CurrencyManager, serviceContainer: ServiceContainer) {
-        self.currencyManager = currencyManager
+    init(serviceContainer: ServiceContainer) {
         self.serviceContainer = serviceContainer
-        self.localizationManager = serviceContainer.localizationManager
     }
     
     var body: some View {
@@ -41,11 +36,7 @@ struct WelcomeScreen: View {
                 }
             }
         } else {
-            CurrencyConverterScreen(currencyManager: currencyManager, serviceContainer: serviceContainer)
+            CurrencyConverterScreen(serviceContainer: serviceContainer)
         }
     }
-}
-
-#Preview {
-    WelcomeScreen(currencyManager: CurrencyManagerImpl(), serviceContainer: .makePreview())
 }

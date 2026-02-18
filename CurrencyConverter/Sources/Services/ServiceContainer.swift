@@ -12,11 +12,11 @@ import Foundation
 final class ServiceContainer {
     
     let baseCurrencyManager: BaseCurrencyManager        // Менеджер базовой валюты
-    let themeManager: ThemeManager                              // Менеджер темы приложения
-    let localizationManager: LocalizationManager                // Менеджер локализации приложения
+    let themeManager: ThemeManager                      // Менеджер темы приложения
+    let localizationManager: LocalizationManager        // Менеджер локализации приложения
     let cacheService: CacheService                      // Сервис для кэширования данных
     let networkService: CurrencyNetworkService
-    let currencyService: CurrencyService                       // Сервис для работы с валютами
+    let currencyService: CurrencyService                // Сервис для работы с валютами
     let currencyManager: CurrencyManager
     
     init (
