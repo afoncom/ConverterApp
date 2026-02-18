@@ -51,7 +51,7 @@ struct AllCurrencyScreen: View {
                 case .loaded:
                     VStack(spacing: 0) {
                         searchBar
-                        listView
+                        currencyList
                     }
                 case .error(let error):
                     errorView(error)
@@ -118,10 +118,6 @@ struct AllCurrencyScreen: View {
         .padding(.bottom, 5)
     }
     
-    private var listView: some View {
-        currencyList
-    }
-    
     private var loadingView: some View {
         ProgressView(L10n.loadingCurrencies)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -154,12 +150,12 @@ struct AllCurrencyScreen: View {
     
     private var currencyList: some View {
         List {
-            ForEach(viewModel.availableCurrencies, id: \.self) { currency in
+            ForEach(viewModel.filteredCurrencies, id: \.self) { currency in
                 currencyRow(currency)
             }
         }
         .listStyle(PlainListStyle())
-        .animation(.easeInOut(duration: 0.3), value: viewModel.availableCurrencies)
+        .animation(.easeInOut(duration: 0.3), value: viewModel.filteredCurrencies)
         .onTapGesture { isSearchFocused = false }
     }
     

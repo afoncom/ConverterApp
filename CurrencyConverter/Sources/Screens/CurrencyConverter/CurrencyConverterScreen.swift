@@ -78,13 +78,13 @@ struct CurrencyConverterScreen: View {
                 hideKeyboard()
             }
             .navigationDestination(isPresented: $showCurrencyList) {
-                ExchangeRateListViewScreen(currencyManager: currencyManager, serviceContainer: serviceContainer) { currency in
+                ExchangeRateListViewScreen(currencyManager: currencyManager as! CurrencyManagerImpl, serviceContainer: serviceContainer) { currency in
                     updateSelectedCurrency(currency)
                 }
             }
             .navigationDestination(isPresented: $showBaseCurrencyPicker) {
                 ExchangeRateListViewScreen(
-                    currencyManager: currencyManager,
+                    currencyManager: currencyManager as! CurrencyManagerImpl,
                     serviceContainer: serviceContainer
                 ) { baseCurrency in
                     updateBaseCurrency(baseCurrency)

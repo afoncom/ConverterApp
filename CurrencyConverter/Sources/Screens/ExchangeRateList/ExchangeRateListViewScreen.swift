@@ -13,7 +13,7 @@ struct ExchangeRateListViewScreen: View {
     @StateObject private var viewModel: ExchangeRateListViewModel
     @Environment(\.dismiss) private var dismiss
     
-    let currencyManager: CurrencyManager
+    @ObservedObject private var currencyManager: CurrencyManagerImpl
     let serviceContainer: ServiceContainer
     let onCurrencySelected: ((Currency) -> Void)?
     @ObservedObject private var localizationManager: LocalizationManager
@@ -21,7 +21,7 @@ struct ExchangeRateListViewScreen: View {
     // MARK: - Initialization (Инициализация)
     
     init(
-        currencyManager: CurrencyManager,
+        currencyManager: CurrencyManagerImpl,
         serviceContainer: ServiceContainer,
         onCurrencySelected: ((Currency) -> Void)? = nil
     ) {
@@ -80,6 +80,11 @@ struct ExchangeRateListViewScreen: View {
                 viewModel.updateBaseCurrency(newBaseCurrency)
             }
             .onChange(of: localizationManager.currentLanguage) { _, _ in
+                Task {
+                    await viewModel.reload()
+                }
+            }
+            .onChange(of: currencyManager.selectedCurrencies) { _, _ in
                 Task {
                     await viewModel.reload()
                 }

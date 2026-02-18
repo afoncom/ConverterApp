@@ -38,7 +38,7 @@ final class AllCurrencyViewModelTests: XCTestCase {
             currencyManager: currencyManager
         )
         
-        viewModel = AllCurrencyViewModel(languageCode: serviceContainer.localizationManager.languageCode)
+        viewModel = AllCurrencyViewModel(languageCode: serviceContainer.localizationManager.languageCode, currencyManager: currencyManager)
         presenter = AllCurrencyPresenterImpl(
             viewModel: viewModel,
             serviceContainer: serviceContainer

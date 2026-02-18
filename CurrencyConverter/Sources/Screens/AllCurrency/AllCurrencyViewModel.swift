@@ -26,9 +26,23 @@ final class AllCurrencyViewModel: ObservableObject {
     @Published var showAddedAlert = false
     @Published var pressedCurrency: String?
     private let languageCode: String
+    private let currencyManager: CurrencyManager
     
-    init(languageCode: String) {
+    init(languageCode: String, currencyManager: CurrencyManager) {
         self.languageCode = languageCode
+        self.currencyManager = currencyManager
+    }
+    
+    var filteredCurrencies: [String] {
+        let notSelected = availableCurrencies.filter { !currencyManager.selectedCurrencies.contains($0) }
+        
+        if searchText.isEmpty {
+            return notSelected
+        }
+        return notSelected.filter { currency in
+            currency.localizedCaseInsensitiveContains(searchText) ||
+            (getLocalizedName(for: currency)?.localizedCaseInsensitiveContains(searchText) ?? false)
+        }
     }
     
     func getLocalizedName(for currencyCode: String) -> String? {
